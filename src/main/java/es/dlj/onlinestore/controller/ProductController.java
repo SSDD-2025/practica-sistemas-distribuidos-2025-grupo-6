@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import es.dlj.onlinestore.model.Product;
+
 import es.dlj.onlinestore.service.ProductService;
 
 @Controller
@@ -24,7 +24,7 @@ class ProductController {
 
         model.addAttribute("product", productService.getProduct(id));
 
-        return "productDetailed_template";
+        return "product_template";
     }
 
 }
