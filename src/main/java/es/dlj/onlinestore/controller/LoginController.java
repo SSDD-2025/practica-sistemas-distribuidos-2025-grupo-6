@@ -4,32 +4,50 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.dlj.onlinestore.repository.UserInfoRepository;
+import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.service.UserComponent;
+import es.dlj.onlinestore.service.UserService;
 
 
 @Controller
 public class LoginController {
 
     @Autowired
-    private UserInfoRepository users;
+    private UserComponent userComponent;
 
-    @GetMapping("/login-access")
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/login-access")
     public String getLogin(Model model, @RequestParam String userName, @RequestParam String password) {
-        if (users.existsByUserNameAndPassword(userName, password)) {
-            model.addAttribute("userName", userName);
-            return "home_template";
+        UserInfo user = userService.findByUserNameAndPassword(userName, password);
+        if (user != null) {
+            userComponent.setUser(user.getId());
+            return "redirect:/";
         } else {
-            model.addAttribute("userName", "");
-            return "login_template";
+            return "redirect:/login";
         }
     }
 
     @GetMapping("/login")
     public String getLogin(Model model) {
-        model.addAttribute("userName", "");
         return "login_template";
+    }
+
+    @GetMapping("/register")
+    public String getRegister(Model model) {
+        return "register_template";
+    }
+
+    @PostMapping("/register-access")
+    public String getRegister(Model model, @RequestParam String userName, @RequestParam String password, @RequestParam String name, @RequestParam String lastName, @RequestParam String email) {
+        UserInfo user = new UserInfo(userName, password, name, lastName, email, UserInfo.Role.USER);
+        userService.save(user);
+        userComponent.setUser(user.getId());
+        return "redirect:/";
     }
 
 }

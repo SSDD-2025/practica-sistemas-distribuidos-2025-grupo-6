@@ -28,4 +28,8 @@ public class ProductService {
         return products.findAll();
     }
 
+    public Product getProduct(long id) {
+        return products.findById(id).get();
+    }
+
 }
