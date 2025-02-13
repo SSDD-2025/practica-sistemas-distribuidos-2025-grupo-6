@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
     
-    @GetMapping("/home")
+    @GetMapping("/")
     public String getHome(Model model) {
 
         model.addAttribute("userName", "World");
+        model.addAttribute("productList", 0);
 
 		return "home_template";
     }

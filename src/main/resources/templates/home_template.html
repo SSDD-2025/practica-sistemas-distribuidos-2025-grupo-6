@@ -1,3 +1,32 @@
 {{> header_template}}
-	<p>Hello, {{userName}}</p>
-{{> footer_template}}
+
+<div class="container">
+	<div class="row">
+		<div class="col-2">
+			<!--Filtro-->
+		</div>
+		<div class="row">
+			{{#productList}}
+			<div class="col-3">
+				<a href="">
+					<img class src=""> 
+					<p class="">{{name}}</p>
+				</a>
+				<p class="">{{price}}</p>
+				<ul>
+				{{#tags}}
+					<p> {{.}}</p>
+				{{#tags}}
+				</ul>
+			</div>
+			{{/productList}}
+			{{^productList}}
+			<p>Empty list.</p>
+			{{/productList}}
+		</div>
+	</div>   
+</div>
+
+{{> footer}}
+
+
