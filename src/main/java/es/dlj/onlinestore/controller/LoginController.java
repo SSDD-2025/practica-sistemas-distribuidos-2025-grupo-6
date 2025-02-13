@@ -43,11 +43,11 @@ public class LoginController {
     }
 
     @PostMapping("/register-access")
-    public String getRegister(Model model, @RequestParam String userName, @RequestParam String password, @RequestParam String name, @RequestParam String lastName, @RequestParam String email) {
-        UserInfo user = new UserInfo(userName, password, name, lastName, email, UserInfo.Role.USER, email, email, email, email);
+    public String getRegister(Model model, @RequestParam String userName, @RequestParam String password, @RequestParam String name, @RequestParam String lastName, @RequestParam String email, @RequestParam String address, @RequestParam String city, @RequestParam String postalCode, @RequestParam String phone) {
+        UserInfo user = new UserInfo(userName, password, name, lastName, email, UserInfo.Role.USER, address, city, postalCode, phone);
         userService.save(user);
         userComponent.setUser(user.getId());
-        return "redirect:/";
+        return "redirect:/userprofile";
     }
 
 }
