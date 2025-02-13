@@ -1,5 +1,7 @@
 package es.dlj.onlinestore.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,7 +26,7 @@ public class Product {
     private float price;
     private String description;
     private int stock;
-    
+    private List<String> tags;
     @Enumerated (EnumType.STRING)
     private productType productType;
     private float rating;
@@ -36,7 +38,7 @@ public class Product {
     public Product(){
     }
 
-    public Product(String name, float price, String description, productType productType, int stock){
+    public Product(String name, float price, String description, productType productType, int stock, List<String> tags){
         this.name = name;
         this.price = price;
         this.stock = stock;
@@ -47,6 +49,7 @@ public class Product {
         this.totalSells = 0;
         this.lastWeekSells = 0;
         this.sale = 0;
+        this.tags = tags;
     }
 
     public long getId() {
@@ -135,6 +138,11 @@ public class Product {
 
     public void setSale(int sale) {
         this.sale = sale;
+    }
+
+    public void addRating(float rating){
+        this.rating = (this.rating * this.numberRatings + rating)/(this.numberRatings + 1);
+        this.numberRatings += 1;
     }
 
     @Override
