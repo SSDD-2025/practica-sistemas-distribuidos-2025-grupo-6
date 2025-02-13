@@ -9,16 +9,8 @@
 			{{#productList}}
 			<div class="col-3">
 				
-				<a href="">
-					<img class src=""> 
-					<p class="">{{name}}</p>
-				</a>
-				<p class="">{{price}}</p>
-				<ul>
-				<!--{{#tags}}
-					<p> {{.}}</p>
-				{{/tags}}-->
-				</ul>
+				{{> productPreview_template}}
+				
 			</div>
 			{{/productList}}
 			{{^productList}}
