@@ -18,12 +18,9 @@ public class LoginController {
     @Autowired
     private UserComponent userComponent;
 
-<<<<<<< HEAD
     @Autowired
     private UserService userService;
 
-=======
->>>>>>> 287ca047e320b33ebfc2467e5eb5e4d10df7b88d
     @PostMapping("/login-access")
     public String getLogin(Model model, @RequestParam String userName, @RequestParam String password) {
         UserInfo user = userService.findByUserNameAndPassword(userName, password);
