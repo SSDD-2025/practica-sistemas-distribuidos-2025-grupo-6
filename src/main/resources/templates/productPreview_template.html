@@ -1,0 +1,14 @@
+
+<a href="/product/{{id}}">
+    <img class src=""> 
+    <p class="">{{name}}</p>
+</a>
+<p class="">{{price}}</p>
+<ul>
+{{#tags}}
+    <li> {{.}}</li>
+{{/tags}}
+{{^tags}}
+    <li>This product doesn't have tags</li>
+{{/tags}}
+</ul>
