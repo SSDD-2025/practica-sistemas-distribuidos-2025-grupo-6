@@ -1,5 +1,7 @@
 package es.dlj.onlinestore.model;
 
+import java.util.ArrayList;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,6 +31,7 @@ public class UserInfo {
     private String phone;
     private String creditCard;
     private String profilePhoto; 
+    private ArrayList<UserRating> reviews;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -47,6 +50,7 @@ public class UserInfo {
         this.city = city;
         this.postalCode = postalCode;
         this.phone = phone;
+        this.reviews = new ArrayList<UserRating>();
     }
 
     public Long getId() {
@@ -153,6 +157,18 @@ public class UserInfo {
         this.profilePhoto = profilePhoto;
     }
     
+    public ArrayList<UserRating> getReviews() {
+        return reviews;
+    }
+
+    public void addReview(UserRating review){
+        reviews.add(review);
+    }
+
+    public void removeReview(UserRating review){
+        reviews.remove(review);
+    }
+   
     @Override
     public String toString() {
         return "User{" +
