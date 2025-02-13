@@ -8,15 +8,16 @@
 		<div class="row">
 			{{#productList}}
 			<div class="col-3">
+				
 				<a href="">
 					<img class src=""> 
 					<p class="">{{name}}</p>
 				</a>
 				<p class="">{{price}}</p>
 				<ul>
-				{{#tags}}
+				<!--{{#tags}}
 					<p> {{.}}</p>
-				{{#tags}}
+				{{/tags}}-->
 				</ul>
 			</div>
 			{{/productList}}
@@ -27,6 +28,6 @@
 	</div>   
 </div>
 
-{{> footer}}
+{{> footer_template}}
 
 

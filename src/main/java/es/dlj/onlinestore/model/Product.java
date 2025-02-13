@@ -136,4 +136,21 @@ public class Product {
     public void setSale(int sale) {
         this.sale = sale;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                ", stock=" + stock +
+                ", productType=" + productType +
+                ", rating=" + rating +
+                ", numberRatings=" + numberRatings +
+                ", totalSells=" + totalSells +
+                ", lastWeekSells=" + lastWeekSells +
+                ", sale=" + sale +
+                '}';
+    }
 }
