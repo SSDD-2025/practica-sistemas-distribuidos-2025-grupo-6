@@ -26,7 +26,7 @@ public class LoginController {
         UserInfo user = userService.findByUserNameAndPassword(userName, password);
         if (user != null) {
             userComponent.setUser(user.getId());
-            return "redirect:/";
+            return "redirect:/userprofile";
         } else {
             return "redirect:/login";
         }
@@ -44,7 +44,7 @@ public class LoginController {
 
     @PostMapping("/register-access")
     public String getRegister(Model model, @RequestParam String userName, @RequestParam String password, @RequestParam String name, @RequestParam String lastName, @RequestParam String email) {
-        UserInfo user = new UserInfo(userName, password, name, lastName, email, UserInfo.Role.USER);
+        UserInfo user = new UserInfo(userName, password, name, lastName, email, UserInfo.Role.USER, email, email, email, email);
         userService.save(user);
         userComponent.setUser(user.getId());
         return "redirect:/";

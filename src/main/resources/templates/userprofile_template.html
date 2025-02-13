@@ -1,0 +1,28 @@
+{{> header_template}}
+
+
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+/>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <img src="https://via.placeholder.com/300" alt="Profile Photo" class="rounded-circle img-fluid">
+                <h3 class="mt-3">{{userName}} {{userSurname}}</h3>
+            </div>
+            
+            <div class="col-md-8">
+                <h4>Información de Perfil</h4>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Email:</strong>{{userEmail}}</li>
+                    <li class="list-group-item"><strong>Location:</strong>{{userAddress}},{{userCity}},{{userPostalCode}} </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+</body>
+
+{{> footer_template}}

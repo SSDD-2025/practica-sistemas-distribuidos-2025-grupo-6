@@ -15,7 +15,7 @@ public class UserService {
     
     @PostConstruct
     public void init() {
-        users.save(new UserInfo("admin", "admin", "adminName", "adminLastName", "admin@gmail.com", UserInfo.Role.ADMIN));
+        users.save(new UserInfo("admin", "admin", "adminName", "adminLastName", "admin@gmail.com", UserInfo.Role.ADMIN, null, null, null, null));
     }
 
     public UserInfo findByUserNameAndPassword(String userName, String password) {
