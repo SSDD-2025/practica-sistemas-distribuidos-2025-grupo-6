@@ -16,16 +16,45 @@ public class UserProfileController {
     
     @GetMapping("/userprofile")
     public String getUserProfile(Model model) {
-
-        if (!userComponent.isLoggedUser()) {
-            return "redirect:/login"; 
-        }
         
         UserInfo user = userComponent.getUser();
-
         model.addAttribute("userInfo", user);
 
 		return "userprofile_template";
     }
+
+    @GetMapping("/editprofile")
+    public String getEditProfile(Model model) {
+        UserInfo user = userComponent.getUser();
+        model.addAttribute("userInfo", user);
+
+        return "editprofile_template";
+    }
+
+/*
+    @PostMapping("/save-editprofilechanges")
+    public String saveProfileChanges(Model model, 
+                                 @RequestParam String userName, 
+                                 @RequestParam String userSurname, 
+                                 @RequestParam String userEmail, 
+                                 @RequestParam String userPhone, 
+                                 @RequestParam String userAddress, 
+                                 @RequestParam String userCity, 
+                                 @RequestParam String userPostalCode) {
+
+    UserInfo user = userComponent.getUser();
+    
+    user.setName(userName);
+    user.setSurname(userSurname);
+    user.setEmail(userEmail);
+    user.setPhone(userPhone);
+    user.setAddress(userAddress);
+    user.setCity(userCity);
+    user.setPostalCode(userPostalCode);
+
+    userComponent.setUser(user.getId());
+
+    return "redirect:/userprofile"; 
+    }*/
 
 }
