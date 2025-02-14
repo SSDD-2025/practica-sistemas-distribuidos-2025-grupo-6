@@ -5,7 +5,7 @@
 ## Team Members
 | Name and Surname | Email | GitHub |
 |:-----------------|:-----:|-------:|
-| **Jaime Ochoa**    | - | - |
+| **Jaime Ochoa**    | j.ochoa.2022@alumnos.urjc.es | GranLobo2004 |
 | **David Pimentel** | d.pimentel.2021@alumnos.urjc.es | daaaviid-03 |
 | **Lídia Budiós**   |  l.budios.2024@alumnos.urjc.es | lidiabm |
 
