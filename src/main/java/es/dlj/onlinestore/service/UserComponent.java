@@ -14,21 +14,23 @@ public class UserComponent {
     @Autowired
     private UserInfoRepository users;
 
-    private long userId = 1L;
-    private UserInfo user;
+    private Long userId = 1L;
+    //private UserInfo user;
 
     public UserInfo getUser() {
         return users.findById(userId).get();
     }
 
     public boolean isLoggedUser() {
-        return user != null;
+        return userId != null;
     }
 
     public void setUser(Long userId) {
         this.userId = userId;
+        /*
         this.user = new UserInfo(); 
         this.user.setId(userId);
+        */
     }
 
 }

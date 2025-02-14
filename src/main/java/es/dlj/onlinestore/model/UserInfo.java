@@ -1,13 +1,16 @@
 package es.dlj.onlinestore.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class UserInfo {
@@ -31,7 +34,9 @@ public class UserInfo {
     private String phone;
     private String creditCard;
     private String profilePhoto; 
-    private ArrayList<UserRating> reviews;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<UserRating> reviews = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -50,7 +55,6 @@ public class UserInfo {
         this.city = city;
         this.postalCode = postalCode;
         this.phone = phone;
-        this.reviews = new ArrayList<UserRating>();
     }
 
     public Long getId() {
@@ -157,7 +161,7 @@ public class UserInfo {
         this.profilePhoto = profilePhoto;
     }
     
-    public ArrayList<UserRating> getReviews() {
+    public List<UserRating> getReviews() {
         return reviews;
     }
 

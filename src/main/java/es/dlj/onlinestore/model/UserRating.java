@@ -3,6 +3,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class UserRating {
@@ -15,17 +16,19 @@ public class UserRating {
     private String description;
     private int rating;
     private String date;
-    private String userName;
+
+    @ManyToOne
+    private UserInfo owner;
 
     public UserRating() {
     }
 
-    public UserRating(String tittle, String description, int rating, String date, String userName) {
+    public UserRating(String tittle, String description, int rating, String date, UserInfo owner) {
         this.tittle = tittle;
         this.description = description;
         this.rating = rating;
         this.date = date;
-        this.userName = userName;
+        this.owner = owner;
     }
     
     public Long getId() {
@@ -47,9 +50,9 @@ public class UserRating {
     public String getDate() {
         return date;
     }
-
-    public String getUserName() {
-        return userName;
+    
+    public UserInfo getOwner() {
+        return owner;
     }
 
     public void setTittle(String tittle) {
@@ -68,13 +71,13 @@ public class UserRating {
         this.date = date;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }    
+    public void setOwner(UserInfo owner) {
+        this.owner = owner;
+    } 
     
     @Override
     public String toString() {
-        return "UserRating{" + "id=" + id + ", tittle=" + tittle + ", description=" + description + ", rating=" + rating + ", date=" + date + ", userName=" + userName + '}';
+        return "UserRating{" + "id=" + id + ", tittle=" + tittle + ", description=" + description + ", rating=" + rating + ", date=" + date + ", owner=" + owner + '}';
     }
     
 }
