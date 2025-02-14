@@ -21,19 +21,13 @@ public class UserProfileController {
     @GetMapping("/userprofile")
     public String getUserProfile(Model model) {
 
+        if (!userComponent.isLoggedUser()) {
+            return "redirect:/login"; 
+        }
+        
         UserInfo user = userComponent.getUser();
-/*
-        model.addAttribute("userName", "Lídia");
-        model.addAttribute("userSurname", "Budiós");
-        model.addAttribute("userEmail", "lidia@gmail.com"); 
-        model.addAttribute("userPhone", "678354091");
-        model.addAttribute("userAddress", "Av. Universidad, 7");
-        model.addAttribute("userCity", "Leganes");
-        model.addAttribute("userPostalCode", "28911");
-        model.addAttribute("userProfilePhoto", "https://via.placeholder.com/150"); // O cualquier URL de imagen
-        model.addAttribute("userCreditCard", "hsdisoi");
-        */
-   
+        
+        
         model.addAttribute("userName", user.getName());
         model.addAttribute("userSurname", user.getSurname());
         model.addAttribute("userEmail", user.getEmail()); 

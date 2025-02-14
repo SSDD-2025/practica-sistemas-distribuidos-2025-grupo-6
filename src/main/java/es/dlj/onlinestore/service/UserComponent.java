@@ -15,13 +15,20 @@ public class UserComponent {
     private UserInfoRepository users;
 
     private long userId = 1L;
+    private UserInfo user;
 
     public UserInfo getUser() {
         return users.findById(userId).get();
     }
 
-    public void setUser(long userId) {
+    public boolean isLoggedUser() {
+        return user != null;
+    }
+
+    public void setUser(Long userId) {
         this.userId = userId;
+        this.user = new UserInfo(); 
+        this.user.setId(userId);
     }
 
 }
