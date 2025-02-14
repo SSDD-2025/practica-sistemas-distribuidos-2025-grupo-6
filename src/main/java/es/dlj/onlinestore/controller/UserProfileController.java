@@ -9,12 +9,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.UserComponent;
+import es.dlj.onlinestore.service.UserService;
 
 @Controller
 public class UserProfileController {
 
     @Autowired
     private UserComponent userComponent;
+
+    @Autowired
+    private UserService userService;
     
     @GetMapping("/userprofile")
     public String getUserProfile(Model model) {
@@ -36,24 +40,24 @@ public class UserProfileController {
 
     @PostMapping("/save-editprofilechanges")
     public String saveProfileChanges(Model model, 
-                                 @RequestParam String userName, 
-                                 @RequestParam String userSurname, 
-                                 @RequestParam String userEmail, 
-                                 @RequestParam int userPhone, 
-                                 @RequestParam String userAddress, 
-                                 @RequestParam String userCity, 
-                                 @RequestParam String userPostalCode) {
+                                 @RequestParam String name, 
+                                 @RequestParam String surname, 
+                                 @RequestParam String email, 
+                                 @RequestParam String phone, 
+                                 @RequestParam String address, 
+                                 @RequestParam String city, 
+                                 @RequestParam String postalCode) {
 
     UserInfo user = userComponent.getUser();
     
-    user.setName(userName);
-    user.setSurname(userSurname);
-    user.setEmail(userEmail);
-    user.setPhone(userPhone);
-    user.setAddress(userAddress);
-    user.setCity(userCity);
-    user.setPostalCode(userPostalCode);
-
+    user.setName(name);
+    user.setSurname(surname);
+    user.setEmail(email);
+    user.setPhone(phone);
+    user.setAddress(address);
+    user.setCity(city);
+    user.setPostalCode(postalCode);
+    userService.save(user);
     userComponent.setUser(user.getId());
 
     return "redirect:/userprofile"; 

@@ -31,7 +31,7 @@ public class UserInfo {
     private String address;
     private String city;
     private String postalCode;
-    private int phone;
+    private String phone;
     private String creditCard;
     private String profilePhoto; 
 
@@ -44,7 +44,7 @@ public class UserInfo {
     public UserInfo() {
     }
 
-    public UserInfo(String userName, String password, String name, String surname, String email, Role role, String address, String city, String postalCode, int phone) {
+    public UserInfo(String userName, String password, String name, String surname, String email, Role role, String address, String city, String postalCode, String phone) {
         this.userName = userName;
         this.password = password;
         this.name = name;
@@ -109,7 +109,7 @@ public class UserInfo {
         return postalCode;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
@@ -149,7 +149,7 @@ public class UserInfo {
         this.postalCode = postalCode;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
