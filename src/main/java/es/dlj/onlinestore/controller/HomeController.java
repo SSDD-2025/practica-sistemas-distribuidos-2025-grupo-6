@@ -25,6 +25,9 @@ public class HomeController {
 
         model.addAttribute("userName", user.getUserName());
         model.addAttribute("productList", productService.getAllProducts());
+        model.addAttribute("query", "");
+        model.addAttribute("minPrice", 0);
+        model.addAttribute("maxPrice", 1000);
 
 		return "home_template";
     }

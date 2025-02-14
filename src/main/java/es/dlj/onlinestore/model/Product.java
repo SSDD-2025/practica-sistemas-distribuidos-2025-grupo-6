@@ -23,7 +23,7 @@ public class Product {
     private long id;
 
     private String name;
-    private float price;
+    private Float price;
     private String description;
     private int stock;
     private List<String> tags;
@@ -60,7 +60,7 @@ public class Product {
         return name;
     }
 
-    public float getPrice() {
+    public Float getPrice() {
         return price;
     }
 
