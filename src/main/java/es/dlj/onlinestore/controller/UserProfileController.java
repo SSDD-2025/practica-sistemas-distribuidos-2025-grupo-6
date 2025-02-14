@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.UserComponent;
@@ -31,13 +33,13 @@ public class UserProfileController {
         return "editprofile_template";
     }
 
-/*
+
     @PostMapping("/save-editprofilechanges")
     public String saveProfileChanges(Model model, 
                                  @RequestParam String userName, 
                                  @RequestParam String userSurname, 
                                  @RequestParam String userEmail, 
-                                 @RequestParam String userPhone, 
+                                 @RequestParam int userPhone, 
                                  @RequestParam String userAddress, 
                                  @RequestParam String userCity, 
                                  @RequestParam String userPostalCode) {
@@ -55,6 +57,6 @@ public class UserProfileController {
     userComponent.setUser(user.getId());
 
     return "redirect:/userprofile"; 
-    }*/
+    }
 
 }
