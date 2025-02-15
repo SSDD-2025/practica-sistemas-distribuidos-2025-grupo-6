@@ -12,12 +12,6 @@ import jakarta.persistence.Id;
 @Entity
 public class Product {
 
-    public static enum productType{
-        NEW,
-        RECONDITIONED,
-        SECONDHAND
-    }
-
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
     private long id;
@@ -28,7 +22,7 @@ public class Product {
     private int stock;
     private List<String> tags;
     @Enumerated (EnumType.STRING)
-    private productType productType;
+    private ProductType productType;
     private float rating;
     private int numberRatings;
     private int totalSells;
@@ -38,7 +32,7 @@ public class Product {
     public Product(){
     }
 
-    public Product(String name, float price, String description, productType productType, int stock, List<String> tags){
+    public Product(String name, float price, String description, ProductType productType, int stock, List<String> tags){
         this.name = name;
         this.price = price;
         this.stock = stock;
@@ -72,7 +66,7 @@ public class Product {
         return stock;
     }
 
-    public productType getProductType() {
+    public ProductType getProductType() {
         return productType;
     }
 
@@ -116,7 +110,7 @@ public class Product {
         this.stock = stock;
     }
 
-    public void setProductType(productType productType) {
+    public void setProductType(ProductType productType) {
         this.productType = productType;
     }
 
@@ -143,6 +137,23 @@ public class Product {
     public void addRating(float rating){
         this.rating = (this.rating * this.numberRatings + rating)/(this.numberRatings + 1);
         this.numberRatings += 1;
+    }
+
+    public void addSells(int sells){
+        this.totalSells += sells;
+        this.lastWeekSells += sells;
+    }
+
+    public void addSale(int sale){
+        this.sale += sale;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     @Override

@@ -1,4 +1,6 @@
-{{> header_template}}
+{{< layouts/layout}}
+
+{{$ content}}
 
 <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
   <div class="card p-4 shadow-sm" style="width: 350px;">
@@ -28,6 +30,7 @@
         <label for="confirmPassword" class="form-label">Confirm Password</label>
         <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
       </div>
+      <!-- 
       <div class="mb-3">
         <label for="address" class="form-label">Address </label>
         <input type="address" class="form-control" id="address" name="address" required>
@@ -44,6 +47,7 @@
         <label for="phone" class="form-label">Phone </label>
         <input type="phone" class="form-control" id="phone" name="phone" required>
       </div>
+      -->
       <div class="d-grid gap-2">
         <button type="submit" class="btn btn-primary">Register</button>
       </div>
@@ -52,4 +56,5 @@
   </div>
 </div>
 
-{{> footer_template}}
+{{/ content}}
+{{/ layouts/layout}}
