@@ -28,6 +28,7 @@ public class HomeController {
         model.addAttribute("productList", productService.getAllProducts());
 
 		return "search_template";
+
     }
 
     @GetMapping("/")
