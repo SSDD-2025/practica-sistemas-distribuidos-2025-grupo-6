@@ -5,21 +5,17 @@
 
 package es.dlj.onlinestore.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.ProductType;
 import es.dlj.onlinestore.service.ProductService;
 
 
@@ -40,53 +36,32 @@ class ProductController {
         return "productDetailed_template";
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public String searchProducts(
         Model model, 
-        @RequestParam(required=false) String query, 
+        @RequestParam(required=false) String name, 
         @RequestParam(required=false) Integer minPrice, 
         @RequestParam(required=false) Integer maxPrice,
         @RequestParam(required=false) List<String> tags,
-        @RequestParam(required=false) String productType
+        @RequestParam(required=false) String productType,
+        @RequestParam(required=false) String minSale,
+        @RequestParam(required=false) String maxSale,
+        @RequestParam(required=false) String minRating,
+        @RequestParam(required=false) String maxRating,
+        @RequestParam(required=false) String minStock,
+        @RequestParam(required=false) String maxStock,
+        @RequestParam(required=false) String minWeekSells,
+        @RequestParam(required=false) String maxWeekSells,
+        @RequestParam(required=false) String minNumberRatings,
+        @RequestParam(required=false) String maxNumberRatings,
+        @RequestParam(required=false) String minTotalSells,
+        @RequestParam(required=false) String maxTotalSells
     ) {
-        
-        Product productProbe = new Product();
 
-        if (query != null && !query.isEmpty()) {
-            productProbe.setName(query);
-            model.addAttribute("query", query);
-        }
-        if (tags != null && !tags.isEmpty()) {
-            productProbe.setTags(new ArrayList<>(tags));
-            model.addAttribute("tags", tags);
-        }
-        if (productType != null) {
-            productProbe.setProductType(ProductType.fromString(productType));
-            model.addAttribute("productType", productType);
-        }
-
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnoreNullValues()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
-                .withIgnorePaths("id", "price", "stock", "rating", "numberRatings", "totalSells", "lastWeekSells", "sale");
-
-        if (minPrice != null || maxPrice != null) {
-            matcher = matcher.withTransformer("price", value -> Optional.of(value.filter(v -> {
-                Integer price = (Integer) v;
-                return (minPrice == null || price >= minPrice) && (maxPrice == null || price <= maxPrice);
-            })));
-            model.addAttribute("minPrice", minPrice);
-            model.addAttribute("maxPrice", maxPrice);
-        } else {
-            model.addAttribute("minPrice", 0);
-            model.addAttribute("maxPrice", 1000);
-        }
-
-        Example<Product> example = Example.of(productProbe, matcher);
-        List<Product> products = productService.findAll(example);
+        List<Product> products = productService.searchProducts(name, minPrice, maxPrice, tags, productType, minSale, maxSale, minRating, maxRating, minStock, maxStock, minWeekSells, maxWeekSells, minNumberRatings, maxNumberRatings, minTotalSells, maxTotalSells);
 
         model.addAttribute("productList", products);
-        return "products_template";
+        return "search_template";
 
     }
 }

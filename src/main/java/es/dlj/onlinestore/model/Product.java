@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Product {
@@ -20,7 +21,10 @@ public class Product {
     private Float price;
     private String description;
     private int stock;
-    private List<String> tags;
+
+    @ManyToMany
+    private List<ProductTag> tags;
+
     @Enumerated (EnumType.STRING)
     private ProductType productType;
     private float rating;
@@ -30,9 +34,10 @@ public class Product {
     private int sale;
 
     public Product(){
+
     }
 
-    public Product(String name, float price, String description, ProductType productType, int stock, List<String> tags){
+    public Product(String name, float price, String description, ProductType productType, int stock, List<ProductTag> tags){
         this.name = name;
         this.price = price;
         this.stock = stock;
@@ -148,11 +153,11 @@ public class Product {
         this.sale += sale;
     }
 
-    public List<String> getTags() {
+    public List<ProductTag> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(List<ProductTag> tags) {
         this.tags = tags;
     }
 

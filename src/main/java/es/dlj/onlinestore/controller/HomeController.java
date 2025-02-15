@@ -22,21 +22,15 @@ public class HomeController {
     @Autowired
     private ProductService productService;
     
-    @GetMapping("/")
+    @GetMapping("/search")
     public String getHome1(Model model) {
 
-        UserInfo user = userComponent.getUser();
-
-        model.addAttribute("userName", user.getUserName());
         model.addAttribute("productList", productService.getAllProducts());
-        model.addAttribute("query", "");
-        model.addAttribute("minPrice", 0);
-        model.addAttribute("maxPrice", 1000);
 
-		return "products_template";
+		return "search_template";
     }
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public String getHome2(Model model) {
 
         UserInfo user = userComponent.getUser();
