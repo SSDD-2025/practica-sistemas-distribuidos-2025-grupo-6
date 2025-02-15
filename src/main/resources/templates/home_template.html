@@ -2,22 +2,54 @@
 
 {{$ content}}
 
+
 <div class="row m-4">
-	<div class="col-2 p-3">
+	<div class="col-2 p-3"> 
 		{{> filter_template}}
 	</div>
 	<div class="col-10">
+		<div class="row"> <h2>New Products </h2> </div>
 		<div class="row">
-			{{#productList}}
+			{{#newProducts}}
 			<div class="col-3 p-1">
 				
 				{{> productPreview_template}}
 				
 			</div>
-			{{/productList}}
-			{{^productList}}
+			{{/newProducts}}
+			{{^newProducts}}
 			<p>Empty list.</p>
-			{{/productList}}
+			{{/newProducts}}
+		</div>
+	</div>
+	<div class="col-10">
+		<div class="row"> <h2>Reconditioned Products </h2> </div>
+		<div class="row">
+			{{#reconditionedProducts}}
+			<div class="col-3 p-1">
+				
+				{{> productPreview_template}}
+				
+			</div>
+			{{/reconditionedProducts}}
+			{{^reconditionedProducts}}
+			<p>Empty list.</p>
+			{{/reconditionedProducts}}
+		</div>
+	</div>
+	<div class="col-10">
+		<div class="row"> <h2>Second-Hand Products </h2> </div>
+		<div class="row">
+			{{#secondhandProducts}}
+			<div class="col-3 p-1">
+				
+				{{> productPreview_template}}
+				
+			</div>
+			{{/secondhandProducts}}
+			{{^secondhandProducts}}
+			<p>Empty list.</p>
+			{{/secondhandProducts}}
 		</div>
 	</div>
 </div>   

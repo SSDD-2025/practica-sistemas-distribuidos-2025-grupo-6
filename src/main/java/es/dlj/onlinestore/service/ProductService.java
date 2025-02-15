@@ -59,6 +59,10 @@ public class ProductService {
         return products.findAll();
     }
 
+    public List<Product> getProductsByProductType(ProductType type) {
+        return products.findByProductType(type);
+    }
+
     public Product getProduct(long id) {
         return products.findById(id).get();
     }

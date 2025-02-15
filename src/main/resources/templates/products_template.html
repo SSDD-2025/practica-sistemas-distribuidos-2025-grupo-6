@@ -1,0 +1,27 @@
+{{< layouts/layout}}
+
+{{$ content}}
+
+<div class="row m-4">
+	<div class="col-2 p-3">
+		{{> filter_template}}
+	</div>
+	<div class="col-10">
+		<div class="row">
+			{{#productList}}
+			<div class="col-3 p-1">
+				
+				{{> productPreview_template}}
+				
+			</div>
+			{{/productList}}
+			{{^productList}}
+			<p>Empty list.</p>
+			{{/productList}}
+		</div>
+	</div>
+</div>   
+
+{{/ content}}
+
+{{/ layouts/layout}}

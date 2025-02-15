@@ -21,14 +21,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductType;
 import es.dlj.onlinestore.service.ProductService;
-import es.dlj.onlinestore.service.UserComponent;
 
 
 @Controller
 class ProductController {
 
-    @Autowired
-    private UserComponent userComponent;
+    //@Autowired
+    //private UserComponent userComponent;
 
     @Autowired
     private ProductService productService;
@@ -87,7 +86,7 @@ class ProductController {
         List<Product> products = productService.findAll(example);
 
         model.addAttribute("productList", products);
-        return "home_template";
+        return "products_template";
 
     }
 }
