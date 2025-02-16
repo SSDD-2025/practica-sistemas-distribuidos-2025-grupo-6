@@ -14,6 +14,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByPriceBetween(float minPrice, float maxPrice);
     List<Product> findByProductType(ProductType type);
 
+    // Best Sellers
+    List<Product> findTop10ByOrderByTotalSellsDesc();
+
+    // Top Rated
+    List<Product> findTop10ByOrderByRatingDesc();
+
+    // On Sale
+    List<Product> findBySaleGreaterThan(int sale);
+
+    // Trending This Week
+    List<Product> findTop10ByOrderByLastWeekSellsDesc();
+
+    // Low Stock
+    List<Product> findByStockLessThan(int stock);
+
+
     @Query("SELECT p FROM Product p WHERE "
         + "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) "
         + "AND (:minPrice IS NULL OR p.price >= :minPrice) "

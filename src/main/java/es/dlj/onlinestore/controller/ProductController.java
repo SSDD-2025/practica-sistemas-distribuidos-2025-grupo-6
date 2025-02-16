@@ -37,7 +37,15 @@ class ProductController {
     }
 
     @GetMapping("/search")
-    public String getHome1(Model model) {
+    public String getHome1(Model model, @RequestParam(required=false) String name) {
+
+        // If it comes from home page loads query for name search and returns the results
+        if (name != null) {
+            model.addAttribute("name", name);
+            return this.searchProducts(model, name, null, null, null, null, 
+            null, null, null, null, null, null, null, null, 
+            null, null, null, null);
+        }
 
         model.addAttribute("productList", productService.getAllProducts());
         model.addAttribute("tags", productService.getAllTags());

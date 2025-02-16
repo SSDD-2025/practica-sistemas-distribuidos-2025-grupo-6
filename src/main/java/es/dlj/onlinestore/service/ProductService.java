@@ -108,4 +108,29 @@ public class ProductService {
         return products.searchProducts(name, minPrice, maxPrice, tags, productType, minSale, maxSale, minRating, maxRating, minStock, maxStock, minWeekSells, maxWeekSells, minNumberRatings, maxNumberRatings, minTotalSells, maxTotalSells);
     }
 
+    // Best Sellers
+    public List<Product> getBestSellers() {
+        return products.findTop10ByOrderByTotalSellsDesc();
+    }
+
+    // Top Rated
+    public List<Product> getTopRated() {
+        return products.findTop10ByOrderByRatingDesc();
+    }
+
+    // On Sale
+    public List<Product> getOnSale(int sale) {
+        return products.findBySaleGreaterThan(sale);
+    }
+
+    // Trending This Week
+    public List<Product> getTrendingThisWeek() {
+        return products.findTop10ByOrderByLastWeekSellsDesc();
+    }
+
+    // Low Stock
+    public List<Product> getLowStock(int stock) {
+        return products.findByStockLessThan(stock);
+    }
+
 }

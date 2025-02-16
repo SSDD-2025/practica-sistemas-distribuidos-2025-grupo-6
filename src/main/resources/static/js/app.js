@@ -1,4 +1,11 @@
 /**
+ * Scrolls to the top of the page.
+ */
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
  * Reloads the element with the given id with the content of the form with the given id.
  * @param {String} formId 
  * @param {String} elementId 
@@ -14,4 +21,5 @@ function reloadWithForm(formId, elementId) {
     .then(html => {
         document.getElementById(elementId).innerHTML = new DOMParser().parseFromString(html, 'text/html').getElementById(elementId).innerHTML;
     });
+    scrollToTop();
 }
