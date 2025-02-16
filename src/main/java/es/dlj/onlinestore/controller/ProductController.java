@@ -5,7 +5,9 @@
 
 package es.dlj.onlinestore.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.dlj.onlinestore.model.Product;
+import es.dlj.onlinestore.model.ProductType;
 import es.dlj.onlinestore.service.ProductService;
 
 
@@ -37,17 +40,37 @@ class ProductController {
     }
 
     @GetMapping("/search")
-    public String getHome1(Model model, @RequestParam(required=false) String name) {
+    public String getHome1(Model model, @RequestParam(required=false) String name, @RequestParam(required=false) String productType) {
 
-        // If it comes from home page loads query for name search and returns the results
         if (name != null) {
+            // If it comes from home page loads query for name search and returns the results
             model.addAttribute("name", name);
-            return this.searchProducts(model, name, null, null, null, null, 
-            null, null, null, null, null, null, null, null, 
-            null, null, null, null);
+            model.addAttribute("productList", productService.findByNameContaining(name));
+            model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
+
+        } else if (productType != null) {
+            // If it comes from nav bar for product type search and returns the results
+            List<Map<String, Object>> productTypeMap = productService.getAllProductTypesAndCount();
+
+            for (int i = 0; i < productTypeMap.size(); i++) {
+                Map<String, Object> map = productTypeMap.get(i);
+                if (map.get("name").equals(productType)) {
+                    Map<String, Object> newMap = new HashMap<>(map);
+                    newMap.put("selected", true);
+                    productTypeMap.set(i, newMap);
+                    break;
+                }
+            }
+            model.addAttribute("productList", productService.getProductsByProductType(ProductType.fromString(productType)));
+            model.addAttribute("productTypes", productTypeMap);
+
+        } else {
+
+            model.addAttribute("productList", productService.getAllProducts());
+            model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
+
         }
 
-        model.addAttribute("productList", productService.getAllProducts());
         model.addAttribute("tags", productService.getAllTags());
 
 		return "search_template";
@@ -61,7 +84,7 @@ class ProductController {
         @RequestParam(required=false) Integer minPrice, 
         @RequestParam(required=false) Integer maxPrice,
         @RequestParam(required=false) List<String> tags,
-        @RequestParam(required=false) String productType,
+        @RequestParam(required=false) List<String> productType,
         @RequestParam(required=false) String minSale,
         @RequestParam(required=false) String maxSale,
         @RequestParam(required=false) String minRating,
@@ -79,10 +102,9 @@ class ProductController {
         List<Product> products = productService.searchProducts(name, minPrice, maxPrice, tags, productType, minSale, maxSale, minRating, maxRating, minStock, maxStock, minWeekSells, maxWeekSells, minNumberRatings, maxNumberRatings, minTotalSells, maxTotalSells);
 
         model.addAttribute("productList", products);
+        model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         model.addAttribute("tags", productService.getAllTags());
 
-        
-        
         return "search_template";
 
     }

@@ -9,6 +9,19 @@
     </div>
 
     <div class="row mb-3">
+      <label for="maxPrice" class="form-label">Product type</label>
+      {{#productTypes}}
+          <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="productType" value="{{name}}" id="productType-{{name}}" {{# selected}} checked {{/ selected}}>
+                <label class="form-check-label" for="productType-{{name}}">{{name}} ({{count}})</label>
+          </div>
+      {{/productTypes}}
+      {{^productTypes}}
+          <p>No types available</p>
+      {{/productTypes}}
+    </div>
+
+    <div class="row mb-3">
       <label for="minPrice" class="form-label">Min Price</label>
       <input type="number" class="form-control" name="minPrice" placeholder=0 value="{{#minPrice}}{{.}}{{/minPrice}}" step="5">
     </div>
@@ -34,7 +47,7 @@
 
   <script>
     // Reloads the page with the form data as query parameters
-    $('#filterForm').on('change', 'input, select, textarea', function() {
+    $('#filterForm').on('input change', function() {
         reloadWithForm('filterForm', 'productList')
     });
   </script>

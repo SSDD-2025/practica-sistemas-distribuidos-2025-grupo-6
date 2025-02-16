@@ -1,3 +1,5 @@
+
+/* For customizing the scrollbar */
 .d-flex.overflow-auto::-webkit-scrollbar {
     height: 8px;
 }

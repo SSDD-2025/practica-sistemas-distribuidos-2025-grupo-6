@@ -87,6 +87,14 @@ public class ProductService {
         return productTags.findAllWithProductCount();
     }
 
+    public List<Map<String, Object>> getAllProductTypesAndCount() {
+        List<Map<String, Object>> productTypesList = new ArrayList<>();
+        for (ProductType type : ProductType.values()) {
+            productTypesList.add(Map.of("name", type.toString(), "count", products.countByProductType(type)));
+        }
+        return productTypesList;
+    }
+
     public List<Product> getAllProducts() {
         return products.findAll();
     }
@@ -95,17 +103,29 @@ public class ProductService {
         return products.findByProductType(type);
     }
 
+    public List<Product> findByNameContaining(String name) {
+        return products.findByNameContaining(name);
+    }
+
     public Product getProduct(long id) {
         return products.findById(id).get();
     }
 
     public List<Product> searchProducts(String name, Integer minPrice, Integer maxPrice, List<String> tags, 
-        String productType, String minSale, String maxSale, String minRating, String maxRating, 
+        List<String> productTypeStrings, String minSale, String maxSale, String minRating, String maxRating, 
         String minStock, String maxStock, String minWeekSells, String maxWeekSells, String minNumberRatings, 
         String maxNumberRatings, String minTotalSells, String maxTotalSells
-        ) {
+    ) {
+        // Transform productTypeStrings to ProductType
+        List<ProductType> productTypes = null;
+        if (productTypeStrings != null) {
+            productTypes = new ArrayList<>();
+            for (String type : productTypeStrings) {
+                productTypes.add(ProductType.fromString(type));
+            }
+        }
 
-        return products.searchProducts(name, minPrice, maxPrice, tags, productType, minSale, maxSale, minRating, maxRating, minStock, maxStock, minWeekSells, maxWeekSells, minNumberRatings, maxNumberRatings, minTotalSells, maxTotalSells);
+        return products.searchProducts(name, minPrice, maxPrice, tags, productTypes, minSale, maxSale, minRating, maxRating, minStock, maxStock, minWeekSells, maxWeekSells, minNumberRatings, maxNumberRatings, minTotalSells, maxTotalSells);
     }
 
     // Best Sellers

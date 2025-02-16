@@ -34,6 +34,7 @@ public class HomeController {
         
         model.addAttribute("sections", sections);
         model.addAttribute("tags", productService.getAllTags());
+        model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         model.addAttribute("SearchInOtherPage", true);
 
 		return "home_template";
