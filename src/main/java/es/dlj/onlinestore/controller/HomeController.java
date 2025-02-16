@@ -21,15 +21,6 @@ public class HomeController {
 
     @Autowired
     private ProductService productService;
-    
-    @GetMapping("/search")
-    public String getHome1(Model model) {
-
-        model.addAttribute("productList", productService.getAllProducts());
-
-		return "search_template";
-
-    }
 
     @GetMapping("/")
     public String getHome2(Model model) {
@@ -39,14 +30,11 @@ public class HomeController {
         List<Product> reconditionedProducts = productService.getProductsByProductType(ProductType.RECONDITIONED);
         List<Product> secondhandProducts =  productService.getProductsByProductType(ProductType.SECONDHAND);
         
-
         model.addAttribute("userName", user.getUserName());
         model.addAttribute("newProductList", newProducts);
         model.addAttribute("reconditionedProductList", reconditionedProducts);
         model.addAttribute("secondhandProductList", secondhandProducts);
-        model.addAttribute("query", "");
-        model.addAttribute("minPrice", 0);
-        model.addAttribute("maxPrice", 1000);
+        model.addAttribute("tags", productService.getAllTags());
 
 		return "home_template";
     }

@@ -36,6 +36,16 @@ class ProductController {
         return "productDetailed_template";
     }
 
+    @GetMapping("/search")
+    public String getHome1(Model model) {
+
+        model.addAttribute("productList", productService.getAllProducts());
+        model.addAttribute("tags", productService.getAllTags());
+
+		return "search_template";
+
+    }
+
     @PostMapping("/search")
     public String searchProducts(
         Model model, 
@@ -61,6 +71,10 @@ class ProductController {
         List<Product> products = productService.searchProducts(name, minPrice, maxPrice, tags, productType, minSale, maxSale, minRating, maxRating, minStock, maxStock, minWeekSells, maxWeekSells, minNumberRatings, maxNumberRatings, minTotalSells, maxTotalSells);
 
         model.addAttribute("productList", products);
+        model.addAttribute("tags", productService.getAllTags());
+
+        
+        
         return "search_template";
 
     }

@@ -25,8 +25,9 @@ public class Product {
     @ManyToMany
     private List<ProductTag> tags;
 
-    @Enumerated (EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private ProductType productType;
+
     private float rating;
     private int numberRatings;
     private int totalSells;

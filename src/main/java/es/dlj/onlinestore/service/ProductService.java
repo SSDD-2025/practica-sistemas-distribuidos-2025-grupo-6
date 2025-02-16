@@ -3,9 +3,9 @@ package es.dlj.onlinestore.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import es.dlj.onlinestore.model.Product;
@@ -78,6 +78,15 @@ public class ProductService {
         products.save(product);
     }
 
+    /**
+     * Gets all tags string and the number of products that have that tag:
+     * [{name: "tag1", count: 5}, {name: "tag2", count: 3}, ...]
+     * @return List of maps with the tag name and the number of products that have that tag
+     */
+    public List<Map<String, Object>> getAllTags() {
+        return productTags.findAllWithProductCount();
+    }
+
     public List<Product> getAllProducts() {
         return products.findAll();
     }
@@ -88,22 +97,6 @@ public class ProductService {
 
     public Product getProduct(long id) {
         return products.findById(id).get();
-    }
-
-    public List<Product> searchProducts(String query, Float minPrice, Float maxPrice) {
-        System.out.println("Query: " + query);
-        System.out.println("MinPrice: " + minPrice);
-        System.out.println("MaxPrice: " + maxPrice);
-        if (query != null) {
-            return products.findByNameContainingIgnoreCase(query);
-        } else if (minPrice != null && maxPrice != null) {
-            return products.findByPriceBetween(minPrice, maxPrice);
-        }
-        return products.findAll();
-    }
-
-    public List<Product> findAll(Example<Product> example) {
-        return products.findAll(example);
     }
 
     public List<Product> searchProducts(String name, Integer minPrice, Integer maxPrice, List<String> tags, 
