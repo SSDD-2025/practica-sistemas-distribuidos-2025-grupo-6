@@ -5,6 +5,7 @@
 
 package es.dlj.onlinestore.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,5 +108,37 @@ class ProductController {
 
         return "search_template";
 
+    }
+
+    @PostMapping ("/product/update/{id}")
+    public String updateProduct (
+        Model model,
+    @PathVariable Long id,
+    @RequestParam String name,
+    @RequestParam float price,
+    @RequestParam String description,
+    @RequestParam int stock,
+    @RequestParam int sale,
+    @RequestParam String tags,
+    @RequestParam ProductType productType){
+        List<String> tagList = Arrays.asList(tags.split("\\s*,\\s*"));
+        Product product = productService.editProduct(id, name, price, sale, description, productType, stock, tagList);
+        model.addAttribute("product", product);
+        return "productDetailed_template";
+    }
+
+    @PostMapping ("/product/new")
+    public String newProduct (
+        Model model,
+    @PathVariable Long id,
+    @RequestParam String name,
+    @RequestParam float price,
+    @RequestParam String description,
+    @RequestParam int stock,
+    @RequestParam String tags,
+    @RequestParam ProductType productType){
+        List<String> tagList = Arrays.asList(tags.split("\\s*,\\s*"));
+        productService.saveProduct(name, price, description, productType, stock, tagList);
+        return "home_template";
     }
 }

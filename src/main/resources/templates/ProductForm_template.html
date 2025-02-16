@@ -1,0 +1,93 @@
+{{< layouts/layout}}
+{{$ content}}
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="card p-4 shadow-sm" style="width: 350px;">
+    {{#product}}
+        <h3 class="text-center mb-4">Edit product</h3>
+        <form action="/product/update/{{id}}" method="post">
+            <div class="mb-3">
+                <label for="images" class="form-label">Add more images</label>
+                <input type="file" class="form-control" id="images" name="images" accept=".jpg, .jpeg, .png" multiple required>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{name}}" required>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="number" class="form-control" id="price" name="price" value="{{price}}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" class="form-control" name="description" minlength="200" value="{{description}}" required>The description must be at least 200 characters.</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="stock" class="form-label">Stock available</label>
+                <input type="text" class="form-control" id="stock" name="stock" value="{{stock}}" required>
+            </div>
+            <div class="mb-3">
+                <label for="sale" class="form-label">Sale</label>
+                <input type="number" class="form-control" id="sale" name="sale" value="{{sale}}" required>
+            </div>
+            <div class="mb-3">
+                <label for="tags" class="form-label">Tags</label>
+                <textarea id="tags" class="form-control" name="tags" value="{{tags}}" required>The tags must be separated with comas and the first letter must be capital. Example: "Clothes, Shein, Shirt"</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="productType" class="form-label">Product type</label>
+                <select name="productType" id="productType" value="" required>
+                    <option value="NEW">New</option>
+                    <option value="RECONDITIONED">Reconditioned</option>
+                    <option value="SECONDHAND">Second hand</option>
+                </select>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Update product</button>
+            </div>
+        </form>
+    {{/product}}
+    {{^product}}
+        <h3 class="text-center mb-4">Add new product</h3>
+        <form action="/product/new" method="post">
+            <div class="mb-3">
+                <label for="images" class="form-label">Images</label>
+                <input type="file" class="form-control" id="images" name="images" accept=".jpg, .jpeg, .png" multiple required>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" class="form-control" name="description" minlength="200" required>The description must be at least 200 characters.</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="stock" class="form-label">Stock available</label>
+                <input type="text" class="form-control" id="stock" name="stock" required>
+            </div>
+            <div class="mb-3">
+                <label for="tags" class="form-label">Description</label>
+                <textarea id="tags" class="form-control" name="tags" required>The tags must be separated with comas and the first letter must be capital. Example: "Clothes, Shein, Shirt"</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="productType" class="form-label">Product type</label>
+                <select name="productType" id="productType" required>
+                    <option value="NEW">New</option>
+                    <option value="RECONDITIONED">Reconditioned</option>
+                    <option value="SECONDHAND">Second hand</option>
+                </select>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Update product</button>
+            </div>
+        </form>
+    {{/product}}
+    </div>
+  </div>
+
+{{/ content}}
+{{/ layouts/layout}}

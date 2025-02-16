@@ -1,5 +1,6 @@
 package es.dlj.onlinestore.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -25,6 +26,7 @@ public class ProductTag {
 
     public ProductTag(String name) {
         this.name = name;
+        this.products = new LinkedList();
     }
 
     public long getId() {
@@ -45,6 +47,10 @@ public class ProductTag {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void addProduct(Product product){
+        this.products.add(product);
     }
 
     @Override
