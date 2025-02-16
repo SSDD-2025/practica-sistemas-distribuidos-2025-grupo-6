@@ -61,8 +61,21 @@ public class ProductService {
 
     }
 
+    public Product editProduct(Long id, String name, float price, int sale, String description, ProductType productType, int stock, List<String> tags) {
+        Product product = getProduct(id);
+        product.setName(name);
+        product.setPrice(price);
+        product.setDescription(description);
+        product.setProductType(productType);
+        product.setStock(stock);
+        product.setSale(sale);
+        for (int i = 0 ; i<tags.size(); i++){
+            //find the tag and make sure the product is added to the tag
+        }
+        return product;
+    }
 
-    public void saveProduct(String name, float price, String description, ProductType productType, int stock, List<String> tags) {
+    public Product saveProduct(String name, float price, String description, ProductType productType, int stock, List<String> tags) {
         List<ProductTag> productTagsList = new ArrayList<>();
         for (String tag : tags) {
             ProductTag productTag;
@@ -76,6 +89,7 @@ public class ProductService {
         }
         Product product = new Product(name, price, description, productType, stock, productTagsList);
         products.save(product);
+        return product;
     }
 
     /**
