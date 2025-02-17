@@ -1,7 +1,8 @@
 package es.dlj.onlinestore.model;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,14 +20,13 @@ public class ProductTag {
     private String name;
 
     @ManyToMany(mappedBy = "tags")
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     public ProductTag() {
     }
 
     public ProductTag(String name) {
         this.name = name;
-        this.products = new LinkedList();
     }
 
     public long getId() {
@@ -59,6 +59,23 @@ public class ProductTag {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductTag otherProductTag = (ProductTag) o;
+        return Objects.equals(name, otherProductTag.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
 }

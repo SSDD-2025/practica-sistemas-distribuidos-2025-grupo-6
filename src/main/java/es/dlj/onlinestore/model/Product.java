@@ -1,7 +1,12 @@
 package es.dlj.onlinestore.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import es.dlj.onlinestore.enumeration.ProductType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,6 +21,9 @@ public class Product {
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
     private long id;
+
+    @CreationTimestamp
+    private LocalDateTime creationDate;
 
     private String name;
     private Float price;
@@ -177,5 +185,26 @@ public class Product {
                 ", lastWeekSells=" + lastWeekSells +
                 ", sale=" + sale +
                 '}';
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

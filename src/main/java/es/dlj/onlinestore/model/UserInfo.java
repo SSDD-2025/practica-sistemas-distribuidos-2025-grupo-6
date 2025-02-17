@@ -1,8 +1,15 @@
 package es.dlj.onlinestore.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import es.dlj.onlinestore.enumeration.PaymentMethod;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -23,6 +31,9 @@ public class UserInfo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @CreationTimestamp
+    private LocalDateTime creationDate;
+
     private String userName;
     private String password;
     private String name;
@@ -34,9 +45,18 @@ public class UserInfo {
     private String phone;
     private String creditCard;
     private String profilePhoto; 
+    
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<UserRating> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<OrderInfo> orders = new ArrayList<>();
+
+    @ManyToMany
+    private Set<Product> cartProducts = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -172,6 +192,54 @@ public class UserInfo {
     public void removeReview(UserRating review){
         reviews.remove(review);
     }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setReviews(List<UserRating> reviews) {
+        this.reviews = reviews;
+    }
+
+    public List<OrderInfo> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderInfo> orders) {
+        this.orders = orders;
+    }
+
+    public Set<Product> getCartProducts() {
+        return cartProducts;
+    }
+
+    public void addProductToCart(Product product){
+        cartProducts.add(product);
+    }
+
+    public void removeProductFromCart(Product product){
+        cartProducts.remove(product);
+    }
+
+    public void clearCart() {
+        cartProducts.clear();
+    }
+
+    public void setCartProducts(Set<Product> cartProducts) {
+        this.cartProducts = cartProducts;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
    
     @Override
     public String toString() {
@@ -180,6 +248,19 @@ public class UserInfo {
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserInfo otherUser = (UserInfo) o;
+        return Objects.equals(id, otherUser.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
     
 }

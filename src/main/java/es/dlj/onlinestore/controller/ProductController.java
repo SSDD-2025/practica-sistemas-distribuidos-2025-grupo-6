@@ -16,29 +16,41 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.ProductType;
 import es.dlj.onlinestore.service.ProductService;
+import es.dlj.onlinestore.service.UserComponent;
 
 
 @Controller
+@RequestMapping("/product")
 class ProductController {
 
-    //@Autowired
-    //private UserComponent userComponent;
+    @Autowired
+    private UserComponent userComponent;
 
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
 
         model.addAttribute("product", productService.getProduct(id));
 
         return "productDetailed_template";
     }
+
+    @PostMapping("/{id}/add-to-cart")
+    public String addProductToCart(Model model, @PathVariable Long id){
+
+        userComponent.addProductToCart(productService.getProduct(id));
+
+        return "redirect:/cart";
+    }
+
 
     @GetMapping("/search")
     public String getHome1(Model model, @RequestParam(required=false) String name, @RequestParam(required=false) String productType) {
@@ -110,7 +122,7 @@ class ProductController {
 
     }
 
-    @PostMapping ("/product/update/{id}")
+    @PostMapping ("/update/{id}")
     public String updateProduct (
         Model model,
     @PathVariable Long id,
@@ -127,7 +139,7 @@ class ProductController {
         return "productDetailed_template";
     }
 
-    @PostMapping ("/product/new")
+    @PostMapping ("/new")
     public String newProduct (
         Model model,
     @PathVariable Long id,

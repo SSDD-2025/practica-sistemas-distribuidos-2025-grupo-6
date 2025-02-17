@@ -37,6 +37,11 @@
       <p class="text-success small mb-1">Stock: {{stock}}</p>
       <p class="text-info small mb-1">Sold: {{totalSells}}</p>
       <p class="text-warning small mb-2">Last Week: {{lastWeekSells}}</p>
+
+      <form id="addToCart" action="/product/{{id}}/add-to-cart" method="post">
+        <button class="btn btn-primary btn-lg" type="submit"><i class="bi bi-cart"></i>Add to Cart</button>
+      </form>
+      
     </div>
   </div>
 </div>

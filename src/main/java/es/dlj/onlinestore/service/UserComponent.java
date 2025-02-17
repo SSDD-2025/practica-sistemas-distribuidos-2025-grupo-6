@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
+import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.UserInfoRepository;
 
@@ -15,10 +16,13 @@ public class UserComponent {
     private UserInfoRepository users;
 
     private Long userId = 1L;
-    //private UserInfo user;
+    private UserInfo user;
 
     public UserInfo getUser() {
-        return users.findById(userId).get();
+        if (this.user == null || !this.user.getId().equals(userId)) {
+            this.user = users.findById(userId).get();
+        }
+        return this.user;
     }
 
     public boolean isLoggedUser() {
@@ -27,10 +31,31 @@ public class UserComponent {
 
     public void setUser(Long userId) {
         this.userId = userId;
-        /*
-        this.user = new UserInfo(); 
-        this.user.setId(userId);
-        */
+        this.user = users.findById(userId).get();
+    }
+
+    public void addProductToCart(Product product) {
+        if (this.user == null || !this.user.getId().equals(userId)) {
+            this.user = users.findById(userId).get();
+        }
+        this.user.addProductToCart(product);
+        System.out.println("\nAdding product to cart\n");
+    }
+
+    public void removeProductFromCart(Product product) {
+        if (this.user == null || !this.user.getId().equals(userId)) {
+            this.user = users.findById(userId).get();
+        }
+        this.user.removeProductFromCart(product);
+        System.out.println("\nRemoving product from cart\n");
+    }
+
+    public void clearCart() {
+        if (this.user == null || !this.user.getId().equals(userId)) {
+            this.user = users.findById(userId).get();
+        }
+        this.user.clearCart();
+        System.out.println("\nClearing cart\n");
     }
 
 }

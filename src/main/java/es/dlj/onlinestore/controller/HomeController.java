@@ -10,19 +10,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import es.dlj.onlinestore.service.ProductService;
-import es.dlj.onlinestore.service.UserComponent;
 
 @Controller
 public class HomeController {
 
-    @Autowired
-    private UserComponent userComponent;
+    //@Autowired
+    //private UserComponent userComponent;
 
     @Autowired
     private ProductService productService;
 
     @GetMapping("/")
-    public String getHome2(Model model) {
+    public String getHome(Model model) {
 
         List<Map<String, Object>> sections = new ArrayList<>();
 

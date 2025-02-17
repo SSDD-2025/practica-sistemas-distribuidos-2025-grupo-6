@@ -1,4 +1,4 @@
-package es.dlj.onlinestore.model;
+package es.dlj.onlinestore.enumeration;
 
 public enum ProductType {
     NEW ("NEW"),

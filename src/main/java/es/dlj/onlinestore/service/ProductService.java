@@ -8,9 +8,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductTag;
-import es.dlj.onlinestore.model.ProductType;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
 import jakarta.annotation.PostConstruct;

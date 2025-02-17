@@ -74,15 +74,15 @@
     <div class="list-group">
         {{#orders}}
         <div class="list-group-item">
-            <h5>Order ID: {{orderId}}</h5>
-            <p><strong>Date:</strong> {{orderDate}}</p>
+            <h5>Order ID: {{id}}</h5>
+            <p><strong>Date:</strong> {{creationDate}}</p>
             <ul>
-                {{#orderItems}}
-                <li>{{productName}} - ${{productPrice}}</li>
-                {{/orderItems}}
+                {{#products}}
+                <li>{{name}} : ${{price}}</li>
+                {{/products}}
             </ul>
-            <p><strong>Total Price:</strong> ${{orderTotal}}</p>
-            <p><strong>Status:</strong> <span class="badge bg-info">{{orderStatus}}</span></p>
+            <p><strong>Total Price:</strong> ${{totalPrice}}</p>
+            <!-- <p><strong>Status:</strong> <span class="badge bg-info">{{orderStatus}}</span></p> -->
         </div>
         {{/orders}}
         {{^orders}}
