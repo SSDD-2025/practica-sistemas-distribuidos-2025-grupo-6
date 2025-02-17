@@ -26,5 +26,9 @@ public class UserService {
         users.save(user);
     }
 
+    public UserInfo findById(Long id) {
+        return users.findById(id).orElse(null);
+    }
+
     
 }

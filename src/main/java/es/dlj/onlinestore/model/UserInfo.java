@@ -14,6 +14,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -49,13 +50,17 @@ public class UserInfo {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<UserRating> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderInfo> orders = new ArrayList<>();
 
-    @ManyToMany
+    public void addOrder(OrderInfo order){
+        orders.add(order);
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Product> cartProducts = new HashSet<>();
 
     @Enumerated(EnumType.STRING)

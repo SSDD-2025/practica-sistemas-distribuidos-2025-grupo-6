@@ -48,7 +48,6 @@
                     {{^phone}}
                     No phone available.
                     {{/phone}}
-
                 </li>
             </ul>
         </div>
@@ -59,9 +58,9 @@
     <div class="list-group">
         {{#reviews}}
         <div class="list-group-item">
-            <h5>{{reviewerName}}</h5>
-            <p class="mb-1">{{reviewText}}</p>
-            <small class="text-muted">Rating: {{reviewRating}}/5</small>
+            <h5>{{owner.userName}}</h5>
+            <p class="mb-1">{{description}}</p>
+            <small class="text-muted">Rating: {{rating}}/5</small>
         </div>
         {{/reviews}}
         {{^reviews}}
@@ -82,7 +81,6 @@
                 {{/products}}
             </ul>
             <p><strong>Total Price:</strong> ${{totalPrice}}</p>
-            <!-- <p><strong>Status:</strong> <span class="badge bg-info">{{orderStatus}}</span></p> -->
         </div>
         {{/orders}}
         {{^orders}}

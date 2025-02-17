@@ -111,7 +111,8 @@ public class CartController {
         
         // Clear the cart after confirming the order
         user.getCartProducts().clear();
-
+        user.addOrder(order);
+        
         model.addAttribute("userName", user.getName());
         model.addAttribute("orderId", order.getId());
         model.addAttribute("totalPrice", totalPrice);

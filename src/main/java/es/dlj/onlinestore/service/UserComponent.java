@@ -22,6 +22,7 @@ public class UserComponent {
         if (this.user == null || !this.user.getId().equals(userId)) {
             this.user = users.findById(userId).get();
         }
+
         return this.user;
     }
 

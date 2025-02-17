@@ -1,4 +1,8 @@
 package es.dlj.onlinestore.model;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,10 +16,12 @@ public class UserRating {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @CreationTimestamp
+    private LocalDateTime creationDate;
+
     private String tittle;
     private String description;
     private int rating;
-    private String date;
 
     @ManyToOne
     private UserInfo owner;
@@ -23,11 +29,10 @@ public class UserRating {
     public UserRating() {
     }
 
-    public UserRating(String tittle, String description, int rating, String date, UserInfo owner) {
+    public UserRating(String tittle, String description, int rating, UserInfo owner) {
         this.tittle = tittle;
         this.description = description;
         this.rating = rating;
-        this.date = date;
         this.owner = owner;
     }
     
@@ -46,10 +51,6 @@ public class UserRating {
     public int getRating() {
         return rating;
     }
-
-    public String getDate() {
-        return date;
-    }
     
     public UserInfo getOwner() {
         return owner;
@@ -67,17 +68,21 @@ public class UserRating {
         this.rating = rating;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public void setOwner(UserInfo owner) {
         this.owner = owner;
     } 
     
     @Override
     public String toString() {
-        return "UserRating{" + "id=" + id + ", tittle=" + tittle + ", description=" + description + ", rating=" + rating + ", date=" + date + ", owner=" + owner + '}';
+        return "UserRating{" + "id=" + id + ", tittle=" + tittle + ", description=" + description + ", rating=" + rating + ", creationDate=" + creationDate + ", owner=" + owner + '}';
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
     
 }
