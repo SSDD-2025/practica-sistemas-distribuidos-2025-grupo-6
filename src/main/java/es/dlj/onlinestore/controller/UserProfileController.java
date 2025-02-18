@@ -24,7 +24,7 @@ public class UserProfileController {
     public String getUserProfile(Model model) {
         
         UserInfo user = userComponent.getUser();
-        model.addAttribute("userInfo", user);
+        model.addAttribute("user", user);
 
 		return "userprofile_template";
     }
@@ -32,7 +32,7 @@ public class UserProfileController {
     @GetMapping("/editprofile")
     public String getEditProfile(Model model) {
         UserInfo user = userComponent.getUser();
-        model.addAttribute("userInfo", user);
+        model.addAttribute("user", user);
 
         return "editprofile_template";
     }

@@ -47,10 +47,13 @@ public class CartController {
         for (Product product : products) {
             bill.add(Map.of("name", product.getName(), 
                             "price", product.getPrice(), 
+                            "hasSale", product.getSale() > 0,
                             "sale", product.getPrice() * product.getSale(), 
                             "priceWithSale", product.getPrice() * (1 - product.getSale())));
             totalPrice += product.getPrice() * (1 - product.getSale());
         }
+
+        model.addAttribute("user", user);
 
         model.addAttribute("bill", bill);
 
@@ -81,6 +84,7 @@ public class CartController {
         model.addAttribute("paymentMethods", paymentMethods);
         model.addAttribute("address", user.getAddress());
         model.addAttribute("phoneNumber", user.getPhone());
+        model.addAttribute("user", user);
         return "checkout_template";
     }
     
@@ -116,6 +120,7 @@ public class CartController {
         model.addAttribute("userName", user.getName());
         model.addAttribute("orderId", order.getId());
         model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("user", user);
 
         return "confirmOrder_template";
     }

@@ -245,6 +245,14 @@ public class UserInfo {
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
+
+    public boolean isCartUsed() {
+        return !cartProducts.isEmpty();
+    }
+
+    public int getCartSize() {
+        return cartProducts.size();
+    }
    
     @Override
     public String toString() {

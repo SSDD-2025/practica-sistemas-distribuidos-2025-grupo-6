@@ -39,6 +39,7 @@ class ProductController {
     public String loadProductDetails(Model model, @PathVariable Long id){
 
         model.addAttribute("product", productService.getProduct(id));
+        model.addAttribute("user", userComponent.getUser());
 
         return "productDetailed_template";
     }
@@ -85,6 +86,7 @@ class ProductController {
         }
 
         model.addAttribute("tags", productService.getAllTags());
+        model.addAttribute("user", userComponent.getUser());
 
 		return "search_template";
 

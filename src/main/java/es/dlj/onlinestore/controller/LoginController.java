@@ -34,11 +34,13 @@ public class LoginController {
 
     @GetMapping("/login")
     public String getLogin(Model model) {
+        model.addAttribute("user", userComponent.getUser());
         return "login_template";
     }
 
     @GetMapping("/register")
     public String getRegister(Model model) {
+        model.addAttribute("user", userComponent.getUser());
         return "register_template";
     }
 

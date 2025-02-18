@@ -39,7 +39,7 @@
                     {{#bill}}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{name}}
-                        <span>${{price}} <span clas="alert alert-info">- ${{sale}}</span> = ${{priceWithSale}}</span> 
+                        <span>{{# hasSale}}${{price}} <span class="text-danger">- ${{sale}}</span> = {{/ hasSale}}${{priceWithSale}}</span> 
                     </li>
                     {{/bill}}
                 </ul>

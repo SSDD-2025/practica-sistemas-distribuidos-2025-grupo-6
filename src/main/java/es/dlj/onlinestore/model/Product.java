@@ -207,4 +207,8 @@ public class Product {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public boolean isOnSale() {
+        return sale > 0;
+    }
 }
