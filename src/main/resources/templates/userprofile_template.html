@@ -52,12 +52,12 @@
     <!-- Reviews -->
     <div class="mt-5">
         <h3 class="text-primary">Reviews</h3>
-        <div class="list-group">
+        <div class="overflow-auto" style="white-space: nowrap;">
             {{#reviews}}
-            <div class="list-group-item shadow-sm p-3 border rounded">
+            <div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
                 <h5 class="text-dark"><i class="bi bi-person-circle me-2"></i>{{owner.userName}}</h5>
                 <p class="mb-1">{{description}}</p>
-                <small class="text-muted">⭐ Rating: {{rating}}/5</small>
+                <small class="text-muted"><i class="bi bi-heart"></i> Rating: {{rating}}/5</small>
             </div>
             {{/reviews}}
             {{^reviews}}
@@ -69,9 +69,31 @@
     <!-- Orders -->
     <div class="mt-5">
         <h3 class="text-primary">Orders</h3>
-        <div class="list-group">
+        <div class="overflow-auto" style="white-space: nowrap;">
             {{#orders}}
-            <div class="list-group-item shadow-sm p-3 border rounded">
+            <div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
+                <h5 class="text-dark"><i class="bi bi-receipt me-2"></i>Order ID: {{id}}</h5>
+                <p><strong>Date:</strong> {{creationDate}}</p>
+                <ul>
+                    {{#products}}
+                    <li>{{name}} : ${{price}}</li>
+                    {{/products}}
+                </ul>
+                <p><strong>Total Price:</strong> ${{totalPrice}}</p>
+            </div>
+            {{/orders}}
+            {{^orders}}
+            <p class="text-muted">No orders placed yet.</p>
+            {{/orders}}
+        </div>
+    </div>
+
+    <!-- Products for sale -->
+    <div class="mt-5">
+        <h3 class="text-primary">Products for sale</h3>
+        <div class="overflow-auto" style="white-space: nowrap;">
+            {{#orders}}
+            <div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
                 <h5 class="text-dark"><i class="bi bi-receipt me-2"></i>Order ID: {{id}}</h5>
                 <p><strong>Date:</strong> {{creationDate}}</p>
                 <ul>
