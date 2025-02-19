@@ -125,11 +125,7 @@ public class ProductService {
         return products.findById(id).get();
     }
 
-    public List<Product> searchProducts(String name, Integer minPrice, Integer maxPrice, List<String> tags, 
-        List<String> productTypeStrings, String minSale, String maxSale, String minRating, String maxRating, 
-        String minStock, String maxStock, String minWeekSells, String maxWeekSells, String minNumberRatings, 
-        String maxNumberRatings, String minTotalSells, String maxTotalSells
-    ) {
+    public List<Product> searchProducts(String name, Integer minPrice, Integer maxPrice, List<String> tags, List<String> productTypeStrings) {
         // Transform productTypeStrings to ProductType
         List<ProductType> productTypes = null;
         if (productTypeStrings != null) {
@@ -139,7 +135,7 @@ public class ProductService {
             }
         }
 
-        return products.searchProducts(name, minPrice, maxPrice, tags, productTypes, minSale, maxSale, minRating, maxRating, minStock, maxStock, minWeekSells, maxWeekSells, minNumberRatings, maxNumberRatings, minTotalSells, maxTotalSells);
+        return products.searchProducts(name, minPrice, maxPrice, tags, productTypes);
     }
 
     // Best Sellers

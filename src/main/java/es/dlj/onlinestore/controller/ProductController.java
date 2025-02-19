@@ -100,21 +100,9 @@ class ProductController {
         @RequestParam(required=false) Integer maxPrice,
         @RequestParam(required=false) List<String> tags,
         @RequestParam(required=false) List<String> productType,
-        @RequestParam(required=false) String minSale,
-        @RequestParam(required=false) String maxSale,
-        @RequestParam(required=false) String minRating,
-        @RequestParam(required=false) String maxRating,
-        @RequestParam(required=false) String minStock,
-        @RequestParam(required=false) String maxStock,
-        @RequestParam(required=false) String minWeekSells,
-        @RequestParam(required=false) String maxWeekSells,
-        @RequestParam(required=false) String minNumberRatings,
-        @RequestParam(required=false) String maxNumberRatings,
-        @RequestParam(required=false) String minTotalSells,
-        @RequestParam(required=false) String maxTotalSells
     ) {
 
-        List<Product> products = productService.searchProducts(name, minPrice, maxPrice, tags, productType, minSale, maxSale, minRating, maxRating, minStock, maxStock, minWeekSells, maxWeekSells, minNumberRatings, maxNumberRatings, minTotalSells, maxTotalSells);
+        List<Product> products = productService.searchProducts(name, minPrice, maxPrice, tags, productType);
 
         model.addAttribute("productList", products);
         model.addAttribute("productTypes", productService.getAllProductTypesAndCount());

@@ -4,12 +4,12 @@
     <!-- <h5 class="mb-3 text-center">Filter</h5> -->
 
     <div class="row mb-3">
-      <label for="name" class="form-label fw-bold">Name</label>
+      <label for="name" class="form-label fw-bold">Name:</label>
       <input type="text" class="form-control" name="name" placeholder="Search..." value="{{#name}}{{.}}{{/name}}">
     </div>
 
     <div class="row mb-3">
-      <label for="maxPrice" class="form-label fw-bold">Product type</label>
+      <label for="maxPrice" class="form-label fw-bold">Product type:</label>
       {{#productTypes}}
           <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="productType" value="{{name}}" id="productType-{{name}}" {{# selected}} checked {{/ selected}}>
@@ -20,19 +20,19 @@
           <p>No types available</p>
       {{/productTypes}}
     </div>
-
     <div class="row mb-3">
-      <label for="minPrice" class="form-label fw-bold">Min Price</label>
-      <input type="number" class="form-control" name="minPrice" placeholder=0 value="{{#minPrice}}{{.}}{{/minPrice}}" step="5">
+        <label for="minPrice" class="form-label fw-bold">Price:</label>
+        <div class="col-5">
+          <input type="number" class="form-control col-5" name="minPrice" placeholder="$0" value="{{#minPrice}}{{.}}{{/minPrice}}" step="5">
+        </div>
+        <p class="col-1 fw-bold"> - </p>
+        <div class="col-5">
+          <input type="number" class="form-control col-5" name="maxPrice" placeholder="$10,000" value="{{#maxPrice}}{{.}}{{/maxPrice}}" step="5">
+        </div>
     </div>
 
     <div class="row mb-3">
-      <label for="maxPrice" class="form-label fw-bold">Max Price</label>
-      <input type="number" class="form-control" name="maxPrice" placeholder=1000 value="{{#maxPrice}}{{.}}{{/maxPrice}}" step="5">
-    </div>
-
-    <div class="row mb-3">
-      <label for="maxPrice" class="form-label fw-bold">Tags</label>
+      <label for="maxPrice" class="form-label fw-bold">Tags:</label>
       {{#tags}}
           <div class="form-check">
               <input class="form-check-input" type="checkbox" name="tags" value="{{name}}" id="tag-{{name}}">
