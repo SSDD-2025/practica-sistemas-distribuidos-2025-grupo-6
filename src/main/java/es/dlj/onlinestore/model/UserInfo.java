@@ -51,7 +51,7 @@ public class UserInfo {
     private PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<UserRating> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderInfo> orders = new ArrayList<>();
@@ -186,15 +186,15 @@ public class UserInfo {
         this.profilePhoto = profilePhoto;
     }
     
-    public List<UserRating> getReviews() {
+    public List<Review> getReviews() {
         return reviews;
     }
 
-    public void addReview(UserRating review){
+    public void addReview(Review review){
         reviews.add(review);
     }
 
-    public void removeReview(UserRating review){
+    public void removeReview(Review review){
         reviews.remove(review);
     }
 
@@ -206,7 +206,7 @@ public class UserInfo {
         this.creationDate = creationDate;
     }
 
-    public void setReviews(List<UserRating> reviews) {
+    public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
 

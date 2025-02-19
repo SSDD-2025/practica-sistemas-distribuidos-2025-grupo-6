@@ -1,6 +1,20 @@
 {{< layouts/layout}}
 {{$ content}}
 
+<div class="position-absolute top-0 end-0 m-3">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-list"></i> Menu
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="/editprofile">Edit Profile</a></li>
+            <li><a class="dropdown-item" href="/privacy">Privacity</a></li>
+            <li><a class="dropdown-item" href="/notifications">Sell product</a></li>
+            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+        </ul>
+    </div>
+</div>
+
 {{#user}}
 <div class="mt-5">
     <div class="row">
@@ -88,7 +102,6 @@
         {{/orders}}
     </div>
 </div>
-<a href="/editprofile" class="btn btn-primary w-40">Edit Profile</a>
 {{/user}}
 {{^user}}
 <div class="mt-5">

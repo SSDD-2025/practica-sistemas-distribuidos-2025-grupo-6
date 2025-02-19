@@ -1,5 +1,9 @@
 package es.dlj.onlinestore.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.UserComponent;
 import es.dlj.onlinestore.service.UserService;
@@ -32,6 +37,14 @@ public class UserProfileController {
     @GetMapping("/editprofile")
     public String getEditProfile(Model model) {
         UserInfo user = userComponent.getUser();
+        
+        List<Map<String, Object>> paymentMethods = new ArrayList<>();
+        for (PaymentMethod pMethod : PaymentMethod.values()) {
+            paymentMethods.add(Map.of("name", pMethod.getName(), 
+                                      "selected", (user.getPaymentMethod() != null && user.getPaymentMethod().equals(pMethod))));
+        }
+        
+        model.addAttribute("paymentMethods", paymentMethods);
         model.addAttribute("user", user);
 
         return "editprofile_template";

@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import es.dlj.onlinestore.model.UserInfo;
-import es.dlj.onlinestore.model.UserRating;
+import es.dlj.onlinestore.model.Review;
 
 
-public interface UserRatingRepository extends JpaRepository<UserRating, Long> {
+public interface UserRatingRepository extends JpaRepository<Review, Long> {
 
-    List<UserRating> findByOwner(UserInfo owner);
+    List<Review> findByOwner(UserInfo owner);
 
 }

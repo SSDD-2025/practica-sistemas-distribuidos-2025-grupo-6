@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class UserRating {
+public class Review {
 
     @Id 
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,10 +26,10 @@ public class UserRating {
     @ManyToOne
     private UserInfo owner;
 
-    public UserRating() {
+    public Review() {
     }
 
-    public UserRating(String tittle, String description, int rating, UserInfo owner) {
+    public Review(String tittle, String description, int rating, UserInfo owner) {
         this.tittle = tittle;
         this.description = description;
         this.rating = rating;
