@@ -1,110 +1,98 @@
 {{< layouts/layout}}
 {{$ content}}
 
-<div class="position-absolute top-0 end-0 m-3">
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-list"></i> Menu
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="/editprofile">Edit Profile</a></li>
-            <li><a class="dropdown-item" href="/privacy">Privacity</a></li>
-            <li><a class="dropdown-item" href="/notifications">Sell product</a></li>
-            <li><a class="dropdown-item" href="/logout">Logout</a></li>
-        </ul>
+<!-- Menu -->
+<div class="container mt-3">
+    <div class="d-flex justify-content-end">
+        <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle rounded-pill px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-list"></i> Menu
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow">
+                <li><a class="dropdown-item" href="/editprofile"><i class="bi bi-pencil-square me-2"></i>Edit Profile</a></li>
+                <li><a class="dropdown-item" href="/privacy"><i class="bi bi-shield-lock me-2"></i>Privacy</a></li>
+                <li><a class="dropdown-item" href="/notifications"><i class="bi bi-box-seam me-2"></i>Sell Product</a></li>
+                <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            </ul>
+        </div>
     </div>
 </div>
 
 {{#user}}
-<div class="mt-5">
-    <div class="row">
-        <div class="col-md-4 text-center">
-            <img src="https://via.placeholder.com/300" alt="Profile Photo" class="rounded-circle img-fluid">
-            <h1 class="mt-3"> {{userName}} </h1>
-            <h3 class="mt-3"> {{name}} {{surname}}</h3>
-        </div>
-        
-        <div class="col-md-8">
-            <h4> Profile Information </h4>
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Email: </strong>{{email}}</li>
-                <li class="list-group-item"><strong>Location: </strong>
-
-                    {{#address}}
-                    {{.}}
-                    {{/address}}
-                    {{^address}}
-                    No address available.
-                    {{/address}}
-
-                    , 
-                    {{#city}}
-                    {{.}}
-                    {{/city}}
-                    {{^city}}
-                    No city available.
-                    {{/city}}, 
-
-                    {{#postalCode}} 
-                    {{.}}
-                    {{/postalCode}}
-                    {{^postalCode}}
-                    No postal code available.
-                    {{/postalCode}}
-
-
-                </li>
-                <li class="list-group-item"><strong>Phone: </strong>
-
-                    {{#phone}} 
-                    {{.}}
-                    {{/phone}}
-                    {{^phone}}
-                    No phone available.
-                    {{/phone}}
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
 <div class="container mt-5">
-    <h4> Reviews </h4>
-    <div class="list-group">
-        {{#reviews}}
-        <div class="list-group-item">
-            <h5>{{owner.userName}}</h5>
-            <p class="mb-1">{{description}}</p>
-            <small class="text-muted">Rating: {{rating}}/5</small>
+    <div class="row">
+        <!-- Tarjeta de Perfil -->
+        <div class="col-md-4 text-center">
+            <div class="card shadow-lg p-4 border-0">
+                <img src="https://via.placeholder.com/300" alt="Profile Photo" class="rounded-circle img-fluid">
+                <h2 class="mt-3 text-primary">{{userName}}</h2>
+                <h5 class="text-muted">{{name}} {{surname}}</h5>
+            </div>
         </div>
-        {{/reviews}}
-        {{^reviews}}
-        <p class="text-muted">No reviews yet.</p>
-        {{/reviews}}
+
+        <!-- User Information -->
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4 border-0">
+                <h3 class="mb-3 text-primary">Profile Information</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Email:</strong> {{email}}</li>
+                    <li class="list-group-item"><strong>Location:</strong> 
+                        {{#address}}{{.}}{{/address}}{{^address}}No address available{{/address}}, 
+                        {{#city}}{{.}}{{/city}}{{^city}}No city available{{/city}}, 
+                        {{#postalCode}}{{.}}{{/postalCode}}{{^postalCode}}No postal code available{{/postalCode}}
+                    </li>
+                    <li class="list-group-item"><strong>Phone:</strong> 
+                        {{#phone}}{{.}}{{/phone}}{{^phone}}No phone available{{/phone}}
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-</div>
-<div class="mt-5">
-    <h4> Orders </h4>
-    <div class="list-group">
-        {{#orders}}
-        <div class="list-group-item">
-            <h5>Order ID: {{id}}</h5>
-            <p><strong>Date:</strong> {{creationDate}}</p>
-            <ul>
-                {{#products}}
-                <li>{{name}} : ${{price}}</li>
-                {{/products}}
-            </ul>
-            <p><strong>Total Price:</strong> ${{totalPrice}}</p>
+
+    <!-- Reviews -->
+    <div class="mt-5">
+        <h3 class="text-primary">Reviews</h3>
+        <div class="list-group">
+            {{#reviews}}
+            <div class="list-group-item shadow-sm p-3 border rounded">
+                <h5 class="text-dark"><i class="bi bi-person-circle me-2"></i>{{owner.userName}}</h5>
+                <p class="mb-1">{{description}}</p>
+                <small class="text-muted">⭐ Rating: {{rating}}/5</small>
+            </div>
+            {{/reviews}}
+            {{^reviews}}
+            <p class="text-muted">No reviews yet.</p>
+            {{/reviews}}
         </div>
-        {{/orders}}
-        {{^orders}}
-        <p class="text-muted">No orders placed yet.</p>
-        {{/orders}}
+    </div>
+
+    <!-- Orders -->
+    <div class="mt-5">
+        <h3 class="text-primary">Orders</h3>
+        <div class="list-group">
+            {{#orders}}
+            <div class="list-group-item shadow-sm p-3 border rounded">
+                <h5 class="text-dark"><i class="bi bi-receipt me-2"></i>Order ID: {{id}}</h5>
+                <p><strong>Date:</strong> {{creationDate}}</p>
+                <ul>
+                    {{#products}}
+                    <li>{{name}} : ${{price}}</li>
+                    {{/products}}
+                </ul>
+                <p><strong>Total Price:</strong> ${{totalPrice}}</p>
+            </div>
+            {{/orders}}
+            {{^orders}}
+            <p class="text-muted">No orders placed yet.</p>
+            {{/orders}}
+        </div>
     </div>
 </div>
 {{/user}}
+
+<!-- Message if there is no user -->
 {{^user}}
-<div class="mt-5">
+<div class="mt-5 text-center">
     <p class="text-muted">No user information available.</p>
 </div>
 {{/user}}
