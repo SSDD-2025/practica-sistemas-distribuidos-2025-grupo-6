@@ -1,27 +1,38 @@
-{{< layouts/layout}}
-
-{{$ content}}
-
-<div class="row m-4">
-	<div class="col-2 p-3">
-		{{> filter_template}}
+{{< layouts/layout}} {{$ content}} <div class="m-4">
+	<div class="card rounded-4 p-3 text-center alert alert-primary shadow-sm">
+		<button class="btn btn-primary col-2" data-bs-toggle="offcanvas" data-bs-target="#filtroOffcanvas">
+			More Filters >>
+		</button>
 	</div>
-	<div class="col-10">
-		<div class="row" id="productList">
-			{{#productList}}
-			<div class="col-3 p-1">
-				
-				{{> productPreview_template}}
-				
-			</div>
-			{{/productList}}
-			{{^productList}}
-			<p>No results found.</p>
-			{{/productList}}
+	</div>
+
+	<div class="offcanvas offcanvas-start" tabindex="-1" id="filtroOffcanvas">
+		<div class="offcanvas-header">
+			<h3 class="offcanvas-title">Filters</h3>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+		</div>
+		<div class="offcanvas-body">
+			{{> filter_template}}
 		</div>
 	</div>
-</div>   
 
-{{/ content}}
+	<div class="row m-4">
+		<div class="">
+			<div class="row" id="productList">
+				{{#productList}}
+				<div class="col-3 p-1">
 
-{{/ layouts/layout}}
+					{{> productPreview_template}}
+
+				</div>
+				{{/productList}}
+				{{^productList}}
+				<p>No results found.</p>
+				{{/productList}}
+			</div>
+		</div>
+	</div>
+
+	{{/ content}}
+
+	{{/ layouts/layout}}

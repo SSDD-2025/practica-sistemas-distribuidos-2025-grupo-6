@@ -1,7 +1,7 @@
 {{< layouts/layout}}
 {{$ content}}
 
-{{#userInfo}}
+{{#user}}
 <div class="mt-5">
     <div class="row">
         <div class="col-md-4 text-center">
@@ -89,12 +89,12 @@
     </div>
 </div>
 <a href="/editprofile" class="btn btn-primary w-40">Edit Profile</a>
-{{/userInfo}}
-{{^userInfo}}
+{{/user}}
+{{^user}}
 <div class="mt-5">
     <p class="text-muted">No user information available.</p>
 </div>
-{{/userInfo}}
+{{/user}}
 
 {{/ content}}
 {{/ layouts/layout}}

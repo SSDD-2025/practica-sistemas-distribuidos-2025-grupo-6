@@ -21,5 +21,6 @@ function reloadWithForm(formId, elementId) {
     .then(html => {
         document.getElementById(elementId).innerHTML = new DOMParser().parseFromString(html, 'text/html').getElementById(elementId).innerHTML;
     });
+    
     scrollToTop();
 }

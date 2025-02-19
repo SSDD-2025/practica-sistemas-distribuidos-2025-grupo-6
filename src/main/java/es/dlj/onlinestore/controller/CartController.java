@@ -53,10 +53,9 @@ public class CartController {
             totalPrice += product.getPrice() * (1 - product.getSale());
         }
 
+
         model.addAttribute("user", user);
-
         model.addAttribute("bill", bill);
-
         model.addAttribute("totalPrice", totalPrice);
         
         return "cart_template";
