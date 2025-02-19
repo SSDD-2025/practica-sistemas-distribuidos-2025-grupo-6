@@ -43,7 +43,7 @@ public class UserProfileController {
             paymentMethods.add(Map.of("name", pMethod.getName(), 
                                       "selected", (user.getPaymentMethod() != null && user.getPaymentMethod().equals(pMethod))));
         }
-        
+
         model.addAttribute("paymentMethods", paymentMethods);
         model.addAttribute("user", user);
 
@@ -59,7 +59,8 @@ public class UserProfileController {
                                  @RequestParam String phone, 
                                  @RequestParam String address, 
                                  @RequestParam String city, 
-                                 @RequestParam String postalCode) {
+                                 @RequestParam String postalCode,
+                                 @RequestParam String paymentMethod) {
 
     UserInfo user = userComponent.getUser();
     
@@ -70,6 +71,7 @@ public class UserProfileController {
     user.setAddress(address);
     user.setCity(city);
     user.setPostalCode(postalCode);
+    user.setPaymentMethod(PaymentMethod.fromString(paymentMethod));
     userService.save(user);
     userComponent.setUser(user.getId());
 
