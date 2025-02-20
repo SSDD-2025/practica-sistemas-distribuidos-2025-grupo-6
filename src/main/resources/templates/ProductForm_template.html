@@ -13,10 +13,11 @@ active
         <h3 class="text-center mb-4">Edit Product</h3>
         <form action="/product/update/{{id}}" method="post" enctype="multipart/form-data">
         {{/ product }}
-        {{^ product }}
+        {{^ product }}  
         <h3 class="text-center mb-4">Add New Product</h3>
         <form action="/product/new" method="post" enctype="multipart/form-data">
         {{/ product }}
+
         
             <fieldset class="mb-3">
                 <legend>Images</legend>
