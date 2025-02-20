@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Product;
@@ -32,7 +35,7 @@ import es.dlj.onlinestore.service.UserComponent;
 @RequestMapping("/product")
 class ProductController {
 
-    private Logger log;
+    private Logger log = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private UserComponent userComponent;
@@ -138,6 +141,7 @@ class ProductController {
         @RequestBody Product newProduct
     )
     {
+        log.info(newProduct.toString());
         String errorMessage = productService.checkForProductFormErrors(newProduct);
         if (errorMessage.isEmpty()) {
             model.addAttribute("errorMessage", errorMessage);
@@ -157,7 +161,12 @@ class ProductController {
     public String ProductForm(Model model, @RequestParam long id) {
         if (id > 0) {
             Product product = productService.getProduct(id);
-            log.info(product.toString());
+            boolean newProduct = product.getProductType() == ProductType.NEW;
+            boolean reconditionedProduct = product.getProductType() == ProductType.RECONDITIONED;
+            boolean secondHandProduct = product.getProductType() == ProductType.SECONDHAND;
+            model.addAttribute("new", newProduct);
+            model.addAttribute("secondHand", secondHandProduct);
+            model.addAttribute("reconditioned", reconditionedProduct);
             model.addAttribute("product", product);
         }
         return "productForm_template";

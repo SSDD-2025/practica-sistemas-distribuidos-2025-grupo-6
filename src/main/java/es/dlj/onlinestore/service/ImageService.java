@@ -18,14 +18,14 @@ public class ImageService {
     @Autowired
     private ImageRepository images;
 
-    public void saveImage(Product product, MultipartFile rawimage, int id){
-        if (!rawimage.isEmpty()){
+    public void saveImage(Product product, MultipartFile rawImage, int id){
+        if (rawImage != null && !rawImage.isEmpty()){
 
             Image image = new Image();
-            image.setContentType(rawimage.getContentType()); 
+            image.setContentType(rawImage.getContentType()); 
             image.setFileName(product.getName()+"_image_"+id);
             try {
-                image.setimageFile(BlobProxy.generateProxy(rawimage.getInputStream(), rawimage.getSize()));
+                image.setimageFile(BlobProxy.generateProxy(rawImage.getInputStream(), rawImage.getSize()));
             } catch (IOException e) {
                 e.printStackTrace();
             }

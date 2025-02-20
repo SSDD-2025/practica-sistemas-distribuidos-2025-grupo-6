@@ -9,99 +9,85 @@ active
 <script src="/js/productForm.js"></script>
 <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
     <div class="card p-4 shadow-sm" style="width: 350px;">
-    {{#product}}
-        <h3 class="text-center mb-4">Edit product</h3>
-        <form action="/product/update/{{id}}" method="post">
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{name}}" required>
-            </div>
-            <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <input type="number" class="form-control" id="price" name="price" value="{{price}}" required>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea id="description" class="form-control" name="description" minlength="200" value="{{description}}" required>The description must be at least 200 characters.</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="stock" class="form-label">Stock available</label>
-                <input type="text" class="form-control" id="stock" name="stock" value="{{stock}}" required>
-            </div>
-            <div class="mb-3">
-                <label for="sale" class="form-label">Sale</label>
-                <input type="number" class="form-control" id="sale" name="sale" value="{{sale}}" required>
-            </div>
-            <div class="mb-3" >
+        {{# product }}
+        <h3 class="text-center mb-4">Edit Product</h3>
+        <form action="/product/update/{{id}}" method="post" enctype="multipart/form-data">
+        {{/ product }}
+        {{^ product }}
+        <h3 class="text-center mb-4">Add New Product</h3>
+        <form action="/product/new" method="post" enctype="multipart/form-data">
+        {{/ product }}
+        
+            <fieldset class="mb-3">
+                <legend>Images</legend>
+                <div class="mb-3">
+                    <label for="mainImage" class="form-label">Upload the main image of the product</label>
+                    <input type="file" class="form-control" id="mainImage" name="mainImage" accept=".jpg, .jpeg, .png" required>
+                </div>
+                <div class="mb-3">
+                    <label for="images" class="form-label">Add more images</label>
+                    <input type="file" class="form-control" id="images" name="images" accept=".jpg, .jpeg, .png" multiple required>
+                </div>
+            </fieldset>
+
+            <fieldset class="mb-3">
+                <legend>Product Details</legend>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" {{#product.name}} value="{{.}}" {{/product.name}} required>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" class="form-control" id="price" name="price"  {{#product.price}} value="{{.}}" {{/product.price}} required min="0" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" class="form-control" name="description" minlength="200" required> {{#product.description}} {{.}} {{/product.description}}</textarea>
+                    <small>The description must be at least 200 characters.</small>
+                </div>
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stock Available</label>
+                    <input type="number" class="form-control" id="stock" name="stock" {{#product.stock}} value="{{.}}" {{/product.stock}} required min="0">
+                </div>
+                <div class="mb-3">
+                    <label for="sale" class="form-label">Sale Price</label>
+                    <input type="number" class="form-control" id="sale" name="sale" {{#product.sale}} value="{{.}}" {{/product.sale}} required min="0" step="0.01">
+                </div>
+            </fieldset>
+
+            <fieldset class="mb-3">
+                <legend>Tags</legend>
                 <div id="tagsDiv">
                     <label for="tags" class="form-label">Tags</label>
+                    {{#product.tags}}
+                    <input type="text" name="tags[]" id="tag{{-index}}" value="{{name}}">
+                    {{/product.tags}}
+                    {{^product.tags}}
                     <input type="text" name="tags[]" id="tag1">
+                    {{/product.tags}}
                 </div>
                 <button type="button" id="addButton"><i class="bi bi-plus"></i></button>
                 <button type="button" id="deleteButton"><i class="bi bi-dash-lg"></i></button>
-            </div>
-            <div class="mb-3">
-                <label for="productType" class="form-label">Product type</label>
-                <select name="productType" id="productType" value="" required>
-                    <option value="NEW">New</option>
-                    <option value="RECONDITIONED">Reconditioned</option>
-                    <option value="SECONDHAND">Second hand</option>
-                </select>
-            </div>
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Update product</button>
-            </div>
-        </form>
-    {{/product}}
-    {{^product}}
-        <h3 class="text-center mb-4">Add new product</h3>
-        <form action="/product/new" method="post">
-            <div class="mb-3">
-                <label for="mainImage" class="form-label">Upload the main image of the product</label>
-                <input type="file" class="form-control" id="mainImage" name="mainImage" accept=".jpg, .jpeg, .png" required>
-            </div>
-            <div class="mb-3">
-                <label for="images" class="form-label">Add more images</label>
-                <input type="file" class="form-control" id="images" name="images" accept=".jpg, .jpeg, .png" multiple required>
-            </div>
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-            <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <input type="number" class="form-control" id="price" name="price" required>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea id="description" class="form-control" name="description" minlength="200" required>The description must be at least 200 characters.</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="stock" class="form-label">Stock available</label>
-                <input type="text" class="form-control" id="stock" name="stock" required>
-            </div>
-            <div class="mb-3" id="tagsDiv">
-                <label for="tags" class="form-label">Tags</label>
-                <input type="text" name="tags[]" id="tag1">
-                <button type="button" id="addButton"><i class="bi bi-plus"></i></button>
-                <button type="button" id="deleteButton"><i class="bi bi-dash-lg"></i></button>
+            </fieldset>
 
-            </div>
-            <div class="mb-3">
-                <label for="productType" class="form-label">Product type</label>
-                <select name="productType" id="productType" required>
-                    <option value="NEW">New</option>
-                    <option value="RECONDITIONED">Reconditioned</option>
-                    <option value="SECONDHAND">Second hand</option>
-                </select>
-            </div>
+            <fieldset class="mb-3">
+                <legend>Product Type</legend>
+                <div class="mb-3">
+                    <label for="productType" class="form-label">Product Type</label>
+                    <select name="productType" id="productType" required>
+                        <option value="NEW" {{#new}} selected {{/new}}>New</option>
+                        <option value="RECONDITIONED" {{#reconditioned}} selected {{/reconditioned}}>Reconditioned</option>
+                        <option value="SECONDHAND" {{#secondHand}} selected {{/secondHand}}>Second Hand</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <!-- Submit Button -->
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Update product</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
-    {{/product}}
     </div>
-  </div>
-
-{{/ content}}
-{{/ layouts/layout}}
+</div>
+{{/ content }}
+{{/ layouts/layout }}
