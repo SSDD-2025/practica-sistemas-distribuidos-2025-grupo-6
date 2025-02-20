@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +108,7 @@ public class ProductService {
                     e.printStackTrace();
                 }
                 index = i + 1;
-                Image image = new Image(imageFile, name + "Image"+ index, rawImage.getContentType(), product);
+                Image image = new Image(imageFile, name + "Image"+ index, rawImage.getContentType());
                 product.addImage(image);
                 imagePath = Images_Folder.resolve(image.getFileName()+image.getContentType());
             }
@@ -223,6 +224,10 @@ public class ProductService {
     // Low Stock
     public List<Product> getLowStock(int stock) {
         return products.findByStockLessThan(stock);
+    }
+
+    public Optional<Product> findById(long id){
+        return products.findById(id);
     }
 
 }
