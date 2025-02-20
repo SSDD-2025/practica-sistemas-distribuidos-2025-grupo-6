@@ -5,10 +5,12 @@
 
 package es.dlj.onlinestore.controller;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,8 +18,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Product;
@@ -28,6 +32,8 @@ import es.dlj.onlinestore.service.UserComponent;
 @Controller
 @RequestMapping("/product")
 class ProductController {
+
+    private Logger log;
 
     @Autowired
     private UserComponent userComponent;
@@ -99,7 +105,7 @@ class ProductController {
         @RequestParam(required=false) Integer minPrice, 
         @RequestParam(required=false) Integer maxPrice,
         @RequestParam(required=false) List<String> tags,
-        @RequestParam(required=false) List<String> productType,
+        @RequestParam(required=false) List<String> productType
     ) {
 
         List<Product> products = productService.searchProducts(name, minPrice, maxPrice, tags, productType);
@@ -124,7 +130,12 @@ class ProductController {
     @RequestParam String tags,
     @RequestParam ProductType productType){
         List<String> tagList = Arrays.asList(tags.split("\\s*,\\s*"));
-        Product product = productService.editProduct(id, name, price, sale, description, productType, stock, tagList);
+        Product product = null;
+        try {
+            product = productService.editProduct(id, name, price, sale, description, productType, stock, tagList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         model.addAttribute("product", product);
         return "productDetailed_template";
     }
@@ -132,15 +143,31 @@ class ProductController {
     @PostMapping ("/new")
     public String newProduct (
         Model model,
-    @PathVariable Long id,
-    @RequestParam String name,
-    @RequestParam float price,
-    @RequestParam String description,
-    @RequestParam int stock,
-    @RequestParam String tags,
-    @RequestParam ProductType productType){
-        List<String> tagList = Arrays.asList(tags.split("\\s*,\\s*"));
-        productService.saveProduct(name, price, description, productType, stock, tagList);
-        return "home_template";
+        @RequestBody Map<String,Object> rawProduct
+    )
+    {
+        Product product = new Product();
+        String errorMessage=productService.checkForErrors(rawProduct);
+        if(errorMessage.isEmpty()){
+            model.addAttribute("errorMessage", "Name required to create product");
+            return "productForm_template";
+        }
+        else{
+            ProductType productType = productService.transformStringtoProductType((String) rawProduct.get("productType"));
+            product = productService.saveProduct((String)rawProduct.get("name"),(float) rawProduct.get("price"), (String) rawProduct.get("description"), productType, (int)rawProduct.get("stock"), (List<String>)rawProduct.get("tags"),(List<MultipartFile>)rawProduct.get("images"), (MultipartFile)rawProduct.get("mainImage"));
+            return "home_template";
+        }
+        
     }
+
+    @PostMapping("/form")
+    public String ProductForm(Model model, @RequestParam long id) {
+        if (id > 0) {
+            Product product = productService.getProduct(id);
+            log.info(product.toString());
+            model.addAttribute("product", product);
+        }
+        return "productForm_template";  // Use a redirect to a GET endpoint that displays the product
+    }
+
 }
