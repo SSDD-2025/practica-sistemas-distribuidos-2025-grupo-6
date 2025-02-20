@@ -8,7 +8,6 @@ import java.util.Objects;
 import org.hibernate.annotations.CreationTimestamp;
 
 import es.dlj.onlinestore.enumeration.ProductType;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -229,5 +228,9 @@ public class Product {
 
     public boolean isOnSale() {
         return sale > 0;
+    }
+
+    public int getTagsCount() {
+        return tags.size();
     }
 }

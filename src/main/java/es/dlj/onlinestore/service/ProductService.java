@@ -6,19 +6,17 @@ import java.nio.file.Paths;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.engine.jdbc.BlobProxy;
-import org.hibernate.type.ProcedureParameterExtractionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.enumeration.ProductType;
-import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.Image;
+import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductTag;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
@@ -82,6 +80,14 @@ public class ProductService {
         return product;
     }
 
+    public Product saveProduct(Product product) {
+        return products.save(product);
+    }
+
+    public Product saveProduct(String name, float price, String description, String productType, int stock, List<String> tags, List<MultipartFile> rawImages, MultipartFile rawMainImage) {
+        return saveProduct(name, price, description, this.transformStringtoProductType(productType), stock, tags, rawImages, rawMainImage);
+    }
+
     public Product saveProduct(String name, float price, String description, ProductType productType, int stock, List<String> tags, List<MultipartFile> rawImages, MultipartFile rawMainImage) {
         List<ProductTag> productTagsList = transformStringToTags(tags);
         if (rawMainImage != null){
@@ -110,51 +116,30 @@ public class ProductService {
         return product;
     }
 
-    public String checkForErrors(Map<String,Object> product){
-        if(product.get("name") == null){
-            return "Name required to create product";
-        }
-        else if((int)product.get("price") <= 0){
-            return "Price must be positive";
-        }
-        else if(product.get("description") ==null){
-            return "A description for the product is required";
-        }
-        else if((int)product.get("stock") <= 0){
-            return "Stock must be positive";
-        }
-        else if(((List<String>) product.get("tags")).size() <= 0){
-            return "At least one tag must be added";
-        }
-        else if(((String)product.get("productType") != "NEW")&&((String)product.get("productType") !="RECONDITIONED")&&((String)product.get("productType") !="SECOND HAND")){
+    public String checkForProductFormErrors(Product product){
+        if (product.getPrice() <= 0) {
+            return "Price must be positive grater than 0.";
+        } else if (product.getStock() <= 0) {
+            return "Stock must be positive grater than 0.";
+        } else if (product.getTagsCount() <= 0){
+            return "Product needs at least one tag.";
+        } else if (product.getProductType() == null){
             return "Product Type not valid";
         }
-        else if((((MultipartFile)product.get("mainImage")).getContentType() != "jpg") && (((MultipartFile)product.get("mainImage")).getContentType() != "png") &&(((MultipartFile)product.get("mainImage")).getContentType() != "gif")){
-            return "Image type not accepted";
-        }
-        else if((MultipartFile)product.get("mainImage") == null){
-            return "Add the main image of the product"; 
-        }
-        else{
-            return "";
-        }
+        return null;
     }
 
     public ProductType transformStringtoProductType(String productTypeString){
-        switch (productTypeString){
-            case "NEW":
-                return ProductType.NEW;
-            case "RECONDITIONED":
-                return ProductType.RECONDITIONED;
-            case "SECONDHAND":
-                return ProductType.SECONDHAND;
-            default:
-                return null;
-        }
+        return switch (productTypeString) {
+            case "NEW" -> ProductType.NEW;
+            case "RECONDITIONED" -> ProductType.RECONDITIONED;
+            case "SECONDHAND" -> ProductType.SECONDHAND;
+            default -> null;
+        };
     }
 
     public List<ProductTag> transformStringToTags(List<String> tagsAsString){
-        List<ProductTag> tagList = new ArrayList <ProductTag> ();
+        List<ProductTag> tagList = new ArrayList<>();
         for (String tag: tagsAsString){
             ProductTag productTag;
             if (productTags.existsByName(tag)) {

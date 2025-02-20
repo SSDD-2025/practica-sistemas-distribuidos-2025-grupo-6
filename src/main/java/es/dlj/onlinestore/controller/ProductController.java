@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Product;
@@ -61,17 +60,14 @@ class ProductController {
 
     @GetMapping("/search")
     public String getHome1(Model model, @RequestParam(required=false) String name, @RequestParam(required=false) String productType) {
-
         if (name != null) {
             // If it comes from home page loads query for name search and returns the results
             model.addAttribute("name", name);
             model.addAttribute("productList", productService.findByNameContaining(name));
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
-
         } else if (productType != null) {
             // If it comes from nav bar for product type search and returns the results
             List<Map<String, Object>> productTypeMap = productService.getAllProductTypesAndCount();
-
             for (int i = 0; i < productTypeMap.size(); i++) {
                 Map<String, Object> map = productTypeMap.get(i);
                 if (map.get("name").equals(productType)) {
@@ -83,19 +79,15 @@ class ProductController {
             }
             model.addAttribute("productList", productService.getProductsByProductType(ProductType.fromString(productType)));
             model.addAttribute("productTypes", productTypeMap);
-
         } else {
-
             model.addAttribute("productList", productService.getAllProducts());
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
-
         }
 
         model.addAttribute("tags", productService.getAllTags());
         model.addAttribute("user", userComponent.getUser());
 
 		return "search_template";
-
     }
 
     @PostMapping("/search")
@@ -143,21 +135,17 @@ class ProductController {
     @PostMapping ("/new")
     public String newProduct (
         Model model,
-        @RequestBody Map<String,Object> rawProduct
+        @RequestBody Product newProduct
     )
     {
-        Product product = new Product();
-        String errorMessage=productService.checkForErrors(rawProduct);
-        if(errorMessage.isEmpty()){
-            model.addAttribute("errorMessage", "Name required to create product");
+        String errorMessage = productService.checkForProductFormErrors(newProduct);
+        if (errorMessage.isEmpty()) {
+            model.addAttribute("errorMessage", errorMessage);
             return "productForm_template";
         }
-        else{
-            ProductType productType = productService.transformStringtoProductType((String) rawProduct.get("productType"));
-            product = productService.saveProduct((String)rawProduct.get("name"),(float) rawProduct.get("price"), (String) rawProduct.get("description"), productType, (int)rawProduct.get("stock"), (List<String>)rawProduct.get("tags"),(List<MultipartFile>)rawProduct.get("images"), (MultipartFile)rawProduct.get("mainImage"));
-            return "home_template";
-        }
-        
+
+        productService.saveProduct(newProduct);
+        return "home_template";
     }
 
     @PostMapping("/form")
