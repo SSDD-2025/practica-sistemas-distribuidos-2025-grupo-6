@@ -3,9 +3,13 @@ package es.dlj.onlinestore.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.service.ProductService;
@@ -39,12 +43,12 @@ public class HomeController {
         model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         model.addAttribute("SearchInOtherPage", true);
 
-		return "home_template";
+        return "home_template";
     }
 
     @GetMapping("/privacy")
     public String getPrivacy() {
         return "privacy_policy_template";
     }
-
+    
 }
