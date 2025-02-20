@@ -1,22 +1,17 @@
 package es.dlj.onlinestore.service;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.enumeration.ProductType;
-import es.dlj.onlinestore.model.Image;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductTag;
 import es.dlj.onlinestore.repository.ProductRepository;
@@ -32,6 +27,9 @@ public class ProductService {
     @Autowired
     private ProductTagRepository productTags;
 
+    @Autowired
+    private ImageService imageService;
+
     @PostConstruct
     public void init() {
         /*
@@ -45,7 +43,7 @@ public class ProductService {
 
         this.saveProduct("Laptop Dell XPS 15", 1500f, "High-end laptop", ProductType.NEW, 10, Arrays.asList("electronics", "laptop"), null, null);
         this.saveProduct("iPhone 13 Pro", 1200f, "Latest Apple smartphone", ProductType.NEW, 15, Arrays.asList("smartphone", "apple"), null, null);
-        this.saveProduct("Samsung Galaxy S21", 1000f, "Samsung flagship phone", ProductType.NEW, 20, Arrays.asList("smartphone", "android"), null, null);
+        this.saveProduct("Samsung Galaxy S21", 1000f, "Samsung flagship phone", ProductType.RECONDITIONED, 20, Arrays.asList("smartphone", "android"), null, null);
         this.saveProduct("HP Pavilion 14", 750f, "Affordable HP laptop", ProductType.NEW, 12, Arrays.asList("laptop", "hp"), null, null);
         this.saveProduct("MacBook Air M1", 999f, "Apple M1 laptop", ProductType.NEW, 8, Arrays.asList("laptop", "apple"), null, null);
         this.saveProduct("PlayStation 5", 499f, "Next-gen gaming console", ProductType.NEW, 5, Arrays.asList("gaming", "console"), null, null);
@@ -78,6 +76,7 @@ public class ProductService {
         product.setProductType(productType);
         product.setStock(stock);
         product.setSale(sale);
+        products.save(product);
         return product;
     }
 
@@ -95,22 +94,10 @@ public class ProductService {
             rawImages.addFirst(rawMainImage);
         }
         Product product = new Product(name, price, description, productType, stock, productTagsList);
-        int index;
-        Path Images_Folder = Paths.get("images");
-        Path imagePath;
-        if (rawImages != null){
-            for (int i=0; i<rawImages.size(); i++){
+        if (rawImages!= null){
+            for (int i=1; i >= rawImages.size()+1; i++){
                 MultipartFile rawImage = rawImages.get(i);
-                Blob imageFile = null;
-                try {
-                    imageFile = BlobProxy.generateProxy(rawImage.getInputStream(), rawImage.getSize());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                index = i + 1;
-                Image image = new Image(imageFile, name + "Image"+ index, rawImage.getContentType());
-                product.addImage(image);
-                imagePath = Images_Folder.resolve(image.getFileName()+image.getContentType());
+                imageService.saveImage(product, rawImage, i);
             }
         }
         products.save(product);
