@@ -33,43 +33,39 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item me-3">
-                    <a class="nav-link" href="/"><i class="bi bi-house-door-fill"></i> Home</a>
+                    <a class="nav-link {{$ homeSectionClass}}{{/ homeSectionClass}}" href="/"><i class="bi bi-house-door-fill"></i> Home</a>
                 </li>
                 <li class="nav-item me-3">
-                    <a class="nav-link" href="/product/search"><i class="bi bi-search"></i> Search</a>
+                    <a class="nav-link {{$ searchSectionClass}}{{/ searchSectionClass}}" href="/product/search"><i class="bi bi-search"></i> Search</a>
                 </li>
                 <li class="nav-item me-3">
-                    <a class="nav-link" href="/product/search?productType=NEW"><i class="bi bi-star-fill"></i> New</a>
+                    <a class="nav-link {{$ newSectionClass}}{{/ newSectionClass}}" href="/product/search?productType=NEW"><i class="bi bi-star-fill"></i> New</a>
                 </li>
                 <li class="nav-item me-3">
-                    <a class="nav-link" href="/product/search?productType=RECONDITIONED"><i class="bi bi-tools"></i>
-                        Reconditioned</a>
+                    <a class="nav-link {{$ reconditionedSectionClass}}{{/ reconditionedSectionClass}}" href="/product/search?productType=RECONDITIONED"><i class="bi bi-tools"></i> Reconditioned</a>
                 </li>
                 <li class="nav-item me-3">
-                    <a class="nav-link" href="/product/search?productType=SECONDHAND"><i class="bi bi-recycle"></i>
-                        Second-Hand</a>
-                </li>
-                <li class="nav-item me-3">
-                    <form method="post" action="/product/form">
-                        <input class="d-none" name="id" type="number" value=0>
-                        <button type="submit"> Add product</button>
-                    </form>
+                    <a class="nav-link {{$ secondHandSectionClass}}{{/ secondHandSectionClass}}" href="/product/search?productType=SECONDHAND"><i class="bi bi-recycle"></i> Second-Hand</a>
                 </li>
 
             </ul>
             <ul class="navbar-nav">
-                <!-- 
+                <!-- Login and Register pages
                 <li class="nav-item me-3">
                     <a class="nav-link" href="/login">Login</a>
                 </li>
                 <li class="nav-item me-3">
                     <a class="nav-link" href="/register">Register</a>
-                </li>-->
+                </li>
+                -->
                 <li class="nav-item me-3">
-                    <a class="nav-link" href="/userprofile"><i class="bi bi-person-fill"></i> My Profile</a>
+                    <a class="nav-link {{$ newProductSectionClass}}{{/ newProductSectionClass}}" href="/product/form"><i class="bi bi-plus-circle"></i> New Product</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link {{$ profileSectionClass}}{{/ profileSectionClass}}" href="/userprofile"><i class="bi bi-person-fill"></i> My Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link position-relative" href="/cart">
+                    <a class="nav-link position-relative {{$ cartSectionClass}}{{/ cartSectionClass}}" href="/cart">
                         <i class="bi bi-cart-fill">
                             {{# user}} 
                             {{# cartUsed}}

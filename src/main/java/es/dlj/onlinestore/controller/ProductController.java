@@ -148,6 +148,11 @@ class ProductController {
         return "home_template";
     }
 
+    @GetMapping("/form")
+    public String ProductForm(Model model) {
+        return "productForm_template";
+    }
+
     @PostMapping("/form")
     public String ProductForm(Model model, @RequestParam long id) {
         if (id > 0) {
@@ -155,7 +160,7 @@ class ProductController {
             log.info(product.toString());
             model.addAttribute("product", product);
         }
-        return "productForm_template";  // Use a redirect to a GET endpoint that displays the product
+        return "productForm_template";
     }
 
 }

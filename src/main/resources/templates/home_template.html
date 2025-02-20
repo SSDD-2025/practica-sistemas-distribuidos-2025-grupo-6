@@ -1,4 +1,10 @@
-{{< layouts/layout}} {{$ content}} <div class="m-4">
+{{< layouts/layout}} 
+
+{{$ homeSectionClass}}
+active
+{{/ homeSectionClass}}
+
+{{$ content}} <div class="m-4">
 	<div class="card rounded-4 p-3 text-center alert alert-primary shadow-sm">
 		<form id="searchBar" action="/product/search" method="get" class="d-flex w-100" role="search">
 			<input class="form-control form-control-lg me-2" type="search" placeholder="Search for products..."
