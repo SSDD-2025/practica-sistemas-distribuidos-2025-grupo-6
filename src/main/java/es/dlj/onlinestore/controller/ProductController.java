@@ -99,7 +99,7 @@ class ProductController {
         @RequestParam(required=false) Integer minPrice, 
         @RequestParam(required=false) Integer maxPrice,
         @RequestParam(required=false) List<String> tags,
-        @RequestParam(required=false) List<String> productType,
+        @RequestParam(required=false) List<String> productType
     ) {
 
         List<Product> products = productService.searchProducts(name, minPrice, maxPrice, tags, productType);
