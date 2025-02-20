@@ -45,7 +45,7 @@ public class Product {
     private int numberRatings;
     private int totalSells;
     private int lastWeekSells;
-    private int sale;
+    private float sale;
 
     public Product(){
 
@@ -61,7 +61,7 @@ public class Product {
         this.numberRatings = 0;
         this.totalSells = 0;
         this.lastWeekSells = 0;
-        this.sale = 0;
+        this.sale = 0f;
         this.tags = tags;
     }
 
@@ -105,7 +105,7 @@ public class Product {
         return lastWeekSells;
     }
 
-    public int getSale() {
+    public float getSale() {
         return sale;
     }
 
@@ -149,7 +149,7 @@ public class Product {
         this.lastWeekSells = lastWeekSells;
     }
 
-    public void setSale(int sale) {
+    public void setSale(float sale) {
         this.sale = sale;
     }
 
@@ -232,5 +232,9 @@ public class Product {
 
     public int getTagsCount() {
         return tags.size();
+    }
+
+    public float getPriceWithSale() {
+        return price * (1 - sale / 100);
     }
 }

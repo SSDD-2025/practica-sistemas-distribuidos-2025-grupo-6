@@ -1,55 +1,54 @@
 <div class="">
-  <form id="filterForm" action="/product/search" method="post" class="p-4"> <!-- class="card p-4 shadow-sm" -->
+	<form id="filterForm" action="/product/search" method="post" class="p-4"> <!-- class="card p-4 shadow-sm" -->
 
-    <!-- <h5 class="mb-3 text-center">Filter</h5> -->
+		<div class="row mb-3">
+			<button type="button" class="btn btn-primary btn-lg"
+				onclick="reloadWithForm('filterForm', 'productList')"><i class="bi bi-search"></i> Search</button>
+		</div>
 
-    <div class="row mb-3">
-      <label for="name" class="form-label fw-bold">Name:</label>
-      <input type="text" class="form-control" name="name" placeholder="Search..." value="{{#name}}{{.}}{{/name}}">
-    </div>
+		<div class="row mb-3">
+			<label for="name" class="form-label fw-bold">Name:</label>
+			<input type="text" class="form-control" name="name" placeholder="Search..." value="{{#name}}{{.}}{{/name}}">
+		</div>
 
-    <div class="row mb-3">
-      <label for="maxPrice" class="form-label fw-bold">Product type:</label>
-      {{#productTypes}}
-          <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="productType" value="{{name}}" id="productType-{{name}}" {{# selected}} checked {{/ selected}}>
-                <label class="form-check-label" for="productType-{{name}}">{{name}} ({{count}})</label>
-          </div>
-      {{/productTypes}}
-      {{^productTypes}}
-          <p>No types available</p>
-      {{/productTypes}}
-    </div>
-    <div class="row mb-3">
-        <label for="minPrice" class="form-label fw-bold">Price:</label>
-        <div class="col-5">
-          <input type="number" class="form-control col-5" name="minPrice" placeholder="$0" value="{{#minPrice}}{{.}}{{/minPrice}}" step="5">
-        </div>
-        <p class="col-1 fw-bold"> - </p>
-        <div class="col-5">
-          <input type="number" class="form-control col-5" name="maxPrice" placeholder="$10,000" value="{{#maxPrice}}{{.}}{{/maxPrice}}" step="5">
-        </div>
-    </div>
+		<div class="row mb-3">
+			<label for="maxPrice" class="form-label fw-bold">Product type:</label>
+			{{#productTypes}}
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" name="productType" value="{{name}}"
+					id="productType-{{name}}" {{# selected}} checked {{/ selected}}>
+				<label class="form-check-label" for="productType-{{name}}">{{name}} ({{count}})</label>
+			</div>
+			{{/productTypes}}
+			{{^productTypes}}
+			<p>No types available</p>
+			{{/productTypes}}
+		</div>
+		<div class="row mb-3">
+			<label for="minPrice" class="form-label fw-bold">Price:</label>
+			<div class="col-5">
+				<input type="number" class="form-control col-5" name="minPrice" placeholder="$0"
+					value="{{#minPrice}}{{.}}{{/minPrice}}" step="5">
+			</div>
+			<p class="col-1 fw-bold"> - </p>
+			<div class="col-5">
+				<input type="number" class="form-control col-5" name="maxPrice" placeholder="$10,000"
+					value="{{#maxPrice}}{{.}}{{/maxPrice}}" step="5">
+			</div>
+		</div>
 
-    <div class="row mb-3">
-      <label for="maxPrice" class="form-label fw-bold">Tags:</label>
-      {{#tags}}
-          <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="tags" value="{{name}}" id="tag-{{name}}">
-              <label class="form-check-label" for="tag-{{name}}">{{name}} ({{count}})</label>
-          </div>
-      {{/tags}}
-      {{^tags}}
-          <p>No tags available</p>
-      {{/tags}}
-    </div>
-  </form>
-
-  <script>
-    // Reloads the page with the form data as query parameters
-    $('#filterForm').on('input change', function() {
-      reloadWithForm('filterForm', 'productList')
-    });
-  </script>
+		<div class="row mb-3">
+			<label for="maxPrice" class="form-label fw-bold">Tags:</label>
+			{{#tags}}
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" name="tags" value="{{name}}" id="tag-{{name}}">
+				<label class="form-check-label" for="tag-{{name}}">{{name}} ({{count}})</label>
+			</div>
+			{{/tags}}
+			{{^tags}}
+			<p>No tags available</p>
+			{{/tags}}
+		</div>
+	</form>
 
 </div>

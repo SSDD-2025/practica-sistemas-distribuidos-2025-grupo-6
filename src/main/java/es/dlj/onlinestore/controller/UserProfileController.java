@@ -27,7 +27,6 @@ public class UserProfileController {
     
     @GetMapping("/userprofile")
     public String getUserProfile(Model model) {
-        
         UserInfo user = userComponent.getUser();
         model.addAttribute("user", user);
 
@@ -37,14 +36,6 @@ public class UserProfileController {
     @GetMapping("/editprofile")
     public String getEditProfile(Model model) {
         UserInfo user = userComponent.getUser();
-        
-        List<Map<String, Object>> paymentMethods = new ArrayList<>();
-        for (PaymentMethod pMethod : PaymentMethod.values()) {
-            paymentMethods.add(Map.of("name", pMethod.getName(), 
-                                      "selected", (user.getPaymentMethod() != null && user.getPaymentMethod().equals(pMethod))));
-        }
-
-        model.addAttribute("paymentMethods", paymentMethods);
         model.addAttribute("user", user);
 
         return "editprofile_template";
@@ -73,7 +64,6 @@ public class UserProfileController {
     user.setPostalCode(postalCode);
     user.setPaymentMethod(PaymentMethod.fromString(paymentMethod));
     userService.save(user);
-    userComponent.setUser(user.getId());
 
     return "redirect:/userprofile"; 
     }

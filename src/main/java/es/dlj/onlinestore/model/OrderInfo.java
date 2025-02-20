@@ -38,7 +38,18 @@ public class OrderInfo {
     private String address;
     private String phoneNumber;
     
-    private LocalDateTime orderDate;
+    public OrderInfo() {
+
+    }
+
+    public OrderInfo(UserInfo user, Set<Product> products, Float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
+        this.user = user;
+        this.products = products;
+        this.totalPrice = totalPrice;
+        this.paymentMethod = paymentMethod;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
 
     // Getters and setters
     public Long getId() { return id; }
@@ -61,9 +72,6 @@ public class OrderInfo {
 
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
-
-    public LocalDateTime getOrderDate() { return orderDate; }
-    public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
 
     public LocalDateTime getCreationDate() {
         return creationDate;

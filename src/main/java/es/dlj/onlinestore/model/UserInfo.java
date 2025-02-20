@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -252,6 +253,22 @@ public class UserInfo {
 
     public int getCartSize() {
         return cartProducts.size();
+    }
+
+    public void clearCartProducts() {
+        cartProducts.clear();
+    }
+
+    public float getCartTotalPrice() {
+        return (float) cartProducts.stream().mapToDouble(Product::getPriceWithSale).sum();
+    }
+
+    public List<Map<String, Object>> getPaymentMethodsMapped() {
+        List<Map<String, Object>> paymentMethods = new ArrayList<>();
+        for (PaymentMethod pMethod : PaymentMethod.values()) {
+            paymentMethods.add(Map.of("name", pMethod.getName(), "selected", (paymentMethod != null && paymentMethod.equals(pMethod))));
+        }
+        return paymentMethods;
     }
    
     @Override

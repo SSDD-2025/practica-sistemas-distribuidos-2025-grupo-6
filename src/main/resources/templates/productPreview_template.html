@@ -1,12 +1,11 @@
-
 <div class="card-body p-3 d-flex flex-column alert alert-secondary shadow-sm">
-    <img src="/image/{{id}}/1">
-    <h5 class="card-title fw-bold mb-1">{{name}}</h5>
-    <h6 class="card-subtitle mb-2 text-muted">{{productType}}</h6>
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <span class="fw-bold fs-5">${{price}}</span>
-      {{#onSale}}<span class="text-danger fw-semibold alert alert-danger">{{sale}}% off</span>{{/onSale}}
-    </div>
-    <p class="text-success small mb-1">Stock: {{stock}}</p>
-    <a href="/product/{{id}}" class="btn btn-primary ">View Product</a>
+	<img src="/image/{{id}}/1">
+	<h5 class="card-title fw-bold mb-1">{{name}}</h5>
+	<h6 class="card-subtitle mb-2 text-muted">{{productType}}</h6>
+	<div class="d-flex justify-content-between align-items-center mb-2">
+		<span class="fw-bold fs-5">${{price}}</span>
+		{{#onSale}}<span class="text-danger fw-semibold alert alert-danger">{{sale}}% off</span>{{/onSale}}
+	</div>
+	<p class="text-success small mb-1">Stock: {{stock}}</p>
+	<a href="/product/{{id}}" class="btn btn-primary ">View Product</a>
 </div>

@@ -41,7 +41,9 @@ public class ProductService {
         products.save(new Product("product6", 60.0f, "description6", Product.productType.NEW, 60, new LinkedList<>()));
         */
 
-        this.saveProduct("Laptop Dell XPS 15", 1500f, "High-end laptop", ProductType.NEW, 10, Arrays.asList("electronics", "laptop"), null, null);
+        Product product = this.saveProduct("Laptop Dell XPS 15", 1500f, "High-end laptop", ProductType.NEW, 10, Arrays.asList("electronics", "laptop"), null, null);
+        product.setSale(25f);
+        products.save(product);
         this.saveProduct("iPhone 13 Pro", 1200f, "Latest Apple smartphone", ProductType.NEW, 15, Arrays.asList("smartphone", "apple"), null, null);
         this.saveProduct("Samsung Galaxy S21", 1000f, "Samsung flagship phone", ProductType.RECONDITIONED, 20, Arrays.asList("smartphone", "android"), null, null);
         this.saveProduct("HP Pavilion 14", 750f, "Affordable HP laptop", ProductType.NEW, 12, Arrays.asList("laptop", "hp"), null, null);
@@ -151,12 +153,18 @@ public class ProductService {
         return productTags.findAllWithProductCount();
     }
 
-    public List<Map<String, Object>> getAllProductTypesAndCount() {
+    public List<Map<String, Object>> getAllProductTypesAndCount(ProductType selected) {
         List<Map<String, Object>> productTypesList = new ArrayList<>();
         for (ProductType type : ProductType.values()) {
-            productTypesList.add(Map.of("name", type.toString(), "count", products.countByProductType(type)));
+            productTypesList.add(Map.of("name", type.toString(), 
+                                        "count", products.countByProductType(type),
+                                        "selected", (selected != null && type.equals(selected))));
         }
         return productTypesList;
+    }
+
+    public List<Map<String, Object>> getAllProductTypesAndCount() {
+        return getAllProductTypesAndCount(null);
     }
 
     public List<Product> getAllProducts() {
