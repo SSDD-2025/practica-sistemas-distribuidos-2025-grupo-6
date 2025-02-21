@@ -8,6 +8,7 @@ import java.util.Objects;
 import org.hibernate.annotations.CreationTimestamp;
 
 import es.dlj.onlinestore.enumeration.ProductType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,8 +30,10 @@ public class Product {
 
     private String name;
     private Float price;
-    private String description;
     private int stock;
+
+    @Column(length = 2000)
+    private String description;
 
     @OneToMany
     private List<Image>images = new LinkedList<Image>();

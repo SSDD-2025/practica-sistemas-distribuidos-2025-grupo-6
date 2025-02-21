@@ -41,18 +41,9 @@ public class ProductService {
         private String productType;
         private List<MultipartFile>images;
                 
-        public RawProduct(Map<String, Object> productData){
-            this.name = (String) productData.get("name");
-            this.price = (float) productData.get("price");
-            this.description = (String) productData.get("description");
-            this.stock = (int) productData.get("stock");
-            this.mainImage = (MultipartFile) productData.get("mainImage");
-            this.tags = (List<String>) productData.get("tags");
-            this.productType = (String) productData.get("productType");
-            List<MultipartFile>images = (List<MultipartFile>) productData.get("images");
-            if (images != null){
-                this.images = images;
-            }
+        public RawProduct() {
+            this.tags = new ArrayList<>();
+            this.images = new ArrayList<>();
         }
 
         public String getName() {
@@ -85,6 +76,38 @@ public class ProductService {
         
         public List<MultipartFile> getImages() {
             return this.images;
+        }
+        
+        public void setName(String name) {
+            this.name = name;
+        }
+        
+        
+        public void setPrice(float price) {
+            this.price = price;
+        }
+        
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public void setStock(int stock) {
+            this.stock = stock;
+        }
+        
+        public void setMainImage(MultipartFile mainImage) {
+            this.mainImage = mainImage;
+        }
+        public void setTags(List<String> tags) {
+            this.tags = tags;
+        }
+        
+        public void setProductType(String productType) {
+            this.productType = productType;
+        }
+        
+        public void setImages(List<MultipartFile> images) {
+            this.images = images;
         }
     }
         
@@ -146,12 +169,13 @@ public class ProductService {
     
     public Product saveProduct(RawProduct rawProduct) {
         List<ProductTag> productTagsList = transformStringToTags(rawProduct.getTags());
+        ProductType productType = transformStringtoProductType(rawProduct.getProductType());
         MultipartFile mainImage = rawProduct.getMainImage();
         List <MultipartFile> images = rawProduct.getImages();
         if (mainImage != null){
             images.addFirst(mainImage);
         }
-        Product product = new Product(rawProduct.getName(), rawProduct.getPrice(), rawProduct.getDescription(), transformStringtoProductType(rawProduct.getProductType()), rawProduct.getStock(), transformStringToTags(rawProduct.getTags()));
+        Product product = new Product(rawProduct.getName(), rawProduct.getPrice(), rawProduct.getDescription(), productType, rawProduct.getStock(), productTagsList);
         if (images!= null){
             for (int i=1; i >= images.size()+1; i++){
                 MultipartFile rawImage = images.get(i);

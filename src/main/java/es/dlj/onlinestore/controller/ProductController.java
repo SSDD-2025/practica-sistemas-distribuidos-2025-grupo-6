@@ -126,8 +126,8 @@ class ProductController {
             return "productForm_template";
         }
 
-        productService.saveProduct(product);
-        return "home_template";
+        Product savedProduct = productService.saveProduct(product);
+        return "redirect:/product/" + savedProduct.getId();
     }
 
     @GetMapping("/form")
