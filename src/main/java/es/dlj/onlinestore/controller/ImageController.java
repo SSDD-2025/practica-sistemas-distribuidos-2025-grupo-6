@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ch.qos.logback.classic.Logger;
 import es.dlj.onlinestore.model.Image;
 import es.dlj.onlinestore.model.Product;
+import es.dlj.onlinestore.repository.ImageRepository;
 import es.dlj.onlinestore.service.ProductService;
 
  
@@ -31,14 +32,16 @@ import es.dlj.onlinestore.service.ProductService;
  
      @Autowired
      private ProductService productService;
+
+     @Autowired
+     private ImageRepository imageRepository;
  
      @GetMapping("/{productId}/{id}")
      public ResponseEntity<Object> loadProductImage(Model model, @PathVariable Long id, @PathVariable Long productId){
         Optional <Product> product = productService.findById(productId);
         if (product.isPresent()){
-            List <Image> images = product.get().getImages();
-            if (images != null){
-                Image image = images.get(id.intValue() - 1);
+            Image image = imageRepository.findByFileName(product.get().getName()+"_image_"+id);
+            if (image != null){
                 Blob imageFile = image.getimageFile();
                 try {
                     InputStreamResource file = new InputStreamResource(imageFile.getBinaryStream());

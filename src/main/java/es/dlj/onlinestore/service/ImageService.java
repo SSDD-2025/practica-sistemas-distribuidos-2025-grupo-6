@@ -5,6 +5,8 @@ import java.sql.Blob;
 import java.util.Optional;
 
 import org.hibernate.engine.jdbc.BlobProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,24 +17,29 @@ import es.dlj.onlinestore.repository.ImageRepository;
 
 @Service
 public class ImageService {
+
+    private Logger log = LoggerFactory.getLogger(ImageService.class);
+
     @Autowired
     private ImageRepository images;
 
     public void saveImage(Product product, MultipartFile rawImage, int id){
+        log.info(product.getName());
+        log.info(rawImage.getOriginalFilename());
         if (rawImage != null && !rawImage.isEmpty()){
-
             Image image = new Image();
             image.setContentType(rawImage.getContentType()); 
             image.setFileName(product.getName()+"_image_"+id);
+            log.info(image.getFileName());
             try {
                 image.setimageFile(BlobProxy.generateProxy(rawImage.getInputStream(), rawImage.getSize()));
+                log.info("Imagen completada: " + image.getFileName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
             product.addImage(image);
             images.save(image);
+            log.info("Imagen: "+product.getImages().size());
         }
-    }
-
-    
+    } 
 }

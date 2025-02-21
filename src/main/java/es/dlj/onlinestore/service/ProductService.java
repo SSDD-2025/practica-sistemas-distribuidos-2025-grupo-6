@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +22,8 @@ import jakarta.annotation.PostConstruct;
 
 @Service
 public class ProductService {
+
+    private Logger log = LoggerFactory.getLogger(ProductService.class);
 
     @Autowired
     private ProductRepository products;
@@ -176,9 +180,12 @@ public class ProductService {
             images.addFirst(mainImage);
         }
         Product product = new Product(rawProduct.getName(), rawProduct.getPrice(), rawProduct.getDescription(), productType, rawProduct.getStock(), productTagsList);
-        if (images!= null){
-            for (int i=1; i >= images.size()+1; i++){
-                MultipartFile rawImage = images.get(i);
+        products.save(product);
+        if (images != null && images.size() > 0){
+            for (int i=1; i <= images.size(); i++){
+                log.info("imagen " + i);
+                MultipartFile rawImage = images.get(i-1);
+                log.info("imagen" + rawImage.getName());
                 imageService.saveImage(product, rawImage, i);
             }
         }

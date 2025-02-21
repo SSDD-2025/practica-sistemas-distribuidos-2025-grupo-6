@@ -8,4 +8,5 @@ import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.Image;
 
 public interface ImageRepository extends JpaRepository<Image, Long>{
+    public Image findByFileName(String fileName);
 }

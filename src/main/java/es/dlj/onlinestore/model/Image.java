@@ -58,10 +58,16 @@ public class Image {
         switch (contentType) {
             case "image/jpeg":
                 this.contentType = ".jpg";
+                break;
+                
             case "image/png":
                 this.contentType = ".png";
+                break;
+
             case "image/gif":
                 this.contentType =  ".gif";
+                break;
+
             default:
                 this.contentType = ".jpg";
         }
