@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Product;
+import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ProductService.RawProduct;
 import es.dlj.onlinestore.service.UserComponent;
@@ -31,6 +32,9 @@ class ProductController {
     private Logger log = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
+    private ImageService imageService;
+
+    @Autowired
     private UserComponent userComponent;
 
     @Autowired
@@ -38,6 +42,7 @@ class ProductController {
 
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
+        imageService.resetDownloadedImages();
         model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));
         return "productDetailed_template";

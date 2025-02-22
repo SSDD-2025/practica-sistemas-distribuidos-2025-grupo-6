@@ -1,56 +1,46 @@
 package es.dlj.onlinestore.controller;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ch.qos.logback.classic.Logger;
+
 import es.dlj.onlinestore.model.Image;
 import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.repository.ImageRepository;
-import es.dlj.onlinestore.service.ProductService;
+import es.dlj.onlinestore.repository.ProductRepository;
+import es.dlj.onlinestore.service.ImageService;
+
 
  
  
  @Controller
  @RequestMapping("/image")
  class ImageController {
- 
-     private Logger log = (Logger) LoggerFactory.getLogger(getClass());
- 
-     @Autowired
-     private ProductService productService;
+
+    @Autowired
+    private ProductRepository productController;
 
      @Autowired
-     private ImageRepository imageRepository;
+     private ImageService imageService;
  
-     @GetMapping("/{productId}/{id}")
-     public ResponseEntity<Object> loadProductImage(Model model, @PathVariable Long id, @PathVariable Long productId){
-        Optional <Product> product = productService.findById(productId);
-        if (product.isPresent()){
-            Image image = imageRepository.findByFileName(product.get().getName()+"_image_"+id);
-            if (image != null){
-                Blob imageFile = image.getimageFile();
-                try {
-                    InputStreamResource file = new InputStreamResource(imageFile.getBinaryStream());
-                    return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/"+image.getContentType()).contentLength(imageFile.length()).body(imageFile);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return ResponseEntity.notFound().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getImage(@PathVariable Long id){
+            return imageService.loadProductImage(id);
     }
+
+    @GetMapping("/main/{id}")
+    public ResponseEntity<Object> getMainImage (@PathVariable Long id){
+        Optional<Product> product = productController.findById(id);
+        if (product.isPresent() && product != null){
+            Image image = product.get().getImages().get(0);
+            return imageService.loadProductImage(image.getId());
+        }
+        else
+            return ResponseEntity.notFound().build(); 
+    } 
 }
