@@ -48,6 +48,7 @@
             <div class="dropdown-menu p-3 shadow-lg" aria-labelledby="dropdownMenuButton" style="width: 650px;">
               <h5 class="text-center">Submit Your Review</h5>
               <form action="/review/makereview" method="POST">
+                <input type="hidden" name="productId" value="{{product.id}}">
                 <div class="mb-3">
                   <label for="title" class="form-label">Review Title</label>
                   <input type="text" class="form-control" id="title" name="title" placeholder="Enter a review title" required>
@@ -89,6 +90,25 @@
   <h5>Description</h5>
   <p class="card-text text-truncate mb-2">{{description}}</p>
 </div>
+
+<div class="mt-5">
+  <h3 class="text-primary">Reviews for {{product.name}}</h3>
+  <div class="list-group">
+      {{#reviews}}
+      <div class="list-group-item shadow-sm p-3 border rounded mb-3">
+          <h5 class="text-dark fw-bold">{{title}}</h5>
+          <p class="mb-1 text-muted">{{description}}</p>
+          <small class="text-muted">
+              <i class="bi bi-star-fill text-warning"></i> Rating: {{rating}}/5
+          </small>
+      </div>
+      {{/reviews}}
+      {{^reviews}}
+      <p class="text-muted">No reviews yet.</p>
+      {{/reviews}}
+  </div>
+</div>
+
 {{/ product}}
 {{^ product}}
 <div class="alert alert-danger" role="alert">
