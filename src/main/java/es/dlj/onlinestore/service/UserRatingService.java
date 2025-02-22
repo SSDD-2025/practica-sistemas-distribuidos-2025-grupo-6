@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.repository.UserRatingRepository;
 import jakarta.annotation.PostConstruct;
@@ -25,6 +26,7 @@ public class UserRatingService {
     public void init() {
         UserInfo user = userService.findById(1L);  
 
+        /* 
         Review userRating = new Review("Good product", "I like it", 4, user);
         userRatings.save(userRating);
         user.addReview(userRating);
@@ -48,20 +50,22 @@ public class UserRatingService {
         Review userRating6 = new Review("Bad product", "I hate it", 1, user);
         userRatings.save(userRating6);
         user.addReview(userRating6);
-
+*/
     }
 
     public List<Review> getUserRatings(UserInfo owner) {
         return userRatings.findByOwner(owner);
     }
 
-    /* 
-    public void saveReview(Review review) {
-        UserInfo user = userService.findById(1L); 
-        userRatings.save(review);
-        user.addReview(review);
-        
-    }*/
+    public List<Review> getReviewsByProduct(Product product) {
+        return userRatings.findByProduct(product);
+    }
+
+    public float getAverageRatingForProduct(Product product) {
+        Float average = userRatings.getAverageRating(product);
+        return (float) ((average != null) ? average : 0.0); 
+    }
+   
 
 
 }

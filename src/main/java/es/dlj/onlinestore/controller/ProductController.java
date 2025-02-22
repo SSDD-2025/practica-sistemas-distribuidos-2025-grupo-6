@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Product;
+import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ProductService.RawProduct;
 import es.dlj.onlinestore.service.UserComponent;
+import es.dlj.onlinestore.service.UserRatingService;
 
 
 @Controller
@@ -40,8 +42,19 @@ class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private UserRatingService reviewService;
+
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
+        List<Review> reviews = reviewService.getReviewsByProduct(productService.getProduct(id));
+        float averageRating = reviewService.getAverageRatingForProduct(productService.getProduct(id));
+        int numberOfReviews = reviews.size();
+        productService.getProduct(id).setNumberRatings(numberOfReviews);
+        productService.getProduct(id).setRating(averageRating);
+        
+        model.addAttribute("averageRating", averageRating);
+        model.addAttribute("reviews", reviews);
         model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));
         return "productDetailed_template";

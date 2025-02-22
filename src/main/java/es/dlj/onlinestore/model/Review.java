@@ -28,15 +28,19 @@ public class Review {
     @ManyToOne
     private UserInfo owner;
 
+    @ManyToOne
+    private Product product;
+
     public Review() {
 
     }
 
-    public Review(String title, String description, int rating, UserInfo owner) {
+    public Review(String title, String description, int rating, UserInfo owner, Product product) {
         this.title = title;
         this.description = description;
         this.rating = rating;
         this.owner = owner;
+        this.product = product;
     }
 
     public Long getId() {
@@ -59,6 +63,10 @@ public class Review {
         return owner;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -78,6 +86,10 @@ public class Review {
     public void setOwner(UserInfo owner) {
         this.owner = owner;
     } 
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
     
     @Override
     public String toString() {

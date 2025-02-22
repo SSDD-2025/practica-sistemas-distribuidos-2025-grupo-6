@@ -54,7 +54,7 @@ active
         <div class="overflow-auto" style="white-space: nowrap;">
             {{#reviews}}
             <div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
-                <h5 class="text-dark"><i class="bi bi-person-circle me-2"></i>{{owner.userName}}</h5>
+                <h5 class="text-dark">{{product.name}}</h5>
                 <p class="mb-1"><strong>{{title}}</strong></p>
                 <p class="overflow-hidden mb-1">{{description}}</p>
                 <small class="text-muted"><i class="bi bi-heart"></i> Rating: {{rating}}/5</small>
@@ -111,9 +111,6 @@ active
         {{^orders}}
         <p class="text-muted">No orders placed yet.</p>
         {{/orders}}
-    </div>
-    <div class="d-flex justify-content-end mb-3">
-        <a href="/more-products" class="btn btn-outline-primary btn-sm">Show More</a>
     </div>
 </div>
 {{/user}}
