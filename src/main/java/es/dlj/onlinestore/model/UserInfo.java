@@ -1,9 +1,11 @@
 package es.dlj.onlinestore.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -45,7 +47,6 @@ public class UserInfo {
     private String city;
     private String postalCode;
     private String phone;
-    private String creditCard;
     private String profilePhoto; 
     
     @Enumerated(EnumType.STRING)
@@ -81,6 +82,19 @@ public class UserInfo {
         this.city = city;
         this.postalCode = postalCode;
         this.phone = phone;
+    }
+
+    public void updateWith(UserInfo user) {
+        this.userName = user.userName != null ? user.userName : this.userName;
+        this.password = user.password != null ? user.password : this.password;
+        this.name = user.name != null ? user.name : this.name;
+        this.surname = user.surname != null ? user.surname : this.surname;
+        this.email = user.email != null ? user.email : this.email;
+        this.address = user.address != null ? user.address : this.address;
+        this.city = user.city != null ? user.city : this.city;
+        this.postalCode = user.postalCode != null ? user.postalCode : this.postalCode;
+        this.phone = user.phone != null ? user.phone : this.phone;
+        this.profilePhoto = user.profilePhoto != null ? user.profilePhoto : this.profilePhoto;
     }
 
     public Long getId() {
@@ -139,10 +153,6 @@ public class UserInfo {
         return phone;
     }
 
-    public String getCreditCard() {
-        return creditCard;
-    }
-
     public String getProfilePhoto() {
         return profilePhoto;
     }
@@ -177,10 +187,6 @@ public class UserInfo {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public void setCreditCard(String creditCard) {
-        this.creditCard = creditCard;
     }
 
     public void setProfilePhoto(String profilePhoto) {
@@ -244,8 +250,12 @@ public class UserInfo {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    // public void setPaymentMethod(PaymentMethod paymentMethod) {
+    //     this.paymentMethod = paymentMethod;
+    // }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = PaymentMethod.fromString(paymentMethod);
     }
 
     public boolean isCartUsed() {
@@ -274,11 +284,25 @@ public class UserInfo {
    
     @Override
     public String toString() {
-        return "User{" +
+        return "UserInfo{" +
                 "id=" + id +
+                ", creationDate=" + creationDate +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
-                '}';
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", phone='" + phone + '\'' +
+                ", profilePhoto='" + profilePhoto + '\'' +
+                ", paymentMethod=" + paymentMethod +
+                ", reviews=" + reviews +
+                ", orders=" + orders +
+                ", cartProducts=" + cartProducts +
+                ", role=" + role +
+                '}';	
     }
 
     @Override
@@ -292,6 +316,11 @@ public class UserInfo {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public String getCreationDateFormatted() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'of' MMMM, yyyy 'at' HH:mm", Locale.ENGLISH);
+        return creationDate.format(formatter);
     }
     
 }

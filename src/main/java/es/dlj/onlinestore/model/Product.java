@@ -1,8 +1,10 @@
 package es.dlj.onlinestore.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -240,5 +242,10 @@ public class Product {
 
     public float getPriceWithSale() {
         return price * (1 - sale / 100);
+    }
+
+    public String getCreationDateFormatted() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'of' MMMM, yyyy 'at' HH:mm", Locale.ENGLISH);
+        return creationDate.format(formatter);
     }
 }

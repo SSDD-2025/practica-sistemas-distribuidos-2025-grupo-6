@@ -1,5 +1,7 @@
 package es.dlj.onlinestore.model;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,6 +29,7 @@ public class Review {
     private UserInfo owner;
 
     public Review() {
+
     }
 
     public Review(String title, String description, int rating, UserInfo owner) {
@@ -35,7 +38,7 @@ public class Review {
         this.rating = rating;
         this.owner = owner;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -87,6 +90,11 @@ public class Review {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public String getCreationDateFormatted() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'of' MMMM, yyyy 'at' HH:mm", Locale.ENGLISH);
+        return creationDate.format(formatter);
     }
     
 }

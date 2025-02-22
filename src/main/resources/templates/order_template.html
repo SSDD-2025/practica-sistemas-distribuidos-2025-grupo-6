@@ -1,0 +1,74 @@
+{{< layouts/layout}} 
+
+{{$ profileSectionClass}}
+active
+{{/ profileSectionClass}}
+
+{{$ content}} 
+
+{{# order}}
+<div class="container mt-4">
+    <div class="card shadow-lg p-4 rounded-4">
+        <h2 class="text-center mb-3">Order Summary</h2>
+
+        <div class="row g-3">
+            <!-- Customer Information & Order Details with Equal Height -->
+            <div class="col-md-6 d-flex">
+                <div class="card shadow-sm rounded-4 flex-fill">
+                    <div class="card-header bg-primary text-white fw-bold">
+                        Customer Information
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Name:</strong> {{user.name}}</p>
+                        <p><strong>Email:</strong> {{user.email}}</p>
+                        <p><strong>Phone:</strong> {{phoneNumber}}</p>
+                        <p><strong>Address:</strong> {{address}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 d-flex">
+                <div class="card shadow-sm rounded-4 flex-fill">
+                    <div class="card-header bg-success text-white fw-bold">
+                        Order Details
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Order Date:</strong> {{creationDateFormatted}}</p>
+                        <p><strong>Payment Method:</strong> {{paymentMethod}}</p>
+                        <p><strong>Total Amount:</strong> <span class="text-success fw-bold">${{totalPrice}}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchased Products -->
+        <h5 class="fw-bold mt-4 mb-4">Purchased Products:</h5>
+        <div class="row g-3">
+            {{#products}}
+            <div class="col-md-3">
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-body text-center">
+                        <h6 class="card-title fw-bold">{{name}}</h6>
+                        <p class="text-muted small">{{description}}</p>
+                        <span class="badge bg-primary rounded-pill">${{price}}</span>
+                        <div class="mt-2">
+                            <a href="/product/{{id}}" class="btn btn-sm btn-outline-primary rounded-pill">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/products}}
+        </div>
+
+        <!-- Back to Home Button -->
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-outline-secondary rounded-pill px-4">Back to Home</a>
+        </div>
+    </div>
+</div>
+
+
+{{/ order}}
+
+{{/ content}} 
+{{/ layouts/layout}}

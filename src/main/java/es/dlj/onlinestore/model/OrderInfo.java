@@ -1,7 +1,9 @@
 package es.dlj.onlinestore.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -75,6 +77,16 @@ public class OrderInfo {
 
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    public String getCreationDateFormatted() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'of' MMMM, yyyy 'at' HH:mm", Locale.ENGLISH);
+        return creationDate.format(formatter);
+    }
+
+    public String getCreationDateFormattedSimpler() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-mm-yyyy");
+        return creationDate.format(formatter);
     }
 
     public void setCreationDate(LocalDateTime creationDate) {

@@ -7,25 +7,18 @@ active
 
 {{$ content}}
 
-<!-- Menu -->
+
 <div class="container mt-3">
     <div class="d-flex justify-content-end">
-        <div class="dropdown">
-            <button class="btn btn-outline-primary dropdown-toggle rounded-pill px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-list"></i> Menu
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li><a class="dropdown-item" href="/editprofile"><i class="bi bi-pencil-square me-2"></i>Edit Profile</a></li>
-                <li><a class="dropdown-item" href="/privacy"><i class="bi bi-shield-lock me-2"></i>Privacy</a></li>
-                <li><a class="dropdown-item" href="/notifications"><i class="bi bi-box-seam me-2"></i>Sell Product</a></li>
-                <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-            </ul>
-        </div>
+        <a href="/editprofile" class="btn btn-primary d-flex align-items-center px-3 py-2 shadow-sm rounded-pill">
+            <i class="bi bi-pencil-square me-2"></i> Editar Perfil
+        </a>
     </div>
 </div>
 
+
 {{#user}}
-<div class="container mt-5">
+<div class="container mt-3">
     <div class="row">
         
         <div class="col-md-4 text-center">
@@ -63,7 +56,7 @@ active
             <div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
                 <h5 class="text-dark"><i class="bi bi-person-circle me-2"></i>{{owner.userName}}</h5>
                 <p class="mb-1"><strong>{{title}}</strong></p>
-                <p class="mb-1">{{description}}</p>
+                <p class="overflow-hidden mb-1">{{description}}</p>
                 <small class="text-muted"><i class="bi bi-heart"></i> Rating: {{rating}}/5</small>
             </div>
             {{/reviews}}
@@ -80,13 +73,14 @@ active
             {{#orders}}
             <div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
                 <h5 class="text-dark"><i class="bi bi-receipt me-2"></i>Order ID: {{id}}</h5>
-                <p><strong>Date:</strong> {{creationDate}}</p>
+                <p><strong>Date:</strong> {{creationDateFormattedSimpler}}</p>
                 <ul>
                     {{#products}}
                     <li>{{name}} : ${{price}}</li>
                     {{/products}}
                 </ul>
                 <p><strong>Total Price:</strong> ${{totalPrice}}</p>
+                <a class="btn btn-outline-primary btn-sm" href="/order/{{id}}">View Details</a>
             </div>
             {{/orders}}
             {{^orders}}
@@ -99,13 +93,13 @@ active
 <div class="mt-5">
     <h3 class="text-primary">Products for sale</h3>
     <div class="d-flex justify-content-end mb-3">
-        <a href="/add-product" class="btn btn-primary">+ Add Product</a>
+        <a href="/product/form" class="btn btn-primary">+ Add Product</a>
     </div>
     <div class="d-flex overflow-auto pb-3" style="white-space: nowrap; gap: 10px; scroll-snap-type: x mandatory;">
         {{#orders}}
         <div class="list-group-item shadow-sm p-3 border rounded d-inline-block" style="width: 300px; flex: 0 0 auto; scroll-snap-align: start;">
             <h5 class="text-dark"><i class="bi bi-receipt me-2"></i> Order ID: {{id}}</h5>
-            <p><strong>Date:</strong> {{creationDate}}</p>
+            <p><strong>Date:</strong> {{creationDateFormattedSimpler}}</p>
             <ul>
                 {{#products}}
                 <li>{{name}} : ${{price}}</li>

@@ -17,6 +17,11 @@
                 <form action="/save-editprofilechanges" method="POST">
                     <div class="row g-4">
                         <div class="col-md-6">
+                            <label for="name" class="form-label">User Name</label>
+                            <input type="text" class="form-control" id="userName" name="userName" 
+                                value="{{#userName}}{{userName}}{{/userName}}{{^userName}}No userName available{{/userName}}">
+                        </div>
+                        <div class="col-md-6">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name" name="name" 
                                 value="{{#name}}{{name}}{{/name}}{{^name}}No name available{{/name}}">

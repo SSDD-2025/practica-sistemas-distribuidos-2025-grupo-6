@@ -1,17 +1,15 @@
 package es.dlj.onlinestore.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import es.dlj.onlinestore.enumeration.PaymentMethod;
-import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.service.UserComponent;
 import es.dlj.onlinestore.service.UserRatingService;
 import es.dlj.onlinestore.service.UserService;
@@ -23,20 +21,14 @@ public class UserProfileController {
     private UserComponent userComponent;
 
     @Autowired
-    private UserService userService;
+    private OrderRepository orderRepository;
 
-    @Autowired
-    private UserRatingService reviewService;
-    
     @GetMapping("/userprofile")
     public String getUserProfile(Model model) {
         UserInfo user = userComponent.getUser();
         model.addAttribute("user", user);
 
-        List<Review> userReviews = reviewService.getUserRatings(user);
-        System.out.println("Reseñas del usuario: " + userReviews);
-       
-		return "userprofile_template";
+        return "userprofile_template";
     }
 
     @GetMapping("/editprofile")
@@ -47,34 +39,21 @@ public class UserProfileController {
         return "editprofile_template";
     }
 
-
     @PostMapping("/save-editprofilechanges")
-    public String saveProfileChanges(Model model, 
-                                 @RequestParam String name, 
-                                 @RequestParam String surname, 
-                                 @RequestParam String email, 
-                                 @RequestParam String phone, 
-                                 @RequestParam String address, 
-                                 @RequestParam String city, 
-                                 @RequestParam String postalCode,
-                                 @RequestParam String paymentMethod) {
+    public String saveProfileChanges(Model model, @ModelAttribute UserInfo newUser) {
+        UserInfo user = userComponent.getUser();
+        user.updateWith(newUser);
 
-    UserInfo user = userComponent.getUser();
-    
-    user.setName(name);
-    user.setSurname(surname);
-    user.setEmail(email);
-    user.setPhone(phone);
-    user.setAddress(address);
-    user.setCity(city);
-    user.setPostalCode(postalCode);
-    user.setPaymentMethod(PaymentMethod.fromString(paymentMethod));
-    userService.save(user);
-
-    return "redirect:/userprofile"; 
+        return "redirect:/userprofile";
     }
 
+    @GetMapping("/order/{id}")
+    public String getOrderView(Model model, @PathVariable Long id) {
+        UserInfo user = userComponent.getUser();
+        model.addAttribute("user", user);
+        model.addAttribute("order", orderRepository.getReferenceById(id));
 
-    
+        return "order_template";
+    }
 
 }
