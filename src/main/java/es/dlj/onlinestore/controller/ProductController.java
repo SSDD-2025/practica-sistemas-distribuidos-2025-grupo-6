@@ -48,6 +48,11 @@ class ProductController {
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
         List<Review> reviews = reviewService.getReviewsByProduct(productService.getProduct(id));
+        float averageRating = reviewService.getAverageRatingForProduct(productService.getProduct(id));
+        int numberOfReviews = reviews.size();
+        productService.getProduct(id).setNumberRatings(numberOfReviews);
+
+        model.addAttribute("averageRating", averageRating);
         model.addAttribute("reviews", reviews);
         model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));

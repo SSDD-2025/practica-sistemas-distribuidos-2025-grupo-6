@@ -61,6 +61,10 @@ public class UserRatingService {
         return userRatings.findByProduct(product);
     }
 
+    public float getAverageRatingForProduct(Product product) {
+        Float average = userRatings.getAverageRating(product);
+        return (float) ((average != null) ? average : 0.0); 
+    }
    
 
 
