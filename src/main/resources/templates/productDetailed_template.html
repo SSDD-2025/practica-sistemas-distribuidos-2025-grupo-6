@@ -45,10 +45,10 @@
       <div class="container mt-3">
         <div class="d-flex justify-content-end">
           <div class="dropdown">
-            <button class="btn btn-outline-primary dropdown-toggle px-4 py-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-outline-primary dropdown-toggle px-4 py-2 rounded-3 shadow-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-star me-2"></i> Make a Review
             </button>
-            <div class="dropdown-menu p-3 shadow-lg" style="width: 400px;">
+            <div class="dropdown-menu p-3 shadow-lg" aria-labelledby="dropdownMenuButton" style="width: 650px;">
               <h5 class="text-center">Submit Your Review</h5>
               <form action="/review/makereview" method="POST">
                 <div class="mb-3">
@@ -60,13 +60,23 @@
                   <textarea class="form-control" id="description" name="description" rows="3" placeholder="Write your review here..." required></textarea>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label">Rating</label>
+                  <label class="form-label text-muted">Rating</label>
                   <select class="form-select" name="rating" required>
-                    <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                    <option value="4">⭐⭐⭐⭐ (4)</option>
-                    <option value="3">⭐⭐⭐ (3)</option>
-                    <option value="2">⭐⭐ (2)</option>
-                    <option value="1">⭐ (1)</option>
+                    <option value="5">
+                      <i class="bi bi-star-fill"></i> 5 Stars
+                    </option>
+                    <option value="4">
+                      <i class="bi bi-star-fill"></i> 4 Stars
+                    </option>
+                    <option value="3">
+                      <i class="bi bi-star-fill"></i> 3 Stars
+                    </option>
+                    <option value="2">
+                      <i class="bi bi-star-fill"></i> 2 Stars
+                    </option>
+                    <option value="1">
+                      <i class="bi bi-star-fill"></i> 1 Star
+                    </option>
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Submit Review</button>
@@ -74,7 +84,7 @@
             </div>
           </div>
         </div>
-      </div>       
+      </div>                 
   </div>
 </div>
 
