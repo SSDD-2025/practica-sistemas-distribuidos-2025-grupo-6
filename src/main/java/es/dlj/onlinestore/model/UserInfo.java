@@ -191,7 +191,8 @@ public class UserInfo {
     }
 
     public void addReview(Review review){
-        reviews.add(review);
+        this.reviews.add(review);
+        review.setOwner(this);
     }
 
     public void removeReview(Review review){

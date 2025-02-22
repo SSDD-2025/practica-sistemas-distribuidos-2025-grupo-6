@@ -9,7 +9,7 @@ import es.dlj.onlinestore.model.Review;
 
 
 public interface UserRatingRepository extends JpaRepository<Review, Long> {
-
+    
     List<Review> findByOwner(UserInfo owner);
-
+    
 }

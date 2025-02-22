@@ -19,7 +19,7 @@ public class Review {
     @CreationTimestamp
     private LocalDateTime creationDate;
 
-    private String tittle;
+    private String title;
     private String description;
     private int rating;
 
@@ -29,8 +29,8 @@ public class Review {
     public Review() {
     }
 
-    public Review(String tittle, String description, int rating, UserInfo owner) {
-        this.tittle = tittle;
+    public Review(String title, String description, int rating, UserInfo owner) {
+        this.title = title;
         this.description = description;
         this.rating = rating;
         this.owner = owner;
@@ -40,8 +40,8 @@ public class Review {
         return id;
     }
 
-    public String getTittle() {
-        return tittle;
+    public String getTitle() {
+        return title;
     }
 
     public String getDescription() {
@@ -56,8 +56,12 @@ public class Review {
         return owner;
     }
 
-    public void setTittle(String tittle) {
-        this.tittle = tittle;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTitle(String tittle) {
+        this.title = tittle;
     }
 
     public void setDescription(String description) {
@@ -74,7 +78,7 @@ public class Review {
     
     @Override
     public String toString() {
-        return "UserRating{" + "id=" + id + ", tittle=" + tittle + ", description=" + description + ", rating=" + rating + ", creationDate=" + creationDate + ", owner=" + owner + '}';
+        return "UserRating{" + "id=" + id + ", tittle=" + title + ", description=" + description + ", rating=" + rating + ", creationDate=" + creationDate + ", owner=" + owner + '}';
     }
 
     public LocalDateTime getCreationDate() {

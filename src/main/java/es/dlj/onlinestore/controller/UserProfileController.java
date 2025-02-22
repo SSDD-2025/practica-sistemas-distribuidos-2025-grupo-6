@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.dlj.onlinestore.enumeration.PaymentMethod;
+import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.UserComponent;
+import es.dlj.onlinestore.service.UserRatingService;
 import es.dlj.onlinestore.service.UserService;
 
 @Controller
@@ -24,12 +26,19 @@ public class UserProfileController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRatingService reviewService;
     
     @GetMapping("/userprofile")
     public String getUserProfile(Model model) {
         
         UserInfo user = userComponent.getUser();
         model.addAttribute("user", user);
+
+        List<Review> userReviews = reviewService.getUserRatings(user);
+        System.out.println("Reseñas del usuario: " + userReviews);
+        model.addAttribute("reviews", userReviews); 
 
 		return "userprofile_template";
     }
@@ -77,5 +86,8 @@ public class UserProfileController {
 
     return "redirect:/userprofile"; 
     }
+
+
+    
 
 }

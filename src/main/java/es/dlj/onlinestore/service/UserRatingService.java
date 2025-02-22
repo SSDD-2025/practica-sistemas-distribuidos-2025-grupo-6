@@ -33,10 +33,34 @@ public class UserRatingService {
         userRatings.save(userRating2);
         user.addReview(userRating2);
 
+        Review userRating3 = new Review("Perfect product", "I love it", 5, user);
+        userRatings.save(userRating3);
+        user.addReview(userRating3);
+
+        Review userRating4 = new Review("Fragile product", "I don't like it, I used it twice and it's already broken", 2, user);
+        userRatings.save(userRating4);
+        user.addReview(userRating4);
+
+        Review userRating5 = new Review("Very good product", "It is useful", 5, user);
+        userRatings.save(userRating5);
+        user.addReview(userRating5);
+
+        Review userRating6 = new Review("Bad product", "I hate it", 1, user);
+        userRatings.save(userRating6);
+        user.addReview(userRating6);
+
     }
 
     public List<Review> getUserRatings(UserInfo owner) {
         return userRatings.findByOwner(owner);
     }
+
+    public void saveReview(Review review) {
+        UserInfo user = userService.findById(1L); 
+        userRatings.save(review);
+        user.addReview(review);
+        
+    }
+
 
 }

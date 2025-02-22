@@ -2,7 +2,6 @@ package es.dlj.onlinestore.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.UserInfoRepository;
 import jakarta.annotation.PostConstruct;
@@ -29,6 +28,4 @@ public class UserService {
     public UserInfo findById(Long id) {
         return users.findById(id).orElse(null);
     }
-
-    
 }
