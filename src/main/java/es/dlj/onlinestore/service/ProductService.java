@@ -16,8 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductTag;
+import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
+import es.dlj.onlinestore.repository.UserInfoRepository;
 import jakarta.annotation.PostConstruct;
 
 @Service
@@ -34,6 +36,9 @@ public class ProductService {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
     public class RawProduct{
         
         private String name;
@@ -44,6 +49,7 @@ public class ProductService {
         private List<String> tags;
         private String productType;
         private List<MultipartFile>images;
+        private long sellerId;
                 
         public RawProduct() {
             this.tags = new ArrayList<>();
@@ -113,6 +119,14 @@ public class ProductService {
         public void setImages(List<MultipartFile> images) {
             this.images = images;
         }
+
+        public void setSeller(long userId){
+            this.sellerId = userId;
+        }
+
+        public long getSeller(){
+            return this.sellerId;
+        }
     }
         
             @PostConstruct
@@ -126,30 +140,30 @@ public class ProductService {
                 products.save(new Product("product6", 60.0f, "description6", Product.productType.NEW, 60, new LinkedList<>()));
                 */
         
-                Product product = this.saveProduct("Laptop Dell XPS 15", 1500f, "High-end laptop", ProductType.NEW, 10, Arrays.asList("electronics", "laptop"), null, null);
+                Product product = this.saveProduct("Laptop Dell XPS 15", 1500f, "High-end laptop", ProductType.NEW, 10, Arrays.asList("electronics", "laptop"), null, null, 0);
                 product.setSale(25f);
                 products.save(product);
-                this.saveProduct("iPhone 13 Pro", 1200f, "Latest Apple smartphone", ProductType.NEW, 15, Arrays.asList("smartphone", "apple"), null, null);
-                this.saveProduct("Samsung Galaxy S21", 1000f, "Samsung flagship phone", ProductType.RECONDITIONED, 20, Arrays.asList("smartphone", "android"), null, null);
-                this.saveProduct("HP Pavilion 14", 750f, "Affordable HP laptop", ProductType.NEW, 12, Arrays.asList("laptop", "hp"), null, null);
-                this.saveProduct("MacBook Air M1", 999f, "Apple M1 laptop", ProductType.NEW, 8, Arrays.asList("laptop", "apple"), null, null);
-                this.saveProduct("PlayStation 5", 499f, "Next-gen gaming console", ProductType.NEW, 5, Arrays.asList("gaming", "console"), null, null);
-                this.saveProduct("Xbox Series X", 499f, "Microsoft gaming console", ProductType.NEW, 6, Arrays.asList("gaming", "console"), null, null);
-                this.saveProduct("iPad Air 4", 599f, "Apple tablet", ProductType.NEW, 10, Arrays.asList("tablet", "apple"), null, null);
-                this.saveProduct("Kindle Paperwhite", 150f, "Amazon e-reader", ProductType.NEW, 20, Arrays.asList("tablet", "reader"), null, null);
-                this.saveProduct("Sony WH-1000XM4", 350f, "Noise-canceling headphones", ProductType.NEW, 15, Arrays.asList("audio", "headphones"), null, null);
-                this.saveProduct("Bose QC35 II", 299f, "Wireless headphones", ProductType.NEW, 12, Arrays.asList("audio", "headphones"), null, null);
-                this.saveProduct("LG OLED CX 55", 1300f, "55-inch OLED TV", ProductType.NEW, 8, Arrays.asList("tv", "lg"), null, null);
-                this.saveProduct("Samsung QLED Q80T", 1200f, "65-inch QLED TV", ProductType.NEW, 10, Arrays.asList("tv", "samsung"), null, null);
-                this.saveProduct("Nikon D3500", 450f, "DSLR Camera", ProductType.NEW, 7, Arrays.asList("camera", "nikon"), null, null);
-                this.saveProduct("Canon EOS M50", 600f, "Mirrorless Camera", ProductType.NEW, 5, Arrays.asList("camera", "canon"), null, null);
-                this.saveProduct("GoPro Hero 9", 400f, "Action Camera", ProductType.NEW, 10, Arrays.asList("camera", "gopro"), null, null);
-                this.saveProduct("Surface Pro 7", 800f, "Microsoft tablet-laptop hybrid", ProductType.NEW, 9, Arrays.asList("tablet", "microsoft"), null, null);
-                this.saveProduct("Dell UltraSharp 27", 500f, "4K Monitor", ProductType.NEW, 11, Arrays.asList("monitor", "dell"), null, null);
-                this.saveProduct("Apple Watch Series 7", 399f, "Smartwatch", ProductType.NEW, 14, Arrays.asList("watch", "apple"), null, null);
-                this.saveProduct("Samsung Galaxy Watch 4", 299f, "Smartwatch", ProductType.NEW, 13, Arrays.asList("watch", "samsung"), null, null);
-                this.saveProduct("Apple Watch Series 7", 399f, "Smartwatch", ProductType.NEW, 14, Arrays.asList("watch", "apple"), null, null);
-                this.saveProduct("Samsung Galaxy Watch 4", 299f, "Smartwatch", ProductType.NEW, 13, Arrays.asList("watch", "samsung"), null, null);
+                this.saveProduct("iPhone 13 Pro", 1200f, "Latest Apple smartphone", ProductType.NEW, 15, Arrays.asList("smartphone", "apple"), null, null, 0);
+                this.saveProduct("Samsung Galaxy S21", 1000f, "Samsung flagship phone", ProductType.RECONDITIONED, 20, Arrays.asList("smartphone", "android"), null, null, 0);
+                this.saveProduct("HP Pavilion 14", 750f, "Affordable HP laptop", ProductType.NEW, 12, Arrays.asList("laptop", "hp"), null, null, 0);
+                this.saveProduct("MacBook Air M1", 999f, "Apple M1 laptop", ProductType.NEW, 8, Arrays.asList("laptop", "apple"), null, null, 0);
+                this.saveProduct("PlayStation 5", 499f, "Next-gen gaming console", ProductType.NEW, 5, Arrays.asList("gaming", "console"), null, null, 0);
+                this.saveProduct("Xbox Series X", 499f, "Microsoft gaming console", ProductType.NEW, 6, Arrays.asList("gaming", "console"), null, null, 0);
+                this.saveProduct("iPad Air 4", 599f, "Apple tablet", ProductType.NEW, 10, Arrays.asList("tablet", "apple"), null, null, 0);
+                this.saveProduct("Kindle Paperwhite", 150f, "Amazon e-reader", ProductType.NEW, 20, Arrays.asList("tablet", "reader"), null, null, 0);
+                this.saveProduct("Sony WH-1000XM4", 350f, "Noise-canceling headphones", ProductType.NEW, 15, Arrays.asList("audio", "headphones"), null, null, 0);
+                this.saveProduct("Bose QC35 II", 299f, "Wireless headphones", ProductType.NEW, 12, Arrays.asList("audio", "headphones"), null, null, 0);
+                this.saveProduct("LG OLED CX 55", 1300f, "55-inch OLED TV", ProductType.NEW, 8, Arrays.asList("tv", "lg"), null, null, 0);
+                this.saveProduct("Samsung QLED Q80T", 1200f, "65-inch QLED TV", ProductType.NEW, 10, Arrays.asList("tv", "samsung"), null, null, 0);
+                this.saveProduct("Nikon D3500", 450f, "DSLR Camera", ProductType.NEW, 7, Arrays.asList("camera", "nikon"), null, null, 0);
+                this.saveProduct("Canon EOS M50", 600f, "Mirrorless Camera", ProductType.NEW, 5, Arrays.asList("camera", "canon"), null, null, 0);
+                this.saveProduct("GoPro Hero 9", 400f, "Action Camera", ProductType.NEW, 10, Arrays.asList("camera", "gopro"), null, null, 0);
+                this.saveProduct("Surface Pro 7", 800f, "Microsoft tablet-laptop hybrid", ProductType.NEW, 9, Arrays.asList("tablet", "microsoft"), null, null, 0);
+                this.saveProduct("Dell UltraSharp 27", 500f, "4K Monitor", ProductType.NEW, 11, Arrays.asList("monitor", "dell"), null, null, 0);
+                this.saveProduct("Apple Watch Series 7", 399f, "Smartwatch", ProductType.NEW, 14, Arrays.asList("watch", "apple"), null, null, 0);
+                this.saveProduct("Samsung Galaxy Watch 4", 299f, "Smartwatch", ProductType.NEW, 13, Arrays.asList("watch", "samsung"), null, null, 0);
+                this.saveProduct("Apple Watch Series 7", 399f, "Smartwatch", ProductType.NEW, 14, Arrays.asList("watch", "apple"), null, null, 0);
+                this.saveProduct("Samsung Galaxy Watch 4", 299f, "Smartwatch", ProductType.NEW, 13, Arrays.asList("watch", "samsung"), null, null, 0);
         
         
             }
@@ -179,7 +193,7 @@ public class ProductService {
         if (mainImage != null){
             images.addFirst(mainImage);
         }
-        Product product = new Product(rawProduct.getName(), rawProduct.getPrice(), rawProduct.getDescription(), productType, rawProduct.getStock(), productTagsList);
+        Product product = new Product(rawProduct.getName(), rawProduct.getPrice(), rawProduct.getDescription(), productType, rawProduct.getStock(), productTagsList, rawProduct.getSeller());
         products.save(product);
         boolean isMainImage = false;
         if (images != null && images.size() > 0){
@@ -190,24 +204,33 @@ public class ProductService {
                 log.info("imagen " + i);
                 MultipartFile rawImage = images.get(i-1);
                 log.info("imagen" + rawImage.getName());
-                imageService.saveImage(product, rawImage, isMainImage);
+                imageService.saveImage(product, rawImage, i, isMainImage);
                 isMainImage = false;
             }
         }
         products.save(product);
+        log.info("Id del vendedor: "+rawProduct.getSeller());
+        if (product.getProductType() == ProductType.SECONDHAND){
+            Optional <UserInfo> user = userInfoRepository.findById(rawProduct.getSeller());
+            if (user.isPresent()){
+                user.get().addProduct(product);
+                log.info("Productos en venta_ " + user.get().getProductsForSell().size());
+                userInfoRepository.save(user.get());
+            }
+        }
         return product;
     }
 
-    public Product saveProduct(String name, float price, String description, ProductType productType, int stock, List<String> tags, List<MultipartFile> rawImages, MultipartFile rawMainImage) {
+    public Product saveProduct(String name, float price, String description, ProductType productType, int stock, List<String> tags, List<MultipartFile> rawImages, MultipartFile rawMainImage, long userId) {
         List<ProductTag> productTagsList = transformStringToTags(tags);
         if (rawMainImage != null){
             rawImages.addFirst(rawMainImage);
         }
-        Product product = new Product(name, price, description, productType, stock, productTagsList);
+        Product product = new Product(name, price, description, productType, stock, productTagsList, userId);
         if (rawImages!= null){
             for (int i=1; i >= rawImages.size()+1; i++){
                 MultipartFile rawImage = rawImages.get(i);
-                imageService.saveImage(product, rawImage, false);
+                imageService.saveImage(product, rawImage, i, false);
             }
         }
         products.save(product);

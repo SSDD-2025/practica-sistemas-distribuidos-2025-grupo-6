@@ -17,8 +17,9 @@ active
         <h3 class="text-center mb-4">Add New Product</h3>
         <form action="/product/new" method="post" enctype="multipart/form-data">
         {{/ product }}
-
-        
+            {{#sellerId}}
+            <input class="d-none" name="sellerId" value="{{.}}" type="number">
+            {{/sellerId}}
             <fieldset class="mb-3">
                 <legend>Images</legend>
                 <div class="mb-3">

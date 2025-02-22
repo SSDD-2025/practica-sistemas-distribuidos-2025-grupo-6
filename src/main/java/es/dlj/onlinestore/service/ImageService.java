@@ -1,5 +1,6 @@
 package es.dlj.onlinestore.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Blob;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -31,17 +33,20 @@ public class ImageService {
     @Autowired
     private ImageRepository images;
 
-    public void saveImage(Product product, MultipartFile rawImage, boolean mainImage){
+    @Transactional //without this it will give ERROR 8172 [nio-8080-exec-3] o.h.engine.jdbc.spi.SqlExceptionHelper   : Underlying stream does not allow reset
+    public void saveImage(Product product, MultipartFile rawImage, int i, boolean mainImage){
         log.info(product.getName());
         log.info(rawImage.getOriginalFilename());
         if (rawImage != null && !rawImage.isEmpty()){
             Image image = new Image();
-            image.setContentType(rawImage.getContentType()); 
+            image.setContentType(rawImage.getContentType());
             if (mainImage){
                 image.setIsMainImage(true);
             }
             try {
-                image.setimageFile(BlobProxy.generateProxy(rawImage.getInputStream(), rawImage.getSize()));
+                byte[] imageData = rawImage.getBytes();
+                Blob imageFile = BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length);
+                image.setimageFile(imageFile);
                 log.info("es imagen principal: " + image.getIsMainImage());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -53,18 +58,18 @@ public class ImageService {
     }
 
     public ResponseEntity<Object> loadProductImage(Long id){
-        Optional<Image> image = images.findById(id);
-        if (image.isPresent()){
-            Blob imageData = image.get().getimageFile();
-            try {
-                Resource imageFile = new InputStreamResource(imageData.getBinaryStream());
-                String contentType = "image/"+image.get().getContentType();
-                log.info("Id imagen: " + id);
-                return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, contentType).contentLength(imageData.length()).body(imageFile);
-            } catch (SQLException e) {
-                log.info("Error al cargar");
+            Optional<Image> image = images.findById(id);
+            if (image.isPresent() && image != null){
+                Blob imageData = image.get().getimageFile();
+                try {
+                    Resource imageFile = new InputStreamResource(imageData.getBinaryStream());
+                    String contentType = "image/"+image.get().getContentType();
+                    log.info("Id imagen: " + id);
+                    return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, contentType).contentLength(imageData.length()).body(imageFile);
+                } catch (SQLException e) {
+                    log.info("Error al cargar");
+                }
             }
-        }
         return ResponseEntity.notFound().build();
     }
 }

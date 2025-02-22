@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.Review;
+import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ProductService.RawProduct;
@@ -30,6 +31,11 @@ import es.dlj.onlinestore.service.UserRatingService;
 @Controller
 @RequestMapping("/product")
 class ProductController {
+
+    private Logger log = LoggerFactory.getLogger(ProductController.class);
+
+    @Autowired
+    private ImageService imageService;
 
     @Autowired
     private UserComponent userComponent;
@@ -150,6 +156,8 @@ class ProductController {
     @PostMapping("/form")
     public String ProductForm(Model model, @RequestParam long id) {
         if (id > 0) {
+            UserInfo user = userComponent.getUser();
+            int sellerId = user.getId().intValue();
             Product product = productService.getProduct(id);
             boolean newProduct = product.getProductType() == ProductType.NEW;
             boolean reconditionedProduct = product.getProductType() == ProductType.RECONDITIONED;
@@ -158,6 +166,7 @@ class ProductController {
             model.addAttribute("secondHand", secondHandProduct);
             model.addAttribute("reconditioned", reconditionedProduct);
             model.addAttribute("product", product);
+            model.addAttribute("sellerId", sellerId);
         }
         return "productForm_template";
     }

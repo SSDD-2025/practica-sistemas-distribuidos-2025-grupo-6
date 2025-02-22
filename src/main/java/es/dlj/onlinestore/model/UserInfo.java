@@ -47,7 +47,11 @@ public class UserInfo {
     private String city;
     private String postalCode;
     private String phone;
+    private String creditCard;
     private String profilePhoto; 
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Product> productsForSell;
     
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
@@ -82,6 +86,7 @@ public class UserInfo {
         this.city = city;
         this.postalCode = postalCode;
         this.phone = phone;
+        this.productsForSell = new ArrayList<Product>();
     }
 
     public void updateWith(UserInfo user) {
@@ -153,6 +158,10 @@ public class UserInfo {
         return phone;
     }
 
+    public String getCreditCard() {
+        return creditCard;
+    }
+
     public String getProfilePhoto() {
         return profilePhoto;
     }
@@ -187,6 +196,10 @@ public class UserInfo {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public void setCreditCard(String creditCard) {
+        this.creditCard = creditCard;
     }
 
     public void setProfilePhoto(String profilePhoto) {
@@ -281,7 +294,41 @@ public class UserInfo {
         }
         return paymentMethods;
     }
-   
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserInfo otherUser = (UserInfo) o;
+        return Objects.equals(id, otherUser.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public void addProduct(Product product){
+        this.productsForSell.add(product);
+    }
+
+    public List<Product> getProductsForSell(){
+        return this.productsForSell;
+    }
+
+    public void removeProduct(Product removingProduct){
+        int index = 0;
+        for (int i=0; i<this.productsForSell.size(); i++){
+            Product product = this.productsForSell.get(i);
+            if (removingProduct.getId() == product.getId())
+            {
+                index = i;
+                break;
+            }
+        }
+        this.productsForSell.remove(index);
+    }
+    
     @Override
     public String toString() {
         return "UserInfo{" +
@@ -305,22 +352,8 @@ public class UserInfo {
                 '}';	
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserInfo otherUser = (UserInfo) o;
-        return Objects.equals(id, otherUser.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
     public String getCreationDateFormatted() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'of' MMMM, yyyy 'at' HH:mm", Locale.ENGLISH);
         return creationDate.format(formatter);
     }
-    
 }

@@ -1,15 +1,14 @@
 package es.dlj.onlinestore.model;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import es.dlj.onlinestore.enumeration.ProductType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,12 +32,14 @@ public class Product {
     private String name;
     private Float price;
     private int stock;
+    private long sellerId;
 
     @Column(length = 2000)
     private String description;
 
-    @OneToMany
-    private List<Image> images = new LinkedList<>();;
+    @OneToMany (cascade = CascadeType.ALL)
+    private List<Image>images;
+
     
     @ManyToMany
     private List<ProductTag> tags;
@@ -56,7 +57,7 @@ public class Product {
 
     }
 
-    public Product(String name, float price, String description, ProductType productType, int stock, List<ProductTag> tags){
+    public Product(String name, float price, String description, ProductType productType, int stock, List<ProductTag> tags, long userId){
         this.name = name;
         this.price = price;
         this.stock = stock;
@@ -68,6 +69,11 @@ public class Product {
         this.lastWeekSells = 0;
         this.sale = 0f;
         this.tags = tags;
+        this.images = new LinkedList<Image>();
+        if (this.productType == ProductType.SECONDHAND)
+            this.sellerId = userId;
+        else
+            this.sellerId = 0;
     }
 
     public long getId() {
@@ -243,8 +249,11 @@ public class Product {
         return price * (1 - sale / 100);
     }
 
-    public String getCreationDateFormatted() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'of' MMMM, yyyy 'at' HH:mm", Locale.ENGLISH);
-        return creationDate.format(formatter);
+    public void setSellerId(long id){
+        this.sellerId = id;
+    }
+
+    public long getSellerId(){
+        return this.sellerId;
     }
 }
