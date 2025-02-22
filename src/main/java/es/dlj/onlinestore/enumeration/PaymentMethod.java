@@ -1,9 +1,5 @@
 package es.dlj.onlinestore.enumeration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public enum PaymentMethod {
     CREDIT_CARD ("Credit Card"),
     PAYPAL ("PayPal"),

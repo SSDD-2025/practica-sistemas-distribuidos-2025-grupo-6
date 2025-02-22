@@ -308,7 +308,7 @@ public class ProductService {
         if (productTypeStrings != null) {
             productTypes = new ArrayList<>();
             for (String type : productTypeStrings) {
-                productTypes.add(ProductType.fromString(type));
+                productTypes.add(ProductType.valueOf(type));
             }
         }
 

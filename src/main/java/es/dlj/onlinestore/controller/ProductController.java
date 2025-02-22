@@ -31,11 +31,6 @@ import es.dlj.onlinestore.service.UserRatingService;
 @RequestMapping("/product")
 class ProductController {
 
-    private Logger log = LoggerFactory.getLogger(ProductController.class);
-
-    @Autowired
-    private ImageService imageService;
-
     @Autowired
     private UserComponent userComponent;
 
@@ -76,7 +71,7 @@ class ProductController {
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         } else if (productType != null) {
             // If it comes from nav bar for product type search
-            ProductType productTypeObj = ProductType.fromString(productType);
+            ProductType productTypeObj = ProductType.valueOf(productType);
             model.addAttribute("productList", productService.getProductsByProductType(productTypeObj));
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount(productTypeObj));
         } else {

@@ -4,8 +4,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,14 +15,9 @@ import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.service.ImageService;
 
-
- 
- 
  @Controller
  @RequestMapping("/image")
  class ImageController {
-
-    private Logger log = LoggerFactory.getLogger(ImageService.class);
 
     @Autowired
     private ProductRepository productController;
@@ -40,8 +33,7 @@ import es.dlj.onlinestore.service.ImageService;
     @GetMapping("/main/{id}")
     public ResponseEntity<Object> getMainImage (@PathVariable Long id){
         Optional<Product> product = productController.findById(id);
-        log.info("Entrando en imagenes main");
-        if (product.isPresent() && product != null){
+        if (product.isPresent()){
             Image image = product.get().getImages().get(0);
             return imageService.loadProductImage(image.getId());
         }

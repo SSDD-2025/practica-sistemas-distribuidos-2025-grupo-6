@@ -20,9 +20,6 @@ public class HomeController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ImageService imageService;
-
     @GetMapping("/")
     public String getHome(Model model) {
 

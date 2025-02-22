@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.service.UserComponent;
-import es.dlj.onlinestore.service.UserRatingService;
-import es.dlj.onlinestore.service.UserService;
 
 @Controller
 public class UserProfileController {
