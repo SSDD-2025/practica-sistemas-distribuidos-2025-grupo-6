@@ -1,8 +1,6 @@
 package es.dlj.onlinestore.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,8 +35,7 @@ public class UserProfileController {
 
         List<Review> userReviews = reviewService.getUserRatings(user);
         System.out.println("Reseñas del usuario: " + userReviews);
-        model.addAttribute("reviews", userReviews); 
-
+       
 		return "userprofile_template";
     }
 

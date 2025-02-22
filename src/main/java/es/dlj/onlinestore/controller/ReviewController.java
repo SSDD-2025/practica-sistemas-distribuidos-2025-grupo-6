@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.repository.UserRatingRepository;
 import es.dlj.onlinestore.service.UserComponent;
 import es.dlj.onlinestore.service.UserRatingService;
 
@@ -28,22 +29,23 @@ class ReviewController {
     @Autowired
     private UserRatingService userRatingService;
 
+    @Autowired
+    private UserRatingRepository userRatingRepository;
+
     @PostMapping("/makereview")
     public String submitReview(Model model, 
                                @RequestParam String title,
                                @RequestParam String description,
                                @RequestParam String rating ) {
     
-        Review review = new Review(title, description, Integer.parseInt(rating), userComponent.getUser());
-        userRatingService.saveReview(review);
-
         UserInfo user = userComponent.getUser();
-        List<Review> userReviews = userRatingService.getUserRatings(user);
-        
         model.addAttribute("user", user); 
-        model.addAttribute("reviews", userReviews);
-
-
+                               
+        Review review = new Review(title, description, Integer.parseInt(rating), userComponent.getUser());
+        userRatingRepository.save(review);
+        model.addAttribute("reviews", review);
+        
+        user.addReview(review);
 
         return "redirect:/userprofile"; 
     }

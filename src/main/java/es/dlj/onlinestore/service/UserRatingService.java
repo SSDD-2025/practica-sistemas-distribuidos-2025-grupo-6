@@ -55,12 +55,13 @@ public class UserRatingService {
         return userRatings.findByOwner(owner);
     }
 
+    /* 
     public void saveReview(Review review) {
         UserInfo user = userService.findById(1L); 
         userRatings.save(review);
         user.addReview(review);
         
-    }
+    }*/
 
 
 }
