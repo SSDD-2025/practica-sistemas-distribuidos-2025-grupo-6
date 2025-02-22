@@ -17,17 +17,15 @@ public class Image {
 
     @Lob
     private Blob imageFile;
-    
-    private String fileName;
+
     private String contentType;
     private boolean isMainImage;
 
     public Image() {
     }
 
-    public Image( Blob imageFile, String fileName, String contentType) {
+    public Image( Blob imageFile, String contentType) {
         this.imageFile = imageFile;
-        this.fileName = fileName;
         this.contentType = contentType;
         this.isMainImage = false;
     }
@@ -46,14 +44,6 @@ public class Image {
 
     public void setimageFile(Blob imageFile) {
         this.imageFile = imageFile;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
     }
 
     public void setContentType(String contentType){

@@ -38,7 +38,7 @@ public class Product {
     private String description;
 
     @OneToMany
-    private List<Image>images;
+    private List<Image> images = new LinkedList<>();;
     
     @ManyToMany
     private List<ProductTag> tags;
@@ -68,7 +68,6 @@ public class Product {
         this.lastWeekSells = 0;
         this.sale = 0f;
         this.tags = tags;
-        this.images = new LinkedList<Image>();
     }
 
     public long getId() {

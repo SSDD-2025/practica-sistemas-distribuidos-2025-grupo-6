@@ -2,7 +2,6 @@ package es.dlj.onlinestore.service;
 
 import java.io.IOException;
 import java.sql.Blob;
-import java.util.HashSet;
 import java.util.Optional;
 import java.sql.SQLException;
 
@@ -32,13 +31,12 @@ public class ImageService {
     @Autowired
     private ImageRepository images;
 
-    public void saveImage(Product product, MultipartFile rawImage, int id, boolean mainImage){
+    public void saveImage(Product product, MultipartFile rawImage, boolean mainImage){
         log.info(product.getName());
         log.info(rawImage.getOriginalFilename());
         if (rawImage != null && !rawImage.isEmpty()){
             Image image = new Image();
             image.setContentType(rawImage.getContentType()); 
-            image.setFileName(product.getName()+"_image_"+id);
             if (mainImage){
                 image.setIsMainImage(true);
             }
@@ -55,18 +53,18 @@ public class ImageService {
     }
 
     public ResponseEntity<Object> loadProductImage(Long id){
-            Optional<Image> image = images.findById(id);
-            if (image.isPresent() && image != null){
-                Blob imageData = image.get().getimageFile();
-                try {
-                    Resource imageFile = new InputStreamResource(imageData.getBinaryStream());
-                    String contentType = "image/"+image.get().getContentType();
-                    log.info("Id imagen: " + id);
-                    return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, contentType).contentLength(imageData.length()).body(imageFile);
-                } catch (SQLException e) {
-                    log.info("Error al cargar");
-                }
+        Optional<Image> image = images.findById(id);
+        if (image.isPresent()){
+            Blob imageData = image.get().getimageFile();
+            try {
+                Resource imageFile = new InputStreamResource(imageData.getBinaryStream());
+                String contentType = "image/"+image.get().getContentType();
+                log.info("Id imagen: " + id);
+                return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, contentType).contentLength(imageData.length()).body(imageFile);
+            } catch (SQLException e) {
+                log.info("Error al cargar");
             }
+        }
         return ResponseEntity.notFound().build();
     }
 }

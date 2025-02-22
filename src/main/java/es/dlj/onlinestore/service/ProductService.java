@@ -190,7 +190,7 @@ public class ProductService {
                 log.info("imagen " + i);
                 MultipartFile rawImage = images.get(i-1);
                 log.info("imagen" + rawImage.getName());
-                imageService.saveImage(product, rawImage, i, isMainImage);
+                imageService.saveImage(product, rawImage, isMainImage);
                 isMainImage = false;
             }
         }
@@ -207,7 +207,7 @@ public class ProductService {
         if (rawImages!= null){
             for (int i=1; i >= rawImages.size()+1; i++){
                 MultipartFile rawImage = rawImages.get(i);
-                imageService.saveImage(product, rawImage, i, false);
+                imageService.saveImage(product, rawImage, false);
             }
         }
         products.save(product);
