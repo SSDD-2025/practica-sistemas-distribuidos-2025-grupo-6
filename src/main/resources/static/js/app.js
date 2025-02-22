@@ -24,3 +24,13 @@ function reloadWithForm(formId, elementId) {
     
     scrollToTop();
 }
+
+/**
+ * Confirms the removal of a product from the shopping cart.
+ * @param {Long} productId 
+ */
+function confirmRemoval(productId) {
+    if (confirm("Are you sure you want to remove this product from your shopping cart?")) {
+        reloadWithForm('removeForm-' + productId, 'cart-list');
+    }
+}

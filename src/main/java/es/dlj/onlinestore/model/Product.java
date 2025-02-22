@@ -1,12 +1,14 @@
 package es.dlj.onlinestore.model;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import es.dlj.onlinestore.enumeration.ProductType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Product {
@@ -27,9 +30,14 @@ public class Product {
 
     private String name;
     private Float price;
-    private String description;
     private int stock;
 
+    @Column(length = 2000)
+    private String description;
+
+    @OneToMany
+    private List<Image>images;
+    
     @ManyToMany
     private List<ProductTag> tags;
 
@@ -40,7 +48,7 @@ public class Product {
     private int numberRatings;
     private int totalSells;
     private int lastWeekSells;
-    private int sale;
+    private float sale;
 
     public Product(){
 
@@ -56,8 +64,9 @@ public class Product {
         this.numberRatings = 0;
         this.totalSells = 0;
         this.lastWeekSells = 0;
-        this.sale = 0;
+        this.sale = 0f;
         this.tags = tags;
+        this.images = new LinkedList<Image>();
     }
 
     public long getId() {
@@ -100,7 +109,7 @@ public class Product {
         return lastWeekSells;
     }
 
-    public int getSale() {
+    public float getSale() {
         return sale;
     }
 
@@ -144,7 +153,7 @@ public class Product {
         this.lastWeekSells = lastWeekSells;
     }
 
-    public void setSale(int sale) {
+    public void setSale(float sale) {
         this.sale = sale;
     }
 
@@ -169,6 +178,19 @@ public class Product {
     public void setTags(List<ProductTag> tags) {
         this.tags = tags;
     }
+
+    public void addImage(Image image){
+        this.images.add(image);
+    }
+
+    public List<Image> getImages(){
+        return this.images;
+    }
+
+    public void addTag(ProductTag tag){
+        this.tags.add(tag);
+    }
+
 
     @Override
     public String toString() {
@@ -210,5 +232,13 @@ public class Product {
 
     public boolean isOnSale() {
         return sale > 0;
+    }
+
+    public int getTagsCount() {
+        return tags.size();
+    }
+
+    public float getPriceWithSale() {
+        return price * (1 - sale / 100);
     }
 }

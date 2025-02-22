@@ -1,10 +1,5 @@
 package es.dlj.onlinestore.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,89 +32,52 @@ public class CartController {
     
     @GetMapping
     public String showCart(Model model) {
+
+        // Add the user to the model in case it changes
         UserInfo user = userComponent.getUser();
-        Set<Product> products = user.getCartProducts();
-        model.addAttribute("products", products);
-        
-        // Calculate total price applying sales
-        List<Map<String, Object>> bill = new ArrayList<>();
-        Float totalPrice = 0f;
-        for (Product product : products) {
-            bill.add(Map.of("name", product.getName(), 
-                            "price", product.getPrice(), 
-                            "hasSale", product.getSale() > 0,
-                            "sale", product.getPrice() * product.getSale(), 
-                            "priceWithSale", product.getPrice() * (1 - product.getSale())));
-            totalPrice += product.getPrice() * (1 - product.getSale());
-        }
-
-
         model.addAttribute("user", user);
-        model.addAttribute("bill", bill);
-        model.addAttribute("totalPrice", totalPrice);
         
         return "cart_template";
     }
     
     @PostMapping("/remove/{productId}")
     public String removeProduct(@PathVariable Long productId) {
-        UserInfo user = userComponent.getUser();
+
         Product product = productRepository.findById(productId).orElse(null);
+
+        // Remove the product from the cart if it exists
         if (product != null) {
-            user.removeProductFromCart(product);
+            userComponent.getUser().removeProductFromCart(product);
         }
+
         return "redirect:/cart";
     }
     
     @GetMapping("/checkout")
     public String checkout(Model model) {
+
+        // Add the user to the model in case it changes
         UserInfo user = userComponent.getUser();
         model.addAttribute("user", user);
-        List<Map<String, Object>> paymentMethods = new ArrayList<>();
-        for (PaymentMethod pMethod : PaymentMethod.values()) {
-            paymentMethods.add(Map.of("name", pMethod.getName(), 
-                                      "selected", (user.getPaymentMethod() != null && user.getPaymentMethod().equals(pMethod))));
-        }
-        model.addAttribute("paymentMethods", paymentMethods);
-        model.addAttribute("address", user.getAddress());
-        model.addAttribute("phoneNumber", user.getPhone());
-        model.addAttribute("user", user);
+
         return "checkout_template";
     }
     
     @PostMapping("/confirm-order")
-    public String confirmOrder(@RequestParam String paymentMethod,
-                               @RequestParam String address,
-                               @RequestParam String phoneNumber,
-                               Model model) {
+    public String confirmOrder(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber) {
 
+        // Add the user to the model in case it changes
         UserInfo user = userComponent.getUser();
-        
-        OrderInfo order = new OrderInfo();
-        order.setUser(user);
-        order.setProducts(user.getCartProducts());
-        
-        // Calculate total price with sales
-        Float totalPrice = 0f;
-        for (Product product : user.getCartProducts()) {
-            totalPrice += product.getPrice() * (1 - product.getSale());
-        }
-        
-        order.setTotalPrice(totalPrice);
-        order.setPaymentMethod(PaymentMethod.fromString(paymentMethod));
-        order.setAddress(address);
-        order.setPhoneNumber(phoneNumber);
-        
+        model.addAttribute("user", user);
+
+        // Create and save the order
+        OrderInfo order = new OrderInfo(user, user.getCartProducts(), user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
         orderRepository.save(order);
+        model.addAttribute("order", order);
         
         // Clear the cart after confirming the order
-        user.getCartProducts().clear();
+        user.clearCartProducts();
         user.addOrder(order);
-        
-        model.addAttribute("userName", user.getName());
-        model.addAttribute("orderId", order.getId());
-        model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("user", user);
 
         return "confirmOrder_template";
     }

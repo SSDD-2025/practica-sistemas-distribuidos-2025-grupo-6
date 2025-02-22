@@ -11,9 +11,11 @@ import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.UserComponent;
 import es.dlj.onlinestore.service.UserService;
 
-
+/**
+ * Temporal controller to manage the access to the application (without security)
+ */
 @Controller
-public class LoginController {
+public class AccessController {
 
     @Autowired
     private UserComponent userComponent;

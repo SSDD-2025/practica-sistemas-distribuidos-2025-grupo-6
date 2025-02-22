@@ -6,12 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 
 @Entity
-public class ProductImage {
+public class Image {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,17 +21,12 @@ public class ProductImage {
     private String fileName;
     private String contentType;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    public ProductImage() {
+    public Image() {
     }
 
-    public ProductImage( Blob imageFile, String fileName, Product product, String contentType) {
+    public Image( Blob imageFile, String fileName, String contentType) {
         this.imageFile = imageFile;
         this.fileName = fileName;
-        this.product = product;
         this.contentType = contentType;
     }
 
@@ -61,22 +54,20 @@ public class ProductImage {
         this.fileName = fileName;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     public void setContentType(String contentType){
         switch (contentType) {
             case "image/jpeg":
                 this.contentType = ".jpg";
+                break;
+                
             case "image/png":
                 this.contentType = ".png";
+                break;
+
             case "image/gif":
                 this.contentType =  ".gif";
+                break;
+
             default:
                 this.contentType = ".jpg";
         }
