@@ -96,7 +96,8 @@
   <div class="list-group">
       {{#reviews}}
       <div class="list-group-item shadow-sm p-3 border rounded mb-3">
-          <h5 class="text-dark fw-bold">{{title}}</h5>
+          <h5 class="text-dark"><i class="bi bi-person-circle me-2"></i>{{owner.userName}}</h5>
+          <p class="text-dark fw-bold"><strong>{{title}}</strong></p>
           <p class="mb-1 text-muted">{{description}}</p>
           <small class="text-muted">
               <i class="bi bi-star-fill text-warning"></i> Rating: {{rating}}/5

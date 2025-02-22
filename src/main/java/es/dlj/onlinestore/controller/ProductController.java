@@ -51,7 +51,8 @@ class ProductController {
         float averageRating = reviewService.getAverageRatingForProduct(productService.getProduct(id));
         int numberOfReviews = reviews.size();
         productService.getProduct(id).setNumberRatings(numberOfReviews);
-
+        productService.getProduct(id).setRating(averageRating);
+        
         model.addAttribute("averageRating", averageRating);
         model.addAttribute("reviews", reviews);
         model.addAttribute("user", userComponent.getUser());
