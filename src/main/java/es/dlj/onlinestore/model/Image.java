@@ -20,6 +20,7 @@ public class Image {
     
     private String fileName;
     private String contentType;
+    private boolean isMainImage;
 
     public Image() {
     }
@@ -28,6 +29,7 @@ public class Image {
         this.imageFile = imageFile;
         this.fileName = fileName;
         this.contentType = contentType;
+        this.isMainImage = false;
     }
 
     public long getId() {
@@ -75,5 +77,13 @@ public class Image {
 
     public String getContentType (){
         return this.contentType;
+    }
+
+    public void setIsMainImage(boolean value){
+        this.isMainImage = value;
+    }
+
+    public boolean getIsMainImage(){
+        return this.isMainImage;
     }
 }

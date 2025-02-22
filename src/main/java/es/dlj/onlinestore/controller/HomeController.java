@@ -29,8 +29,6 @@ public class HomeController {
         // Define a record to hold the information of a section
         record Section(String title, String color, String icon, List<Product> products) {}
 
-        imageService.resetDownloadedImages();
-
         // Define the sections to show in the home page
         List<Section> sections = List.of(
             new Section("Best Sellers", "primary", "award", productService.getBestSellers()),

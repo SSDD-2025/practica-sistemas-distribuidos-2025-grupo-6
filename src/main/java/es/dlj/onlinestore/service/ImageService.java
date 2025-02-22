@@ -29,22 +29,22 @@ public class ImageService {
 
     private Logger log = LoggerFactory.getLogger(ImageService.class);
     
-    private HashSet<Long> imagesDownloaded = new HashSet<Long>();
-
     @Autowired
     private ImageRepository images;
 
-    public void saveImage(Product product, MultipartFile rawImage, int id){
+    public void saveImage(Product product, MultipartFile rawImage, int id, boolean mainImage){
         log.info(product.getName());
         log.info(rawImage.getOriginalFilename());
         if (rawImage != null && !rawImage.isEmpty()){
             Image image = new Image();
             image.setContentType(rawImage.getContentType()); 
             image.setFileName(product.getName()+"_image_"+id);
-            log.info(image.getFileName());
+            if (mainImage){
+                image.setIsMainImage(true);
+            }
             try {
                 image.setimageFile(BlobProxy.generateProxy(rawImage.getInputStream(), rawImage.getSize()));
-                log.info("Imagen completada: " + image.getFileName());
+                log.info("es imagen principal: " + image.getIsMainImage());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -56,33 +56,17 @@ public class ImageService {
 
     public ResponseEntity<Object> loadProductImage(Long id){
             Optional<Image> image = images.findById(id);
-            log.info("Accediendo a la imagen");
-            log.info("Imagenes usadas: " + imagesDownloaded.size());
-            if (image.isPresent() && image != null && !isImageDownloaded(image.get().getId())){
-                log.info("Imagen " + image.get().getFileName());
+            if (image.isPresent() && image != null){
                 Blob imageData = image.get().getimageFile();
                 try {
-                    log.info(""+ imageData.length());
                     Resource imageFile = new InputStreamResource(imageData.getBinaryStream());
                     String contentType = "image/"+image.get().getContentType();
-                    addDownloadedImage(image.get().getId());
+                    log.info("Id imagen: " + id);
                     return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, contentType).contentLength(imageData.length()).body(imageFile);
                 } catch (SQLException e) {
                     log.info("Error al cargar");
                 }
             }
         return ResponseEntity.notFound().build();
-    }
-
-    private void addDownloadedImage (Long id){
-        imagesDownloaded.add(id);
-    }
-
-    private boolean isImageDownloaded (Long id){
-        return imagesDownloaded.contains(id);
-    }
-
-    public void resetDownloadedImages(){
-        imagesDownloaded.clear();
     }
 }

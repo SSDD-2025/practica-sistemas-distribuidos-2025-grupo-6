@@ -181,12 +181,17 @@ public class ProductService {
         }
         Product product = new Product(rawProduct.getName(), rawProduct.getPrice(), rawProduct.getDescription(), productType, rawProduct.getStock(), productTagsList);
         products.save(product);
+        boolean isMainImage = false;
         if (images != null && images.size() > 0){
             for (int i=1; i <= images.size(); i++){
+                if (i == 1){
+                    isMainImage = true;
+                }
                 log.info("imagen " + i);
                 MultipartFile rawImage = images.get(i-1);
                 log.info("imagen" + rawImage.getName());
-                imageService.saveImage(product, rawImage, i);
+                imageService.saveImage(product, rawImage, i, isMainImage);
+                isMainImage = false;
             }
         }
         products.save(product);
@@ -202,7 +207,7 @@ public class ProductService {
         if (rawImages!= null){
             for (int i=1; i >= rawImages.size()+1; i++){
                 MultipartFile rawImage = rawImages.get(i);
-                imageService.saveImage(product, rawImage, i);
+                imageService.saveImage(product, rawImage, i, false);
             }
         }
         products.save(product);

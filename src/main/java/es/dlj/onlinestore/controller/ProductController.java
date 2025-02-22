@@ -42,7 +42,6 @@ class ProductController {
 
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
-        imageService.resetDownloadedImages();
         model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));
         return "productDetailed_template";
