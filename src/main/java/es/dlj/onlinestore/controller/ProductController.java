@@ -1,38 +1,40 @@
 package es.dlj.onlinestore.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.enumeration.ProductType;
+import es.dlj.onlinestore.model.Image;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.Review;
-import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
-import es.dlj.onlinestore.service.ProductService.RawProduct;
 import es.dlj.onlinestore.service.UserComponent;
 import es.dlj.onlinestore.service.UserRatingService;
+import jakarta.validation.Valid;
 
 
 @Controller
 @RequestMapping("/product")
 class ProductController {
-
-    private Logger log = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private ImageService imageService;
@@ -48,16 +50,25 @@ class ProductController {
 
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
-        List<Review> reviews = reviewService.getReviewsByProduct(productService.getProduct(id));
-        float averageRating = reviewService.getAverageRatingForProduct(productService.getProduct(id));
+        Product product = productService.getProduct(id);
+        List<Review> reviews = reviewService.getReviewsByProduct(product);
+        float averageRating = reviewService.getAverageRatingForProduct(product);
         int numberOfReviews = reviews.size();
-        productService.getProduct(id).setNumberRatings(numberOfReviews);
-        productService.getProduct(id).setRating(averageRating);
-        
+        product.setNumberRatings(numberOfReviews);
+        product.setRating(averageRating);
+
+        List<Map<String, Object>> images = new ArrayList<>();
+        List<Image> productImages = product.getImages();
+        for (int i = 0; i < productImages.size(); i++) {
+            images.add(Map.of("id", productImages.get(i).getId(), "isMainImage", (i == 0)));
+        }
+
+        model.addAttribute("allImages", images);
         model.addAttribute("averageRating", averageRating);
         model.addAttribute("reviews", reviews);
         model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));
+        
         return "productDetailed_template";
     }
 
@@ -66,7 +77,6 @@ class ProductController {
         userComponent.addProductToCart(productService.getProduct(id));
         return "redirect:/cart";
     }
-
 
     @GetMapping("/search")
     public String getSearch(Model model, @RequestParam(required=false) String name, @RequestParam(required=false) String productType) {
@@ -109,66 +119,86 @@ class ProductController {
         return "search_template";
     }
 
+    @GetMapping("/update/{id}")
+    public String editProduct(Model model, @PathVariable Long id) {
+        Product product = productService.getProduct(id);
+        model.addAttribute("product", product);
+        return "productEdit_template";
+    }
+
     @PostMapping ("/update/{id}")
     public String updateProduct (
         Model model,
         @PathVariable Long id,
-        @RequestParam String name,
-        @RequestParam float price,
-        @RequestParam String description,
-        @RequestParam int stock,
-        @RequestParam int sale,
-        @RequestParam String tags,
-        @RequestParam ProductType productType
-    ){
-        List<String> tagList = Arrays.asList(tags.split("\\s*,\\s*"));
-        Product product = null;
-        try {
-            product = productService.editProduct(id, name, price, sale, description, productType, stock, tagList);
-        } catch (IOException e) {
-            e.printStackTrace();
+        @RequestParam List<MultipartFile> imagesVal,
+        @RequestParam String tagsVal,
+        @Valid @ModelAttribute Product newProduct,
+        BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            // In case of errors, return to the form with the errors mapped
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            model.addAttribute("errors", errors);
+            model.addAttribute("tagsVal", tagsVal);
+            return "productEdit_template";
         }
-        model.addAttribute("product", product);
-        return "productDetailed_template";
+
+        //newProduct.setSeller(userComponent.getUser());
+        newProduct.setTags(productService.transformStringToTags(tagsVal));
+        try {
+            imageService.saveImages(productService.getProduct(id), imagesVal);
+        } catch (IOException e) {
+            // In case of errors in the images, return to the form with the errors mapped
+            model.addAttribute("imageError", "Error uploading images");
+            model.addAttribute("tagsVal", tagsVal);
+            return "productEdit_template";
+        }
+
+        productService.updateProduct(id, newProduct);
+        return "redirect:/product/" + id;
+    }
+
+    @GetMapping("/new")
+    public String ProductForm(Model model) {
+        model.addAttribute("productTypes", ProductType.getMapped());
+        return "productForm_template";
     }
 
     @PostMapping ("/new")
     public String newProduct (
         Model model,
-        @ModelAttribute RawProduct product
-    )
-    {
-        String errorMessage = productService.checkForProductFormErrors(product);
-        if (errorMessage.isEmpty()) {
-            model.addAttribute("errorMessage", errorMessage);
+        @RequestParam List<MultipartFile> imagesVal,
+        @RequestParam String tagsVal,
+        @Valid @ModelAttribute Product newProduct,
+        BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            // In case of errors, return to the form with the errors mapped
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            model.addAttribute("errors", errors);
+            model.addAttribute("tagsVal", tagsVal);
             return "productForm_template";
         }
 
-        Product savedProduct = productService.saveProduct(product);
+        newProduct.setSeller(userComponent.getUser());
+        newProduct.setTags(productService.transformStringToTags(tagsVal));
+        try {
+            imageService.saveImages(newProduct, imagesVal);
+        } catch (IOException e) {
+            // In case of errors in the images, return to the form with the errors mapped
+            model.addAttribute("imageError", "Error uploading images");
+            model.addAttribute("tagsVal", tagsVal);
+            return "productForm_template";
+        }
+
+        Product savedProduct = productService.saveProduct(newProduct);
+        userComponent.addProductForSale(savedProduct);
         return "redirect:/product/" + savedProduct.getId();
     }
-
-    @GetMapping("/form")
-    public String ProductForm(Model model) {
-        return "productForm_template";
-    }
-
-    @PostMapping("/form")
-    public String ProductForm(Model model, @RequestParam long id) {
-        if (id > 0) {
-            UserInfo user = userComponent.getUser();
-            int sellerId = user.getId().intValue();
-            Product product = productService.getProduct(id);
-            boolean newProduct = product.getProductType() == ProductType.NEW;
-            boolean reconditionedProduct = product.getProductType() == ProductType.RECONDITIONED;
-            boolean secondHandProduct = product.getProductType() == ProductType.SECONDHAND;
-            model.addAttribute("new", newProduct);
-            model.addAttribute("secondHand", secondHandProduct);
-            model.addAttribute("reconditioned", reconditionedProduct);
-            model.addAttribute("product", product);
-            model.addAttribute("sellerId", sellerId);
-        }
-        return "productForm_template";
-    }
-
 }

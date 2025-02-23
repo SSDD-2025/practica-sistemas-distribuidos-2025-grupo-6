@@ -1,6 +1,7 @@
 package es.dlj.onlinestore.model;
 
 import java.sql.Blob;
+import java.util.Map;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +11,12 @@ import jakarta.persistence.Lob;
 
 @Entity
 public class Image {
+
+    private static final Map<String, String> EXTENSIONS = Map.of(
+        "image/jpeg", ".jpg",
+        "image/png", ".png",
+        "image/gif", ".gif"
+    );
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,7 +26,6 @@ public class Image {
     private Blob imageFile;
 
     private String contentType;
-    private boolean isMainImage;
 
     public Image() {
     }
@@ -27,7 +33,6 @@ public class Image {
     public Image( Blob imageFile, String contentType) {
         this.imageFile = imageFile;
         this.contentType = contentType;
-        this.isMainImage = false;
     }
 
     public long getId() {
@@ -47,33 +52,10 @@ public class Image {
     }
 
     public void setContentType(String contentType){
-        switch (contentType) {
-            case "image/jpeg":
-                this.contentType = ".jpg";
-                break;
-                
-            case "image/png":
-                this.contentType = ".png";
-                break;
-
-            case "image/gif":
-                this.contentType =  ".gif";
-                break;
-
-            default:
-                this.contentType = ".jpg";
-        }
+        this.contentType = EXTENSIONS.getOrDefault(contentType, ".jpg");
     }
 
     public String getContentType (){
         return this.contentType;
-    }
-
-    public void setIsMainImage(boolean value){
-        this.isMainImage = value;
-    }
-
-    public boolean getIsMainImage(){
-        return this.isMainImage;
     }
 }

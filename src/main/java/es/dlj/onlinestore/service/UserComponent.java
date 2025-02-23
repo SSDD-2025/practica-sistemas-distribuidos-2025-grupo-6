@@ -59,4 +59,12 @@ public class UserComponent {
         System.out.println("\nClearing cart\n");
     }
 
+    public void addProductForSale(Product savedProduct) {
+        if (this.user == null || !this.user.getId().equals(userId)) {
+            this.user = users.findById(userId).get();
+        }
+        this.user.addProductForSale(savedProduct);
+        System.out.println("\nAdding product for sale\n");
+    }
+
 }

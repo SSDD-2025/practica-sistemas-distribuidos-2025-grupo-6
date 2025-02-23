@@ -3,11 +3,11 @@
 		<div class="col-7">
 			<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
 				<div class="carousel-inner">
-					{{#images}}
+					{{#allImages}}
 					<div class="carousel-item {{#isMainImage}}active{{/isMainImage}}">
 						<img class="d-block w-100 img-fluid" src="/image/{{id}}" alt="Product Image {{id}}">
 					</div>
-					{{/images}}
+					{{/allImages}}
 				</div>
 				<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
 					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<div class="card-body p-3 d-flex flex-column col-5">
-			<form action="/product/form" method="post">
+			<form action="/product/update/{{id}}" method="get">
 				<input class="d-none" type="number" name="id" value="{{id}}">
 				<button type="submit">Edit Product</button>
 			</form>

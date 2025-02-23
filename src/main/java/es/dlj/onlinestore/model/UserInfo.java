@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -23,9 +24,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class UserInfo {
+
+    public void addProductForSale(Product savedProduct) {
+        this.productsForSell.add(savedProduct);
+    }
+
+    public Image getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(Image profileImage) {
+        this.profileImage = profileImage;
+    }
 
     public static enum Role {
         USER, ADMIN, UNREGISTERED
@@ -50,7 +64,7 @@ public class UserInfo {
     private String creditCard;
     private String profilePhoto; 
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Product> productsForSell;
     
     @Enumerated(EnumType.STRING)
@@ -61,6 +75,9 @@ public class UserInfo {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderInfo> orders = new ArrayList<>();
+
+    @OneToOne (cascade = CascadeType.ALL)
+    private Image profileImage;
 
     public void addOrder(OrderInfo order){
         orders.add(order);

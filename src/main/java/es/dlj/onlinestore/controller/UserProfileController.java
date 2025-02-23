@@ -24,6 +24,7 @@ public class UserProfileController {
     @GetMapping("/userprofile")
     public String getUserProfile(Model model) {
         UserInfo user = userComponent.getUser();
+        
         model.addAttribute("user", user);
 
         return "userprofile_template";
