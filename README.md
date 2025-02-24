@@ -32,15 +32,48 @@ Therefore it is related to the entities: user and product.
 Therefore it is related to the product entity. 
 
 #### Database entity diagram 
-![Database Entity Diagram](diagrams/DatabaseEntityDiagram.jpg)
+![Database Entity Diagram](img/DatabaseEntityDiagram.jpg)
 
 
 ### User Permissions 
-<!-- do you think the permissions explained in the user entity are okay? -->
+In this first installment of the practice, the user will always be an administrator and will be able to use all the functionalities of the web application.
 
 ### Images 
 
 ---
+## Navigation 
+The web application we have developed is an online buying and selling platform. Users can both list products for sale and purchase new, refurbished, or second-hand items.
+Most screens of the application have a main menu at the top of the screen, consisting of six main sections:
+![Main Menu](img/mainMenu.jpg)
 
+1. **Home** 
+The web application starts its execution on the main screen, called Home. In this section, featured products are displayed, organized into different categories, such as bestsellers or discounted items, making navigation easier for users and helping them find what they are looking for intuitively.
+Additionally, the platform includes a search function that allows users to quickly and efficiently locate specific products.
+![Home Page](img/home.jpg)
+
+- **1.1. Product details**
+On this screen, the user can view all the details of the product, including: the product name and type, price and any applicable discounts, a detailed description of the item, the average rating and total number of reviews, the available stock quantity, and the number of sales made.
+![Product Details](img/productDetails.png)
+
+Additionally, from this same section, users can leave comments and ratings on the product, as well as read the opinions and reviews of other buyers.
+![Screen to make reviews](img/makeReview.png)
+
+2. **Search**
+On this screen, all types of items will be displayed to the user, who can narrow down their search using various available filters, such as category, price, rating, among others. They will also have the option to perform a direct search by entering keywords, as shown below:
+![Search Page](img/search1.png)
+![](img/search2.png)
+
+3. **New**
+
+4. **Reaconditioned** 
+
+5. **Second-Hand**
+
+6. **My Profile** 
+
+7. **Cart**
+
+
+---
 ## Team Contributions 
 <!-- in the end -->
