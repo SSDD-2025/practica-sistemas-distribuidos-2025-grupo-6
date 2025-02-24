@@ -32,6 +32,8 @@ Therefore it is related to the entities: user and product.
 Therefore it is related to the product entity. 
 
 #### Database entity diagram 
+![Database Entity Diagram](diagrams/DatabaseEntityDiagram.jpg)
+
 
 ### User Permissions 
 <!-- do you think the permissions explained in the user entity are okay? -->
