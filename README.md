@@ -46,7 +46,7 @@ The web application we have developed is an online buying and selling platform. 
 
 Most screens of the application have a main menu at the top of the screen, consisting of six main sections:
 
-![Main Menu](img/mainMenu.jpg)
+![Main Menu](img/mainMenu.png)
 
 **1. Home** 
 
@@ -82,13 +82,13 @@ This screen displays all the new products available on the website. Additionally
 
 **4. Reaconditioned** 
 
-Similar to the previous screen, this one displays all the refurbished products available on the website. It also includes filters and a search function so that the user can refine their search and easily find the desired product.
+Similar to the previous screen, this one displays all the reaconditioned products available on the website. It also includes filters and a search function so that the user can refine their search and easily find the desired product.
 
 ![Reconditioned Products Page](img/reconditioned.PNG)
 
 **5. Second-Hand**
 
-This screen is similar to the previous two, but instead of displaying new or refurbished products, it shows second-hand products available on the website. As with the previous screens, the user can use filters and a search function to find the specific product they are looking for.
+This screen is similar to the previous two, but instead of displaying new or reaconditioned products, it shows second-hand products available on the website. As with the previous screens, the user can use filters and a search function to find the specific product they are looking for.
 
 ![Second-Hand Products Page](img/second-hand.PNG)
 
@@ -116,7 +116,7 @@ On this screen, the user can edit all fields of their personal information, incl
 
 - **6.3. Sell New Product**
 
-On this screen, the user can add a new item for sale so that other users can purchase it. To list the product, they must provide the following information: product images, product name, price, detailed description, stock quantity, discount (if applicable), tags to facilitate search through filters, and the product condition: new, second-hand, or refurbished.  
+On this screen, the user can add a new item for sale so that other users can purchase it. To list the product, they must provide the following information: product images, product name, price, detailed description, stock quantity, discount (if applicable), tags to facilitate search through filters, and the product condition: new, second-hand, or reaconditioned.  
 
 Once this information is completed, the user can publish the product on the platform.
 
