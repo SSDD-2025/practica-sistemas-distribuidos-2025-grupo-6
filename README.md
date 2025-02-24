@@ -31,6 +31,8 @@ Therefore it is related to the entities: user and product.
 - **Image**: linked to products; each product can have multiple images.
 Therefore it is related to the product entity. 
 
+#### Database entity diagram 
+
 ### User Permissions 
 <!-- do you think the permissions explained in the user entity are okay? -->
 

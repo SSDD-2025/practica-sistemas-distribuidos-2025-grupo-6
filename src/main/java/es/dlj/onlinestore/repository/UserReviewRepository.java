@@ -15,7 +15,7 @@ public interface UserReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByProduct(Product product);
 
-    // @Query("SELECT AVG(r.rating) FROM Review r WHERE r.product = :product")
-    // Float getAverageRating(@Param("product") Product product);
+    //@Query("SELECT AVG(r.rating) FROM Review r WHERE r.product = :product")
+    //Float getAverageRating(@Param("product") Product product);
     
 }

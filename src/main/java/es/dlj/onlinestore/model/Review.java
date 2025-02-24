@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Review {
@@ -21,8 +22,12 @@ public class Review {
     @CreationTimestamp
     private LocalDateTime creationDate;
 
+    @Size(min = 1, max = 100, message = "Description must be between 1 and 100 characters")	
     private String title;
+    
+    @Size(min = 3, max = 2000, message = "Description must be between 3 and 2000 characters")	
     private String description;
+
     private int rating;
 
     @ManyToOne
