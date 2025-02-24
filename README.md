@@ -46,7 +46,7 @@ The web application we have developed is an online buying and selling platform. 
 
 Most screens of the application have a main menu at the top of the screen, consisting of six main sections:
 
-![Main Menu](img/mainMenu.png)
+![Main Menu](img/mainMenu.jpg)
 
 **1. Home** 
 
@@ -54,7 +54,7 @@ The web application starts its execution on the main screen, called Home. In thi
 
 Additionally, the platform includes a search function that allows users to quickly and efficiently locate specific products.
 
-![Home Page](img/home.jpg)
+![Home Page](img/home.png)
 
 - **1.1. Product details**
 
