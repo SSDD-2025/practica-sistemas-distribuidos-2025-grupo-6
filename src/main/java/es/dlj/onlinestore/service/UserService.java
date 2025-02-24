@@ -15,6 +15,11 @@ public class UserService {
     @PostConstruct
     public void init() {
         users.save(new UserInfo("admin", "admin", "adminName", "adminLastName", "admin@gmail.com", UserInfo.Role.ADMIN, null, null, null, null));
+        users.save(new UserInfo("lidiabudios", "1234", "Lidia", "Budios", "l.budios@gmail.com", UserInfo.Role.USER, null, null, null, null));
+        users.save(new UserInfo("jaimeochoa", "9876", "Jaime", "Ochoa", "j.ochoa@gmail.com", UserInfo.Role.USER, null, null, null, null));
+        users.save(new UserInfo("davidpimentel", "1a1a", "David", "Pimentel", "d.pimentel@gmail.com", UserInfo.Role.USER, null, null, null, null));
+
+
     }
 
     public UserInfo findByUserNameAndPassword(String userName, String password) {
