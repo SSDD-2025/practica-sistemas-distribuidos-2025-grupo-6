@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserComponent;
 
@@ -22,11 +22,10 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHome(Model model) {
-
         // Define a record to hold the information of a section
         record Section(String title, String color, String icon, List<Product> products) {}
 
-        // Define the sections to show in the home page
+        // Define the sections to show at the Home page
         List<Section> sections = List.of(
             new Section("Best Sellers", "primary", "award", productService.getBestSellers()),
             new Section("Top Rated", "warning", "star", productService.getTopRated()),

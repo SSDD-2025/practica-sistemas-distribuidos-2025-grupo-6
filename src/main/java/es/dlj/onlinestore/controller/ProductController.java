@@ -2,11 +2,9 @@ package es.dlj.onlinestore.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +26,7 @@ import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserComponent;
-import es.dlj.onlinestore.service.UserRatingService;
+import es.dlj.onlinestore.service.UserReviewService;
 import jakarta.validation.Valid;
 
 
@@ -46,16 +44,14 @@ class ProductController {
     private ProductService productService;
 
     @Autowired
-    private UserRatingService reviewService;
+    private UserReviewService reviewService;
 
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
         Product product = productService.getProduct(id);
         List<Review> reviews = reviewService.getReviewsByProduct(product);
-        float averageRating = reviewService.getAverageRatingForProduct(product);
         int numberOfReviews = reviews.size();
         product.setNumberRatings(numberOfReviews);
-        product.setRating(averageRating);
 
         List<Map<String, Object>> images = new ArrayList<>();
         List<Image> productImages = product.getImages();
@@ -64,7 +60,6 @@ class ProductController {
         }
 
         model.addAttribute("allImages", images);
-        model.addAttribute("averageRating", averageRating);
         model.addAttribute("reviews", reviews);
         model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));

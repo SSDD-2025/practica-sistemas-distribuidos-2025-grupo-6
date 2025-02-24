@@ -5,26 +5,26 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.Review;
-import es.dlj.onlinestore.repository.UserRatingRepository;
+import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.repository.UserReviewRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 
 @Service
-public class UserRatingService {
+public class UserReviewService {
 
     @Autowired
-    private UserRatingRepository userRatings;
+    private UserReviewRepository userReviewRepository;
 
-    @Autowired
-    private UserService userService;
+    // @Autowired
+    // private UserService userService;
 
     @PostConstruct
     @Transactional
     public void init() {
-        UserInfo user = userService.findById(1L);  
+        //UserInfo user = userService.findById(1L);  
 
         /* 
         Review userRating = new Review("Good product", "I like it", 4, user);
@@ -54,17 +54,25 @@ public class UserRatingService {
     }
 
     public List<Review> getUserRatings(UserInfo owner) {
-        return userRatings.findByOwner(owner);
+        return userReviewRepository.findByOwner(owner);
     }
 
     public List<Review> getReviewsByProduct(Product product) {
-        return userRatings.findByProduct(product);
+        return userReviewRepository.findByProduct(product);
     }
 
-    public float getAverageRatingForProduct(Product product) {
-        Float average = userRatings.getAverageRating(product);
-        return (float) ((average != null) ? average : 0.0); 
+    public void save(Review review) {
+        userReviewRepository.save(review);
     }
+
+    // public float getAverageRatingForProduct(Product product) {
+    //     Float average = userReviewRepository.getAverageRating(product);
+    //     return (float) ((average != null) ? average : 0.0); 
+    // }
+
+    // public float findByProductAndGetAvgRating(Product product) {
+    //     return userReviewRepository.findByProductAndGetAvgRating(product);
+    // }
    
 
 

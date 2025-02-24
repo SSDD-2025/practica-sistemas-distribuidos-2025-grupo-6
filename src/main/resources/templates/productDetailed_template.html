@@ -3,7 +3,7 @@
 		<div class="col-7">
 			<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
 				<div class="carousel-inner">
-					{{#allImages}}
+					{{#allImages}} <!-- TODO: arrows desapear in white background -->
 					<div class="carousel-item {{#isMainImage}}active{{/isMainImage}}">
 						<img class="d-block w-100 img-fluid" src="/image/{{id}}" alt="Product Image {{id}}">
 					</div>
@@ -22,7 +22,7 @@
 		<div class="card-body p-3 d-flex flex-column col-5">
 			<form action="/product/update/{{id}}" method="get">
 				<input class="d-none" type="number" name="id" value="{{id}}">
-				<button type="submit">Edit Product</button>
+				<button type="submit">Edit Product</button> <!-- TODO : style the product template -->
 			</form>
 			<h5 class="card-title fw-bold mb-1">{{name}}</h5>
 			<h6 class="card-subtitle mb-2 text-muted">{{productType}}</h6>
@@ -30,7 +30,7 @@
 				<span class="fw-bold fs-5">${{price}}</span>
 				{{#sale}}<span class="text-danger fw-semibold">{{sale}}% off</span>{{/sale}}
 			</div>
-			<p class="text-muted mb-1 small">Rating: {{averageRating}}/5 ({{numberRatings}})</p>
+			<p class="text-muted mb-1 small">Rating: {{rating}}/5 ({{numberRatings}})</p>
 			<p class="text-success small mb-1">Stock: {{stock}}</p>
 			<p class="text-info small mb-1">Sold: {{totalSells}}</p>
 			<p class="text-warning small mb-2">Last Week: {{lastWeekSells}}</p>

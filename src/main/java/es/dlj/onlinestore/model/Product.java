@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+
 import es.dlj.onlinestore.enumeration.ProductType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -59,7 +60,7 @@ public class Product {
     @Max(value = 5, message = "Rating must be less than 5")
     private float rating = 0;
 
-    private int numberRatings = 0;
+    private int numberReviews = 0;
     private int totalSells = 0;
     private int lastWeekSells = 0;
 
@@ -110,7 +111,7 @@ public class Product {
     }
 
     public int getNumberRatings() {
-        return numberRatings;
+        return numberReviews;
     }
 
     public int getTotalSells() {
@@ -154,7 +155,7 @@ public class Product {
     }
 
     public void setNumberRatings(int numberRatings) {
-        this.numberRatings = numberRatings;
+        this.numberReviews = numberRatings;
     }
 
     public void setTotalSells(int totalSells) {
@@ -170,8 +171,8 @@ public class Product {
     }
 
     public void addRating(float rating){
-        this.rating = (this.rating * this.numberRatings + rating)/(this.numberRatings + 1);
-        this.numberRatings += 1;
+        this.rating = (this.rating * this.numberReviews + rating) / (this.numberReviews + 1);
+        this.numberReviews += 1;
     }
 
     public void addSells(int sells){
@@ -214,7 +215,7 @@ public class Product {
                 ", stock=" + stock +
                 ", productType=" + productType +
                 ", rating=" + rating +
-                ", numberRatings=" + numberRatings +
+                ", numberRatings=" + numberReviews +
                 ", totalSells=" + totalSells +
                 ", lastWeekSells=" + lastWeekSells +
                 ", sale=" + sale +

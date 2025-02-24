@@ -79,67 +79,6 @@ public class ProductService {
         return products.save(product);
     }
 
-    
-    // public Product saveProduct(RawProduct rawProduct) {
-    //     List<ProductTag> productTagsList = transformStringToTags(rawProduct.getTags());
-    //     ProductType productType = ProductType.valueOf(rawProduct.getProductType());
-    //     MultipartFile mainImage = rawProduct.getMainImage();
-    //     List <MultipartFile> images = rawProduct.getImages();
-    //     if (mainImage != null){
-    //         images.addFirst(mainImage);
-    //     }
-    //     Product product = new Product(rawProduct.getName(), rawProduct.getPrice(), rawProduct.getDescription(), productType, rawProduct.getStock(), productTagsList, rawProduct.getSeller());
-    //     products.save(product);
-    //     boolean isMainImage = false;
-    //     if (images != null && images.size() > 0){
-    //         for (int i=1; i <= images.size(); i++){
-    //             if (i == 1){
-    //                 isMainImage = true;
-    //             }
-    //             log.info("imagen " + i);
-    //             MultipartFile rawImage = images.get(i-1);
-    //             log.info("imagen" + rawImage.getName());
-    //             imageService.saveImage(product, rawImage, isMainImage);
-    //             isMainImage = false;
-    //         }
-    //     }
-    //     products.save(product);
-    //     log.info("Id del vendedor: "+rawProduct.getSeller());
-    //     if (product.getProductType() == ProductType.SECONDHAND){
-    //         Optional <UserInfo> user = userInfoRepository.findById(rawProduct.getSeller());
-    //         if (user.isPresent()){
-    //             user.get().addProduct(product);
-    //             log.info("Productos en venta_ " + user.get().getProductsForSell().size());
-    //             userInfoRepository.save(user.get());
-    //         }
-    //     }
-    //     return product;
-    // }
-
-    // public String checkForProductFormErrors(Product product){
-    //     if (product.getName() == null){
-    //         return "The product requires a name";
-    //     }
-    //     else if (product.getPrice() <= 0) {
-    //         return "Price must be positive grater than 0.";
-    //     }
-    //     else if (product.getDescription() == null || product.getDescription().length()<200){
-    //         return "Description needs to be 200 characters minimum.";
-    //     }
-    //     else if (product.getStock() <= 0) {
-    //         return "Stock must be positive grater than 0.";
-    //     } 
-    //     else if(product.getMainImage() == null || product.getMainImage().isEmpty()){
-    //         return "Add a main image for the product";
-    //     }
-    //      else if (product.getTags().size() <= 0){
-    //         return "Product needs at least one tag.";
-    //     } else if (product.getProductType() == null || (product.getProductType() != "NEW" & product.getProductType() != "RECONDITIONED" & product.getProductType() != "SECONDHAND")){
-    //         return "Product Type not valid";
-    //     }
-    //     return null;
-    // }
-
     public List<ProductTag> transformStringToTags(String tagsAsString){
         List<ProductTag> tagList = new ArrayList<>();
         for (String tag: tagsAsString.split(",")){
@@ -235,6 +174,11 @@ public class ProductService {
 
     public Optional<Product> findById(long id){
         return products.findById(id);
+    }
+
+    public void addRatingToProduct(Product product, int rating) {
+        product.addRating(rating);
+        products.save(product);
     }
 
 }

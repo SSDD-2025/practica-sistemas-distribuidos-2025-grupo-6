@@ -23,35 +23,26 @@ public class UserProfileController {
 
     @GetMapping("/userprofile")
     public String getUserProfile(Model model) {
-        UserInfo user = userComponent.getUser();
-        
-        model.addAttribute("user", user);
-
+        model.addAttribute("user", userComponent.getUser());
         return "userprofile_template";
     }
 
     @GetMapping("/editprofile")
     public String getEditProfile(Model model) {
-        UserInfo user = userComponent.getUser();
-        model.addAttribute("user", user);
-
+        model.addAttribute("user", userComponent.getUser());
         return "editprofile_template";
     }
 
     @PostMapping("/save-editprofilechanges")
     public String saveProfileChanges(Model model, @ModelAttribute UserInfo newUser) {
-        UserInfo user = userComponent.getUser();
-        user.updateWith(newUser);
-
+        userComponent.getUser().updateWith(newUser);
         return "redirect:/userprofile";
     }
 
     @GetMapping("/order/{id}")
     public String getOrderView(Model model, @PathVariable Long id) {
-        UserInfo user = userComponent.getUser();
-        model.addAttribute("user", user);
+        model.addAttribute("user", userComponent.getUser());
         model.addAttribute("order", orderRepository.getReferenceById(id));
-
         return "order_template";
     }
 

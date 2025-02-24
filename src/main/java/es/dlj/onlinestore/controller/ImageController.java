@@ -1,7 +1,5 @@
 package es.dlj.onlinestore.controller;
 
-import org.springframework.http.ResponseEntity;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -9,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,48 +36,61 @@ import es.dlj.onlinestore.service.UserComponent;
     @GetMapping("/{id}")
     public ResponseEntity<Object> getImage(@PathVariable Long id){
         try {
+            // Try to load the image
             return imageService.loadProductImage(id);
         } catch (Exception e) {
+            // In case of error, return default image
             return loadDefaultImage();
         }
     }
 
     @GetMapping("/product/{id}")
     public ResponseEntity<Object> getProductImage (@PathVariable Long id){
+        // Find the product by its ID
         Optional<Product> product = productController.findById(id);
         if (!product.isPresent()) {
+            // If the product does not exist, return 404
             return ResponseEntity.notFound().build();
         }
 
         try {
+            // Try to load the image
             Image image = product.get().getImages().getFirst();
             return imageService.loadProductImage(image.getId());
         } catch (Exception e) {
-            // In case of no image found, return default image
+            // In case of error, return default image
             return loadDefaultImage();
         }
     }
 
     @GetMapping("/user")
     public ResponseEntity<Object> getUserImage (){
+        // Get the user information
         UserInfo user = userComponent.getUser();
         try {
+            // Try to load the image
             Image image = user.getProfileImage();
             return imageService.loadProductImage(image.getId());
         } catch (Exception e) {
-            // In case of no image found, return default image
+            // In case of error, return default image
             return loadDefaultImage();
         }
     } 
 
+    /**
+     * Load the default image in case of error or no image found
+     * @return The default image
+     */
     private ResponseEntity<Object> loadDefaultImage() {
         try {
+            // Load the default image
             Resource defaultImage = new ClassPathResource("static/images/default.png");
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, "image/png")
                     .contentLength(defaultImage.contentLength())
                     .body(defaultImage);
         } catch (IOException e) {
+            // In case of error, return 404
             return ResponseEntity.notFound().build();
         }
     }

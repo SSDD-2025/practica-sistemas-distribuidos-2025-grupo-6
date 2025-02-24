@@ -1,5 +1,7 @@
 package es.dlj.onlinestore.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,40 +34,32 @@ public class CartController {
     
     @GetMapping
     public String showCart(Model model) {
-
         // Add the user to the model in case it changes
-        UserInfo user = userComponent.getUser();
-        model.addAttribute("user", user);
-        
+        model.addAttribute("user", userComponent.getUser());
         return "cart_template";
     }
     
     @PostMapping("/remove/{productId}")
     public String removeProduct(@PathVariable Long productId) {
-
-        Product product = productRepository.findById(productId).orElse(null);
+        // Find the product by its ID
+        Optional<Product> product = productRepository.findById(productId);
 
         // Remove the product from the cart if it exists
-        if (product != null) {
-            userComponent.getUser().removeProductFromCart(product);
+        if (product.isPresent()) {
+            userComponent.getUser().removeProductFromCart(product.get());
         }
-
         return "redirect:/cart";
     }
     
     @GetMapping("/checkout")
     public String checkout(Model model) {
-
         // Add the user to the model in case it changes
-        UserInfo user = userComponent.getUser();
-        model.addAttribute("user", user);
-
+        model.addAttribute("user", userComponent.getUser());
         return "checkout_template";
     }
     
     @PostMapping("/confirm-order")
     public String confirmOrder(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber) {
-
         // Add the user to the model in case it changes
         UserInfo user = userComponent.getUser();
         model.addAttribute("user", user);
