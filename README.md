@@ -10,6 +10,20 @@
 | **Lídia Budiós**   |  l.budios.2024@alumnos.urjc.es | lidiabm |
 
 ---
+## Functionalities 
+Our web application is designed to facilitate buying and selling products, offering an intuitive, modern, and efficient experience for both buyers and sellers. Below are the main features it provides.  
+
+The application allows users to explore a wide variety of products across different categories: new, refurbished, and second-hand. Additionally, a search function and advanced filters are available to refine searches based on user preferences, making it easier to find the ideal product.  
+
+Users can list items on the platform by providing images, name, price, description, stock, discounts, filter tags, and specifying whether the product is new, refurbished, or second-hand. They can also modify the details of the products they have listed for sale.  
+
+A shopping cart feature is available, allowing users to add products to manage their selected items easily or remove them before proceeding to checkout. During the checkout process, the necessary purchase information is requested, and once completed, the user receives a confirmation message ensuring the transaction was successful.  
+
+Each user has a personal profile where they can view and manage their information. From this section, users can edit their profile to update personal details, access the option to sell a new product, or navigate to the privacy section.  
+
+Buyers can rate and leave reviews on products, helping other users make informed decisions. Reviews include a title, a description of the opinion, and a star rating (1 to 5).
+
+---
 
 ## Aplication Overview
 ### Entities 
