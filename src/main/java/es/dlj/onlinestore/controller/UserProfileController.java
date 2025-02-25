@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.OrderRepository;
@@ -14,6 +16,7 @@ import es.dlj.onlinestore.service.UserComponent;
 
 @Controller
 public class UserProfileController {
+
 
     @Autowired
     private UserComponent userComponent;
@@ -34,8 +37,9 @@ public class UserProfileController {
     }
 
     @PostMapping("/save-editprofilechanges")
-    public String saveProfileChanges(Model model, @ModelAttribute UserInfo newUser) {
-        userComponent.getUser().updateWith(newUser);
+    public String saveProfileChanges(Model model, @ModelAttribute UserInfo newUser, @RequestParam MultipartFile profilePhotoFile) {
+        userComponent.getUser().updateWith(newUser, profilePhotoFile);
+        
         return "redirect:/userprofile";
     }
 
