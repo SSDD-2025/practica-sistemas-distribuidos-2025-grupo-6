@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-
 import es.dlj.onlinestore.enumeration.ProductType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -21,7 +20,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Product {
@@ -256,7 +259,11 @@ public class Product {
     }
 
     public float getPriceWithSale() {
-        return price * (1 - sale / 100);
+        return price - getProductSale();
+    }
+
+    public float getProductSale() {
+        return Math.round(price * sale) / 100f;
     }
 
     public UserInfo getSeller() {
