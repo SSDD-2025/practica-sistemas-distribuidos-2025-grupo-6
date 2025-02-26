@@ -33,6 +33,9 @@ public class ProductService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ImageService imageService;
+
     @PostConstruct
     @Transactional
     public void init() {

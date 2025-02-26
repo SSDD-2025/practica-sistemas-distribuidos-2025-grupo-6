@@ -39,9 +39,9 @@ class ReviewController {
         review.setProduct(product);
         userReviewService.save(review);
         
-        user.addReview(review); // TODO: break encapsulation
+        user.addReview(review);
         productService.addRatingToProduct(product, review.getRating());
-        return "redirect:/userprofile"; 
+        return "redirect:/product/" + productId; 
     }
 
 }
