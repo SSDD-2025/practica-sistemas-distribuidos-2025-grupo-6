@@ -144,7 +144,7 @@ class ProductController {
         //newProduct.setSeller(userComponent.getUser());
         newProduct.setTags(productService.transformStringToTags(tagsVal));
         try {
-            imageService.saveImages(productService.getProduct(id), imagesVal);
+            imageService.saveImagesInProduct(productService.getProduct(id), imagesVal);
         } catch (IOException e) {
             // In case of errors in the images, return to the form with the errors mapped
             model.addAttribute("imageError", "Error uploading images");
@@ -184,7 +184,7 @@ class ProductController {
         newProduct.setSeller(userComponent.getUser());
         newProduct.setTags(productService.transformStringToTags(tagsVal));
         try {
-            imageService.saveImages(newProduct, imagesVal);
+            imageService.saveImagesInProduct(newProduct, imagesVal);
         } catch (IOException e) {
             // In case of errors in the images, return to the form with the errors mapped
             model.addAttribute("imageError", "Error uploading images");

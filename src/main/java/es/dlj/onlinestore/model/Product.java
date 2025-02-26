@@ -259,7 +259,7 @@ public class Product {
     }
 
     public float getPriceWithSale() {
-        return price - getProductSale();
+        return Math.round((price - getProductSale()) * 100f) / 100f;
     }
 
     public float getProductSale() {

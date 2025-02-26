@@ -47,7 +47,7 @@ public class Image {
         return imageFile;
     }
 
-    public void setimageFile(Blob imageFile) {
+    public void setImageFile(Blob imageFile) {
         this.imageFile = imageFile;
     }
 

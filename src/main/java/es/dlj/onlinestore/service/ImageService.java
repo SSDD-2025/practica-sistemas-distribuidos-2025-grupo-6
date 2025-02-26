@@ -1,23 +1,26 @@
 package es.dlj.onlinestore.service;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+// import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
+// import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.model.Image;
@@ -30,48 +33,90 @@ import es.dlj.onlinestore.repository.ImageRepository;
 public class ImageService {
     
     @Autowired
-    private ImageRepository images;
+    private ImageRepository imageRepository;
 
-    @Transactional //without this it will give ERROR 8172 [nio-8080-exec-3] o.h.engine.jdbc.spi.SqlExceptionHelper   : Underlying stream does not allow reset
-    public void saveImages(Product product, List<MultipartFile> rawImages) throws IOException {
+    @Transactional
+    public Image saveFileImage(MultipartFile rawImage) throws IOException {
+        Image image = new Image();
+        image.setContentType(rawImage.getContentType());
+        byte[] imageData = rawImage.getBytes();
+        image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
+        return imageRepository.save(image);
+    }
+
+    // @Transactional
+    // @SuppressWarnings("null")
+    // public Image saveImageFromHttp(String imageUrl) throws IOException {
+    //     RestTemplate restTemplate = new RestTemplate();
+    //     ResponseEntity<byte[]> response = restTemplate.exchange(imageUrl, HttpMethod.GET, null, byte[].class);
+    //     Image image = new Image();
+    //     image.setContentType(response.getHeaders().getContentType().toString());
+    //     byte[] imageData = response.getBody();
+    //     image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
+    //     return imageRepository.save(image);
+    // }
+
+    @Transactional
+    public Image saveFileImageFromPath(String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw new FileNotFoundException("File doesn't exists: " + filePath);
+        }
+        byte[] imageData = Files.readAllBytes(file.toPath());
+        String contentType = Files.probeContentType(file.toPath());
+        Image image = new Image();
+        image.setContentType(contentType != null ? contentType : "image/png");
+        image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
+        return imageRepository.save(image);
+    }
+
+    @Transactional
+    public void saveImagesInProduct(Product product, List<MultipartFile> rawImages) throws IOException {
         product.clearImages();
         for (MultipartFile rawImage : rawImages){
-            Image image = new Image();
-            image.setContentType(rawImage.getContentType());
-            byte[] imageData = rawImage.getBytes();
-            image.setimageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
-            product.addImage(image);
-            images.save(image);
+            Image savedImage = saveFileImage(rawImage);
+            product.addImage(savedImage);
         }
     }
 
-    @SuppressWarnings("null")
-    @Transactional
-    public void saveImagesFromHttp(Product product, List<String> rawImages) throws IOException {
-        product.clearImages();
-        for (String imageUrl : rawImages){
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<byte[]> response = restTemplate.exchange(imageUrl, HttpMethod.GET, null, byte[].class);
-            Image image = new Image();
-            image.setContentType(response.getHeaders().getContentType().toString());
-            byte[] imageData = response.getBody();
-            image.setimageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
-            product.addImage(image);
-        }
-    }
+    // @Transactional
+    // public void saveImagesFromHttpInProduct(Product product, List<String> rawImages) throws IOException {
+    //     product.clearImages();
+    //     for (String imageUrl : rawImages){
+    //         try {
+    //             Image savedImage = saveImageFromHttp(imageUrl);
+    //             product.addImage(savedImage);
+    //         } catch (IOException e) {}
+    //     }
+    // }
 
-    public ResponseEntity<Object> loadProductImage(Long id) throws ResourceAccessException {
-        Optional<Image> image = images.findById(id);
-        if (!image.isPresent()){
-            throw new ResourceAccessException("Image not found");
-        }
-        Blob imageData = image.get().getimageFile();
+    public ResponseEntity<Object> loadImage(Long id) {
         try {
+            Image image = imageRepository.findById(id).get();
+            Blob imageData = image.getimageFile();
             Resource imageFile = new InputStreamResource(imageData.getBinaryStream());
-            String contentType = "image/"+image.get().getContentType();
+            String contentType = "image/" + image.getContentType();
             return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, contentType).contentLength(imageData.length()).body(imageFile);
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchElementException e) {
+            return loadDefaultImage();
+        }
+    }
+
+    public void deleteImage(Image profilePhoto) {
+        imageRepository.delete(profilePhoto);
+    }
+
+    public ResponseEntity<Object> loadImageFromPath(String path, String contentType) {
+        try {
+            Resource defaultImage = new ClassPathResource(path);
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, contentType)
+                    .contentLength(defaultImage.contentLength()).body(defaultImage);
+        } catch (IOException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public ResponseEntity<Object> loadDefaultImage() {
+        return loadImageFromPath("static/images/default.png", "image/png");
     }
 }

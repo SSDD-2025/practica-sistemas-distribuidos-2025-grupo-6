@@ -164,7 +164,7 @@ Once the user makes the payment, they receive a notification confirming that the
 ## David Pimentel
 
 ### Summary of Contributions
-I have worked on the main menu, advanced search, and shopping cart. Additionally, I have contributed styling using Bootstrap to various HTML pages of the project. I have also assisted other team members with certain functionalities, styles, and have been responsible for the general code refactoring.
+I have worked on the main menu, advanced search, shopping cart and image service. Additionally, I have contributed styling using Bootstrap to various HTML pages of the project. I have also assisted other team members with certain functionalities, styles, and have been responsible for the general code refactoring.
 
 ### Main commits in the repository
 
@@ -188,4 +188,4 @@ I have worked on the main menu, advanced search, and shopping cart. Additionally
 
 - [CartController.java](src/main/java/es/dlj/onlinestore/controller/CartController.java)
 
-- [Layout.html](src/main/resources/templates/Layout.html)
+- [ImageService.java](src/main/java/es/dlj/onlinestore/service/ImageService.java)

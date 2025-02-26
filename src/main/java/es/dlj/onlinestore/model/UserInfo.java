@@ -1,8 +1,5 @@
 package es.dlj.onlinestore.model;
 
-import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,8 +11,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.engine.jdbc.BlobProxy;
-import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.enumeration.PaymentMethod;
 import jakarta.persistence.CascadeType;
@@ -26,15 +21,23 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class UserInfo {
 
     public void setProductsForSell(List<Product> productsForSell) {
         this.productsForSell = productsForSell;
+    }
+
+    public Image getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(Image profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
     
     public static enum Role {
@@ -71,8 +74,8 @@ public class UserInfo {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderInfo> orders = new ArrayList<>();
 
-    @Lob
-    private Blob profilePhoto;
+    @OneToOne
+    private Image profilePhoto;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Product> cartProducts = new HashSet<>();
@@ -96,7 +99,7 @@ public class UserInfo {
         this.phone = phone;
     }
 
-    public void updateWith(UserInfo user, MultipartFile profilePhotoFile) {
+    public void updateWith(UserInfo user) {
         this.userName = user.userName != null ? user.userName : this.userName;
         this.password = user.password != null ? user.password : this.password;
         this.name = user.name != null ? user.name : this.name;
@@ -106,18 +109,6 @@ public class UserInfo {
         this.city = user.city != null ? user.city : this.city;
         this.postalCode = user.postalCode != null ? user.postalCode : this.postalCode;
         this.phone = user.phone != null ? user.phone : this.phone;
-        
-        if (profilePhotoFile != null && !profilePhotoFile.isEmpty()) {
-            try {
-                this.setProfilePhoto(BlobProxy.generateProxy(
-                    profilePhotoFile.getInputStream(),
-                    profilePhotoFile.getSize()
-                ));
-                System.out.println(this.getProfilePhoto().length());
-            } catch (IOException | SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public Long getId() {
@@ -178,14 +169,6 @@ public class UserInfo {
 
     public String getCreditCard() {
         return creditCard;
-    }
-
-    public Blob getProfilePhoto() {
-        return this.profilePhoto;
-    }
-
-    public void setProfilePhoto(Blob profilePhoto) {
-        this.profilePhoto = profilePhoto;
     }
 
     public void setName(String name) {
