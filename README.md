@@ -2,6 +2,7 @@
 
 # Swappy  
 
+---
 ## Team Members
 | Name and Surname | Email | GitHub |
 |:-----------------|:-----:|-------:|
