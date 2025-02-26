@@ -1,5 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/D1C1HU9V)
-
 # Swappy  
 
 ---
@@ -34,7 +32,7 @@ Buyers can rate and leave reviews on products, helping other users make informed
     - The *anonymous user* Anonymous user can only see the products, but has no relation with the other entities
 Therefore it is related to the entities: product, review and order.
 
-- **Product**: represents the products available in the application.There are two types of producs: *first-hand* and *second-hand*. Both types of products have images of themselves, can have user reviews, and can be part of orders with the difference that first-hand products can be in multiple orders and second-hand products can only be in one.
+- **Product**: represents the products available in the application. There are thre types of producs: *new*, *reconditioned* and *second-hand*. Both types of products have images of themselves, can have user reviews, and can be part of orders with the difference that first-hand products can be in multiple orders and second-hand products can only be in one.
 Therefore it is related to the entities: user, review and order. 
 
 - **Review**: a review is created by a user and is associated with a product. 
@@ -160,5 +158,34 @@ Once the user makes the payment, they receive a notification confirming that the
 ![Completed Order Page](orderCompleted.PNG) 
 
 ---
-## Team Contributions 
-<!-- in the end -->
+
+# Team Contributions 
+
+## David Pimentel
+
+### Summary of Contributions
+I have worked on the main menu, advanced search, and shopping cart. Additionally, I have contributed styling using Bootstrap to various HTML pages of the project. I have also assisted other team members with certain functionalities, styles, and have been responsible for the general code refactoring.
+
+### Main commits in the repository
+
+- [UserComponent, Integration products in home page, product service and user service](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/08a1a17b0e2bf16caae4ad42ca026fdbc1b0e30f)
+
+- [add product search functionality with price filtering](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/6f37e405d7c0f5b4001990ba1877ce707e683f82)
+
+- [Refactor templates to use layout system and remove unused files, starting to implement advanced search for products](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/1989bedd22da834bafa3e0ca11830c39a25ba061)
+
+- [Order processing features: order repository, cart template, checkout template, and confirmation page. Update product filtering and search functionality.](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/1761f07a3188a0cd48668366edd26719b4ab4824)
+
+- [Refactoring cart controller, home controller, and serch part in product controller, and some html](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/ec79b3aa94f53ade89d234c28a3dbca089100e17)
+
+### Main files modified
+
+- [OrderInfo.java](src/main/java/es/dlj/onlinestore/model/OrderInfo.java)
+
+- [ProductController.java](src/main/java/es/dlj/onlinestore/controller/ProductController.java)
+
+- [HomeController.java](src/main/java/es/dlj/onlinestore/controller/HomeController.java)
+
+- [CartController.java](src/main/java/es/dlj/onlinestore/controller/CartController.java)
+
+- [Layout.html](src/main/resources/templates/Layout.html)
