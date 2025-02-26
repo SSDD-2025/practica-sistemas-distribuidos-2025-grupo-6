@@ -18,10 +18,10 @@
 	<div class="card p-4 rounded-4 shadow-sm">
 		<h2 class="mt-10 alert alert-{{color}}">{{# icon}}<i class="bi bi-{{.}} text-{{color}}"></i>
 			{{/icon}}{{title}}</h2>
-		<div class="d-flex overflow-auto">
+		<div class="d-flex overflow-auto p-3">
 			{{#products}}
 
-			<div class="col-3 p-1 me-3">
+			<div class="col-3 p-3">
 				<h4>{{-index}}º</h4>
 
 				{{> productPreview_template}}

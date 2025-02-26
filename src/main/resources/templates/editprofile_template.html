@@ -14,8 +14,12 @@
                     </a>
                 </div>
                 <h2 class="text-center mb-4">Edit Profile Information</h2>
-                <form action="/save-editprofilechanges" method="POST">
+                <form action="/save-editprofilechanges" method="POST" enctype="multipart/form-data">
                     <div class="row g-4">
+                        <div class="col-md-6">
+                            <label for="profilePhotoFile" class="form-label">Profile Image</label>
+				            <input type="file" class="form-control" id="profilePhotoFile" name="profilePhotoFile" accept=".png" required>
+                        </div>
                         <div class="col-md-6">
                             <label for="name" class="form-label">User Name</label>
                             <input type="text" class="form-control" id="userName" name="userName" 

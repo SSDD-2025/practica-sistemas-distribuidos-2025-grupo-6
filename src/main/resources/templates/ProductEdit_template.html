@@ -1,16 +1,17 @@
 {{< layouts/layout}}
-<!-- TODO: Style all template -->
 
 {{$ content}}
 {{# product}}
 <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-    <div class="card p-4 shadow-sm" style="width: 350px;">
-        <h3 class="text-center mb-4">Edit Product</h3>
+    <div class="card p-4 shadow-lg rounded-3 mt-4" style="max-width: 400px;">
+        <h3 class="text-center mb-4 text-primary">Edit Product</h3>
         <form action="/product/update/{{id}}" method="post" enctype="multipart/form-data">
+
+            <!-- Images Section -->
             <fieldset class="mb-3">
-                <legend>Images</legend>
+                <legend class="h5">Images</legend>
                 <div class="mb-3">
-                    <label for="images" class="form-label">Add more images</label>
+                    <label for="images" class="form-label">Add images</label>
                     <input type="file" class="form-control" id="images" name="imagesVal" accept=".jpg, .jpeg, .png" multiple required>
                     {{#imageError}}
                     <small class="text-danger">{{.}}</small>
@@ -18,8 +19,9 @@
                 </div>
             </fieldset>
 
+            <!-- Product Details -->
             <fieldset class="mb-3">
-                <legend>Product Details</legend>
+                <legend class="h5">Product Details</legend>
                 
                 <div class="mb-3">
                     <label for="name" class="form-label">Name</label>
@@ -31,7 +33,7 @@
 
                 <div class="mb-3">
                     <label for="price" class="form-label">Price</label>
-                    <input type="number" class="form-control" id="price" name="price" value="{{price}}" required min="0" step="0.5">
+                    <input type="number" class="form-control" id="price" name="price" value="{{price}}" required step="0.01">
                     {{#errors.price}}
                     <small class="text-danger">{{.}}</small>
                     {{/errors.price}}
@@ -55,26 +57,28 @@
 
                 <div class="mb-3">
                     <label for="sale" class="form-label">Sale Price</label>
-                    <input type="number" class="form-control" id="sale" name="sale" value="{{sale}}" required step="0.5">
+                    <input type="number" class="form-control" id="sale" name="sale" value="{{sale}}" required step="0.01">
                     {{#errors.sale}}
                     <small class="text-danger">{{.}}</small>
                     {{/errors.sale}}
                 </div>
             </fieldset>
 
+            <!-- Tags -->
             <fieldset class="mb-3">
-                <legend>Tags</legend>
+                <legend class="h5">Tags</legend>
                 <div id="tagsDiv">
                     <label for="tags" class="form-label">Tags</label>
-                    <textarea id="description" class="form-control" name="tagsVal" required>{{allTagsInString}}</textarea>
+                    <textarea id="tags" class="form-control" name="tagsVal" required>{{allTagsInString}}</textarea>
                 </div>
             </fieldset>
 
+            <!-- Product Type -->
             <fieldset class="mb-3">
-                <legend>Product Type</legend>
+                <legend class="h5">Product Type</legend>
                 <div class="mb-3">
                     <label for="productType" class="form-label">Product Type</label>
-                    <select name="productType" id="productType" required>
+                    <select name="productType" id="productType" class="form-select" required>
                         {{#productTypesMapped}}
                         <option value="{{name}}" {{#selected}} selected {{/selected}}>{{name}}</option>
                         {{/productTypesMapped}}
@@ -83,12 +87,12 @@
             </fieldset>
 
             <!-- Submit Button -->
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
             </div>
         </form>
     </div>
 </div>
 {{/ product}}
-{{/ content }}
-{{/ layouts/layout }}
+{{/ content}}
+{{/ layouts/layout}}

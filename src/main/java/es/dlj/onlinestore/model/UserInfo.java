@@ -1,5 +1,8 @@
 package es.dlj.onlinestore.model;
 
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -11,6 +14,8 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.engine.jdbc.BlobProxy;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.enumeration.PaymentMethod;
 import jakarta.persistence.CascadeType;
@@ -21,25 +26,17 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class UserInfo {
 
-    public void addProductForSale(Product savedProduct) {
-        this.productsForSell.add(savedProduct);
+    public void setProductsForSell(List<Product> productsForSell) {
+        this.productsForSell = productsForSell;
     }
-
-    public Image getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(Image profileImage) {
-        this.profileImage = profileImage;
-    }
-
+    
     public static enum Role {
         USER, ADMIN, UNREGISTERED
     }
@@ -61,10 +58,9 @@ public class UserInfo {
     private String postalCode;
     private String phone;
     private String creditCard;
-    private String profilePhoto; 
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Product> productsForSell;
+    private List<Product> productsForSell = new ArrayList<>();;
     
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
@@ -75,12 +71,8 @@ public class UserInfo {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderInfo> orders = new ArrayList<>();
 
-    @OneToOne (cascade = CascadeType.ALL)
-    private Image profileImage;
-
-    public void addOrder(OrderInfo order){
-        orders.add(order);
-    }
+    @Lob
+    private Blob profilePhoto;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Product> cartProducts = new HashSet<>();
@@ -102,10 +94,9 @@ public class UserInfo {
         this.city = city;
         this.postalCode = postalCode;
         this.phone = phone;
-        this.productsForSell = new ArrayList<Product>();
     }
 
-    public void updateWith(UserInfo user) {
+    public void updateWith(UserInfo user, MultipartFile profilePhotoFile) {
         this.userName = user.userName != null ? user.userName : this.userName;
         this.password = user.password != null ? user.password : this.password;
         this.name = user.name != null ? user.name : this.name;
@@ -115,7 +106,18 @@ public class UserInfo {
         this.city = user.city != null ? user.city : this.city;
         this.postalCode = user.postalCode != null ? user.postalCode : this.postalCode;
         this.phone = user.phone != null ? user.phone : this.phone;
-        this.profilePhoto = user.profilePhoto != null ? user.profilePhoto : this.profilePhoto;
+        
+        if (profilePhotoFile != null && !profilePhotoFile.isEmpty()) {
+            try {
+                this.setProfilePhoto(BlobProxy.generateProxy(
+                    profilePhotoFile.getInputStream(),
+                    profilePhotoFile.getSize()
+                ));
+                System.out.println(this.getProfilePhoto().length());
+            } catch (IOException | SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Long getId() {
@@ -178,8 +180,12 @@ public class UserInfo {
         return creditCard;
     }
 
-    public String getProfilePhoto() {
-        return profilePhoto;
+    public Blob getProfilePhoto() {
+        return this.profilePhoto;
+    }
+
+    public void setProfilePhoto(Blob profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 
     public void setName(String name) {
@@ -218,9 +224,7 @@ public class UserInfo {
         this.creditCard = creditCard;
     }
 
-    public void setProfilePhoto(String profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
+    
     
     public List<Review> getReviews() {
         return reviews;
@@ -228,7 +232,6 @@ public class UserInfo {
 
     public void addReview(Review review){
         this.reviews.add(review);
-        review.setOwner(this);
     }
 
     public void removeReview(Review review){
@@ -279,10 +282,6 @@ public class UserInfo {
         return paymentMethod;
     }
 
-    // public void setPaymentMethod(PaymentMethod paymentMethod) {
-    //     this.paymentMethod = paymentMethod;
-    // }
-
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = PaymentMethod.fromString(paymentMethod);
     }
@@ -332,6 +331,14 @@ public class UserInfo {
         return this.productsForSell;
     }
 
+    public void addOrder(OrderInfo order){
+        orders.add(order);
+    }
+
+    public void addProductForSale(Product savedProduct) {
+        this.productsForSell.add(savedProduct);
+    }
+
     public void removeProduct(Product removingProduct){
         int index = 0;
         for (int i=0; i<this.productsForSell.size(); i++){
@@ -359,13 +366,9 @@ public class UserInfo {
                 ", city='" + city + '\'' +
                 ", postalCode='" + postalCode + '\'' +
                 ", phone='" + phone + '\'' +
-                ", profilePhoto='" + profilePhoto + '\'' +
                 ", paymentMethod=" + paymentMethod +
-                ", reviews=" + reviews +
-                ", orders=" + orders +
-                ", cartProducts=" + cartProducts +
                 ", role=" + role +
-                '}';	
+                '}';    
     }
 
     public String getCreationDateFormatted() {

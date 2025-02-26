@@ -16,7 +16,6 @@ import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductTag;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
-import es.dlj.onlinestore.repository.UserInfoRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 
@@ -32,14 +31,8 @@ public class ProductService {
     private ProductTagRepository productTags;
 
     @Autowired
-    private ImageService imageService;
-
-    @Autowired
-    private UserInfoRepository userInfoRepository;
-
-    @Autowired
     private UserService userService;
-        
+
     @PostConstruct
     @Transactional
     public void init() {
