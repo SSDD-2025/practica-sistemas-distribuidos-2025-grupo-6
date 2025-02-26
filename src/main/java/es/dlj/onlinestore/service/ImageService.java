@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.model.Image;
@@ -39,6 +41,21 @@ public class ImageService {
             image.setimageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
             product.addImage(image);
             images.save(image);
+        }
+    }
+
+    @SuppressWarnings("null")
+    @Transactional
+    public void saveImagesFromHttp(Product product, List<String> rawImages) throws IOException {
+        product.clearImages();
+        for (String imageUrl : rawImages){
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<byte[]> response = restTemplate.exchange(imageUrl, HttpMethod.GET, null, byte[].class);
+            Image image = new Image();
+            image.setContentType(response.getHeaders().getContentType().toString());
+            byte[] imageData = response.getBody();
+            image.setimageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
+            product.addImage(image);
         }
     }
 

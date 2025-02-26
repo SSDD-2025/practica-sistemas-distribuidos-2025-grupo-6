@@ -1,5 +1,6 @@
 package es.dlj.onlinestore.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
 import es.dlj.onlinestore.repository.UserInfoRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProductService {
@@ -34,29 +36,54 @@ public class ProductService {
 
     @Autowired
     private UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private UserService userService;
         
     @PostConstruct
+    @Transactional
     public void init() {
-        products.save(new Product("Laptop Dell XPS 15", 1500f, "High-end laptop", ProductType.NEW, 10, transformStringToTags("electronics, laptop"), 20));
-        products.save(new Product("iPhone 13 Pro", 1200f, "Latest Apple smartphone", ProductType.NEW, 15, transformStringToTags("smartphone, apple"), 10));
-        products.save(new Product("Samsung Galaxy S21", 1000f, "Samsung flagship phone", ProductType.RECONDITIONED, 20, transformStringToTags("smartphone, android"), 15));
-        products.save(new Product("HP Pavilion 14", 750f, "Affordable HP laptop", ProductType.SECONDHAND, 12, transformStringToTags("laptop, hp"), 5));
-        products.save(new Product("MacBook Air M1", 999f, "Apple M1 laptop", ProductType.NEW, 8, transformStringToTags("laptop, apple"), 25));
-        products.save(new Product("PlayStation 5", 499f, "Next-gen gaming console", ProductType.NEW, 5, transformStringToTags("gaming, console"), 30));
-        products.save(new Product("Xbox Series X", 499f, "Microsoft gaming console", ProductType.RECONDITIONED, 6, transformStringToTags("gaming, console"), 20));
-        products.save(new Product("iPad Air 4", 599f, "Apple tablet", ProductType.NEW, 10, transformStringToTags("tablet, apple"), 10));
-        products.save(new Product("Kindle Paperwhite", 150f, "Amazon e-reader", ProductType.SECONDHAND, 20, transformStringToTags("tablet, reader"), 5));
-        products.save(new Product("Sony WH-1000XM4", 350f, "Noise-canceling headphones", ProductType.NEW, 15, transformStringToTags("audio, headphones"), 25));
-        products.save(new Product("Bose QC35 II", 299f, "Wireless headphones", ProductType.RECONDITIONED, 12, transformStringToTags("audio, headphones"), 15));
-        products.save(new Product("LG OLED CX 55", 1300f, "55-inch OLED TV", ProductType.NEW, 8, transformStringToTags("tv, lg"), 20));
-        products.save(new Product("Samsung QLED Q80T", 1200f, "65-inch QLED TV", ProductType.NEW, 10, transformStringToTags("tv, samsung"), 10));
-        products.save(new Product("Nikon D3500", 450f, "DSLR Camera", ProductType.SECONDHAND, 7, transformStringToTags("camera, nikon"), 5));
-        products.save(new Product("Canon EOS M50", 600f, "Mirrorless Camera", ProductType.NEW, 5, transformStringToTags("camera, canon"), 20));
-        products.save(new Product("GoPro Hero 9", 400f, "Action Camera", ProductType.RECONDITIONED, 10, transformStringToTags("camera, gopro"), 15));
-        products.save(new Product("Surface Pro 7", 800f, "Microsoft tablet-laptop hybrid", ProductType.NEW, 9, transformStringToTags("tablet, microsoft"), 10));
-        products.save(new Product("Dell UltraSharp 27", 500f, "4K Monitor", ProductType.NEW, 11, transformStringToTags("monitor, dell"), 25));
-        products.save(new Product("Apple Watch Series 7", 399f, "Smartwatch", ProductType.NEW, 14, transformStringToTags("watch, apple"), 20));
-        products.save(new Product("Samsung Galaxy Watch 4", 299f, "Smartwatch", ProductType.RECONDITIONED, 13, transformStringToTags("watch, samsung"), 15));
+        List<Product> productList = List.of(
+            new Product("Laptop Dell XPS 15", 1500.99f, "High-end laptop", ProductType.NEW, 10, transformStringToTags("electronics, laptop"), 20),
+            new Product("iPhone 13 Pro", 1200.99f, "Latest Apple smartphone", ProductType.NEW, 15, transformStringToTags("smartphone, apple"), 10),
+            new Product("Samsung Galaxy S21", 1000.99f, "Samsung flagship phone", ProductType.RECONDITIONED, 20, transformStringToTags("smartphone, android"), 15),
+            new Product("HP Pavilion 14", 750.99f, "Affordable HP laptop", ProductType.SECONDHAND, 12, transformStringToTags("laptop, hp"), 5),
+            new Product("MacBook Air M1", 999.99f, "Apple M1 laptop", ProductType.NEW, 8, transformStringToTags("laptop, apple"), 25),
+            new Product("PlayStation 5", 499.99f, "Next-gen gaming console", ProductType.NEW, 5, transformStringToTags("gaming, console"), 30),
+            new Product("Xbox Series X", 499.99f, "Microsoft gaming console", ProductType.RECONDITIONED, 6, transformStringToTags("gaming, console"), 20),
+            new Product("iPad Air 4", 599.99f, "Apple tablet", ProductType.NEW, 10, transformStringToTags("tablet, apple"), 10),
+            new Product("Kindle Paperwhite", 150.99f, "Amazon e-reader", ProductType.SECONDHAND, 20, transformStringToTags("tablet, reader"), 5),
+            new Product("Sony WH-1000XM4", 350.99f, "Noise-canceling headphones", ProductType.NEW, 15, transformStringToTags("audio, headphones"), 25),
+            new Product("Bose QC35 II", 299.99f, "Wireless headphones", ProductType.RECONDITIONED, 12, transformStringToTags("audio, headphones"), 15),
+            new Product("LG OLED CX 55", 1300.99f, "55-inch OLED TV", ProductType.NEW, 8, transformStringToTags("tv, lg"), 20),
+            new Product("Samsung QLED Q80T", 1200.99f, "65-inch QLED TV", ProductType.NEW, 10, transformStringToTags("tv, samsung"), 10),
+            new Product("Nikon D3500", 450.99f, "DSLR Camera", ProductType.SECONDHAND, 7, transformStringToTags("camera, nikon"), 5),
+            new Product("Canon EOS M50", 600.99f, "Mirrorless Camera", ProductType.NEW, 5, transformStringToTags("camera, canon"), 20),
+            new Product("GoPro Hero 9", 400.99f, "Action Camera", ProductType.RECONDITIONED, 10, transformStringToTags("camera, gopro"), 15),
+            new Product("Surface Pro 7", 800.99f, "Microsoft tablet-laptop hybrid", ProductType.NEW, 9, transformStringToTags("tablet, microsoft"), 10),
+            new Product("Dell UltraSharp 27", 500.99f, "4K Monitor", ProductType.NEW, 11, transformStringToTags("monitor, dell"), 25),
+            new Product("Apple Watch Series 7", 399.99f, "Smartwatch", ProductType.NEW, 14, transformStringToTags("watch, apple"), 20),
+            new Product("Samsung Galaxy Watch 4", 299.99f, "Smartwatch", ProductType.RECONDITIONED, 13, transformStringToTags("watch, samsung"), 15)
+        );
+
+        List<List<String>> images = List.of(
+            List.of("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmeFCPecfZoPQuMqnIbtnVxWt8iePZ2WHsYQ&s", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3iIUP3Ec_Jh_pBg1DblZ_NhmIoCEHGGtzFw&s")
+            
+        );
+
+        for (int i = 0; i < productList.size(); i++) {
+            try {
+                imageService.saveImagesFromHttp(productList.get(i), images.get(0));
+            } catch (IOException e) {}
+            if (i < 5) {
+                productList.get(i).setSeller(userService.findById(1L));
+            }
+            products.save(productList.get(i));
+            if (i < 5) {
+                userService.findById(1L).addProduct(productList.get(i));
+            }
+        }
+
     }
 
     public void updateProduct(Long id, Product updatedProduct) {

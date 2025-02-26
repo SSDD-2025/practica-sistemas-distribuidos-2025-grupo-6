@@ -15,6 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByProductType(ProductType type);
     List<Product> findByNameContaining(String name);
     Long countByProductType(ProductType type);
+    Product findByName(String name);
 
     // Best Sellers
     List<Product> findTop10ByOrderByTotalSellsDesc();
