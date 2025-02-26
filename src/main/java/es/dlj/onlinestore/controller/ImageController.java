@@ -3,6 +3,7 @@ package es.dlj.onlinestore.controller;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.ResourceAccessException;
 
 import es.dlj.onlinestore.model.Image;
 import es.dlj.onlinestore.model.Product;
@@ -47,7 +49,7 @@ import es.dlj.onlinestore.service.UserComponent;
         try {
             // Try to load the image
             return imageService.loadProductImage(id);
-        } catch (Exception e) {
+        } catch (ResourceAccessException e) {
             // In case of error, return default image
             return loadDefaultImage();
         }
@@ -66,7 +68,7 @@ import es.dlj.onlinestore.service.UserComponent;
             // Try to load the image
             Image image = product.get().getImages().getFirst();
             return imageService.loadProductImage(image.getId());
-        } catch (Exception e) {
+        } catch (ResourceAccessException | NoSuchElementException e) {
             // In case of error, return default image
             return loadDefaultImage();
         }

@@ -22,7 +22,6 @@ public class UserComponent {
         if (this.user == null || !this.user.getId().equals(userId)) {
             this.user = users.findById(userId).get();
         }
-
         return this.user;
     }
 
@@ -36,35 +35,22 @@ public class UserComponent {
     }
 
     public void addProductToCart(Product product) {
-        if (this.user == null || !this.user.getId().equals(userId)) {
-            this.user = users.findById(userId).get();
-        }
+        getUser();
         this.user.addProductToCart(product);
-        System.out.println("\nAdding product to cart\n");
     }
 
     public void removeProductFromCart(Product product) {
-        if (this.user == null || !this.user.getId().equals(userId)) {
-            this.user = users.findById(userId).get();
-        }
+        getUser();
         this.user.removeProductFromCart(product);
-        System.out.println("\nRemoving product from cart\n");
     }
 
     public void clearCart() {
-        if (this.user == null || !this.user.getId().equals(userId)) {
-            this.user = users.findById(userId).get();
-        }
+        getUser();
         this.user.clearCart();
-        System.out.println("\nClearing cart\n");
     }
 
     public void addProductForSale(Product savedProduct) {
-        if (this.user == null || !this.user.getId().equals(userId)) {
-            this.user = users.findById(userId).get();
-        }
+        getUser();
         this.user.addProductForSale(savedProduct);
-        System.out.println("\nAdding product for sale\n");
     }
-
 }

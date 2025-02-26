@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.model.Image;
@@ -42,10 +43,10 @@ public class ImageService {
         }
     }
 
-    public ResponseEntity<Object> loadProductImage(Long id){
+    public ResponseEntity<Object> loadProductImage(Long id) throws ResourceAccessException {
         Optional<Image> image = images.findById(id);
         if (!image.isPresent()){
-            return ResponseEntity.notFound().build();
+            throw new ResourceAccessException("Image not found");
         }
         Blob imageData = image.get().getimageFile();
         try {

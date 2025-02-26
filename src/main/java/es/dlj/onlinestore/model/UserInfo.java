@@ -33,12 +33,10 @@ import jakarta.persistence.OneToMany;
 @Entity
 public class UserInfo {
 
-    public void addProductForSale(Product savedProduct) {
-        this.productsForSell.add(savedProduct);
+    public void setProductsForSell(List<Product> productsForSell) {
+        this.productsForSell = productsForSell;
     }
-
     
-
     public static enum Role {
         USER, ADMIN, UNREGISTERED
     }
@@ -62,7 +60,7 @@ public class UserInfo {
     private String creditCard;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Product> productsForSell;
+    private List<Product> productsForSell = new ArrayList<>();;
     
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
@@ -75,10 +73,6 @@ public class UserInfo {
 
     @Lob
     private Blob profilePhoto;
-
-    public void addOrder(OrderInfo order){
-        orders.add(order);
-    }
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Product> cartProducts = new HashSet<>();
@@ -100,7 +94,6 @@ public class UserInfo {
         this.city = city;
         this.postalCode = postalCode;
         this.phone = phone;
-        this.productsForSell = new ArrayList<Product>();
     }
 
     public void updateWith(UserInfo user, MultipartFile profilePhotoFile) {
@@ -113,6 +106,7 @@ public class UserInfo {
         this.city = user.city != null ? user.city : this.city;
         this.postalCode = user.postalCode != null ? user.postalCode : this.postalCode;
         this.phone = user.phone != null ? user.phone : this.phone;
+        
         if (profilePhotoFile != null && !profilePhotoFile.isEmpty()) {
             try {
                 this.setProfilePhoto(BlobProxy.generateProxy(
@@ -238,7 +232,6 @@ public class UserInfo {
 
     public void addReview(Review review){
         this.reviews.add(review);
-        review.setOwner(this);
     }
 
     public void removeReview(Review review){
@@ -338,6 +331,14 @@ public class UserInfo {
         return this.productsForSell;
     }
 
+    public void addOrder(OrderInfo order){
+        orders.add(order);
+    }
+
+    public void addProductForSale(Product savedProduct) {
+        this.productsForSell.add(savedProduct);
+    }
+
     public void removeProduct(Product removingProduct){
         int index = 0;
         for (int i=0; i<this.productsForSell.size(); i++){
@@ -365,11 +366,7 @@ public class UserInfo {
                 ", city='" + city + '\'' +
                 ", postalCode='" + postalCode + '\'' +
                 ", phone='" + phone + '\'' +
-                ", profilePhoto='" + profilePhoto + '\'' +
                 ", paymentMethod=" + paymentMethod +
-                ", reviews=" + reviews +
-                ", orders=" + orders +
-                ", cartProducts=" + cartProducts +
                 ", role=" + role +
                 '}';    
     }
