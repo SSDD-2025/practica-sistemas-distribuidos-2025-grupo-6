@@ -1,10 +1,15 @@
 package es.dlj.onlinestore.controller;
 
 import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +23,15 @@ import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.service.ImageService;
+import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserComponent;
 
  @Controller
  @RequestMapping("/image")
  class ImageController {
+    
+    private Logger log = LoggerFactory.getLogger(ProductService.class);
+
 
     @Autowired
     private ProductRepository productController;
@@ -66,13 +75,21 @@ import es.dlj.onlinestore.service.UserComponent;
     @GetMapping("/user")
     public ResponseEntity<Object> getUserImage (){
         // Get the user information
+        log.info("Inside images");
         UserInfo user = userComponent.getUser();
-        try {
-            // Try to load the image
-            Image image = user.getProfileImage();
-            return imageService.loadProductImage(image.getId());
-        } catch (Exception e) {
-            // In case of error, return default image
+        if (user.getProfilePhoto() != null){
+            log.info("Image exists");
+            try {
+                // Try to load the image
+                Blob imageData = user.getProfilePhoto();
+                Resource imageFile = new InputStreamResource(imageData.getBinaryStream());
+                return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/png").contentLength(imageData.length()).body(imageFile);
+            }
+                catch (SQLException e) {
+                return loadDefaultImage();
+            }
+        }
+        else{
             return loadDefaultImage();
         }
     } 
@@ -94,4 +111,6 @@ import es.dlj.onlinestore.service.UserComponent;
             return ResponseEntity.notFound().build();
         }
     }
+
+    
 }

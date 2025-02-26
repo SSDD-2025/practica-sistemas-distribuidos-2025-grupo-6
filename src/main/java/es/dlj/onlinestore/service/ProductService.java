@@ -15,7 +15,6 @@ import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductTag;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
-import es.dlj.onlinestore.repository.UserInfoRepository;
 import jakarta.annotation.PostConstruct;
 
 @Service
@@ -29,12 +28,6 @@ public class ProductService {
     @Autowired
     private ProductTagRepository productTags;
 
-    @Autowired
-    private ImageService imageService;
-
-    @Autowired
-    private UserInfoRepository userInfoRepository;
-        
     @PostConstruct
     public void init() {
         products.save(new Product("Laptop Dell XPS 15", 1500.99f, "High-end laptop", ProductType.NEW, 10, transformStringToTags("electronics, laptop"), 20));
