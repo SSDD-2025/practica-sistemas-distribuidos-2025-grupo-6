@@ -65,7 +65,8 @@ public class CartController {
         model.addAttribute("user", user);
 
         // Create and save the order
-        OrderInfo order = new OrderInfo(user, user.getCartProducts(), user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
+        OrderInfo order = new OrderInfo(user.getCartProducts(), user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
+        order.setUser(user);
         orderRepository.save(order);
         model.addAttribute("order", order);
         

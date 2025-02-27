@@ -11,10 +11,17 @@ import org.springframework.stereotype.Service;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Image;
+import es.dlj.onlinestore.model.OrderInfo;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductTag;
+import es.dlj.onlinestore.model.Review;
+import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.repository.ImageRepository;
+import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
+import es.dlj.onlinestore.repository.UserInfoRepository;
+import es.dlj.onlinestore.repository.UserReviewRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 
@@ -33,9 +40,26 @@ public class ProductService {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private UserReviewRepository reviewRepository;
+
+    @Autowired
+    private ProductTagRepository productTagRepository;
+
+    // @Autowired
+    // private UserReviewService userReviewService;
+    
+
     @PostConstruct
     @Transactional
     public void init() {
+        productRepository.deleteAll();
+        productRepository.flush();
+
+        // Preload products
         List<Product> productList = List.of(
             productRepository.save(new Product("Laptop Dell XPS 15", 1500.99f, "High-end laptop", ProductType.NEW, 10, transformStringToTags("electronics, laptop"), 20)),
             productRepository.save(new Product("iPhone 13 Pro", 1200.99f, "Latest Apple smartphone", ProductType.NEW, 15, transformStringToTags("smartphone, apple"), 10)),
@@ -59,6 +83,7 @@ public class ProductService {
             productRepository.save(new Product("Samsung Galaxy Watch 4", 299.99f, "Smartwatch", ProductType.RECONDITIONED, 13, transformStringToTags("watch, samsung"), 15))
         );
 
+        // Preload images
         List<List<String>> productImages = new ArrayList<>();
         productImages.add(List.of("image-01-1.png", "image-01-2.png"));
         productImages.add(List.of("image-02-1.png", "image-02-2.png"));
@@ -82,20 +107,17 @@ public class ProductService {
         productImages.add(List.of("image-02-1.png", "image-02-2.png"));
         productImages.add(List.of("image-03-1.png", "image-03-2.png"));
 
+        UserInfo user = userService.findById(1L);
+        
         for (int i = 0; i < productList.size(); i++) {
             try {
                 for (String productImage : productImages.get(i)) {
-                    Image thisImage = imageService.saveFileImageFromPath("src\\main\\resources\\static\\images\\preloaded\\" + productImage);
+                    Image thisImage = imageService.saveFileImageFromPath("src/main/resources/static/images/preloaded/" + productImage);
                     productList.get(i).addImage(thisImage);
                 }
             } catch (IOException e) {}
-            if (i < 5) {
-                productList.get(i).setSeller(userService.findById(1L));
-            }
+            if (i < 5) productList.get(i).setSeller(user);
             productRepository.save(productList.get(i));
-            if (i < 5) {
-                userService.findById(1L).addProduct(productList.get(i));
-            }
         }
 
     }
@@ -180,31 +202,17 @@ public class ProductService {
                 productTypes.add(ProductType.valueOf(type));
             }
         }
-
         return productRepository.searchProducts(name, minPrice, maxPrice, tags, productTypes);
     }
 
-    // Best Sellers
     public List<Product> getBestSellers() {
         return productRepository.findTop10ByOrderByTotalSellsDesc();
     }
 
-    // Top Rated
-    public List<Product> getTopRated() {
-        return productRepository.findTop10ByOrderByRatingDesc();
+    public List<Product> getBestSales() {
+        return productRepository.findTop10ByOrderBySaleDesc();
     }
 
-    // On Sale
-    public List<Product> getOnSale(int sale) {
-        return productRepository.findBySaleGreaterThan(sale);
-    }
-
-    // Trending This Week
-    public List<Product> getTrendingThisWeek() {
-        return productRepository.findTop10ByOrderByLastWeekSellsDesc();
-    }
-
-    // Low Stock
     public List<Product> getLowStock(int stock) {
         return productRepository.findByStockLessThan(stock);
     }
@@ -213,9 +221,45 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public void addRatingToProduct(Product product, int rating) {
-        product.addRating(rating);
-        productRepository.save(product);
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product == null) return;
+        deepDeleteReviews(product);
+        deepDeleteTags(product);
+        deepDeleteSeller(product);
+        productRepository.delete(product);
     }
 
+    private void deepDeleteSeller(Product product) {
+        UserInfo seller = product.getSeller();
+        if (seller != null) {
+            seller.getProductsForSell().remove(product);
+            userInfoRepository.save(seller);
+        }
+    }
+
+    private void deepDeleteTags(Product product) {
+        List<ProductTag> tags = product.getTags();
+        for (ProductTag tag : tags) {
+            tag.getProducts().remove(product);
+            productTagRepository.save(tag);
+        }
+    }
+
+    private void deepDeleteReviews(Product product) {
+        List<Review> reviews = product.getReviews();
+        for (Review review : reviews) {
+            UserInfo owner = review.getOwner();
+            if (owner != null) {
+                owner.removeReview(review);
+                userService.save(owner);
+            }
+            review.setProduct(null);
+            reviewRepository.delete(review);
+        }
+    }
+
+    public Product save(Product product) {
+        return productRepository.save(product);
+    }
 }

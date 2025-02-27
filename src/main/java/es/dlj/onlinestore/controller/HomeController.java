@@ -28,9 +28,9 @@ public class HomeController {
         // Define the sections to show at the Home page
         List<Section> sections = List.of(
             new Section("Best Sellers", "primary", "award", productService.getBestSellers()),
-            new Section("Top Rated", "warning", "star", productService.getTopRated()),
-            new Section("On Sale", "success", "tag", productService.getOnSale(20)),
-            new Section("Trending This Week", "danger", "fire", productService.getTrendingThisWeek()),
+            //new Section("Top Rated", "warning", "star", productService.getTopRated()),
+            new Section("On Sale", "success", "tag", productService.getBestSales()),
+            // new Section("Trending This Week", "danger", "fire", productService.getTrendingThisWeek()),
             new Section("Low Stock", "warning", "exclamation-triangle", productService.getLowStock(10))
         );
         

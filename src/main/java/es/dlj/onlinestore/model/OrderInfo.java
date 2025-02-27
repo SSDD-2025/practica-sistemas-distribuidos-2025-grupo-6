@@ -20,6 +20,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class OrderInfo {
+    
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
     private Long id;
@@ -40,12 +41,9 @@ public class OrderInfo {
     private String address;
     private String phoneNumber;
     
-    public OrderInfo() {
+    public OrderInfo() {}
 
-    }
-
-    public OrderInfo(UserInfo user, Set<Product> products, Float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
-        this.user = user;
+    public OrderInfo(Set<Product> products, Float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
         this.products = products;
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
@@ -53,7 +51,6 @@ public class OrderInfo {
         this.phoneNumber = phoneNumber;
     }
 
-    // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

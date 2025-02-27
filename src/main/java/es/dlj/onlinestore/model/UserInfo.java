@@ -63,7 +63,7 @@ public class UserInfo {
     private String creditCard;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Product> productsForSell = new ArrayList<>();;
+    private List<Product> productsForSell = new ArrayList<>();
     
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD;
@@ -215,6 +215,7 @@ public class UserInfo {
 
     public void addReview(Review review){
         this.reviews.add(review);
+        
     }
 
     public void removeReview(Review review){

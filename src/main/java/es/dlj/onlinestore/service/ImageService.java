@@ -44,18 +44,6 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
-    // @Transactional
-    // @SuppressWarnings("null")
-    // public Image saveImageFromHttp(String imageUrl) throws IOException {
-    //     RestTemplate restTemplate = new RestTemplate();
-    //     ResponseEntity<byte[]> response = restTemplate.exchange(imageUrl, HttpMethod.GET, null, byte[].class);
-    //     Image image = new Image();
-    //     image.setContentType(response.getHeaders().getContentType().toString());
-    //     byte[] imageData = response.getBody();
-    //     image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
-    //     return imageRepository.save(image);
-    // }
-
     @Transactional
     public Image saveFileImageFromPath(String filePath) throws IOException {
         File file = new File(filePath);
@@ -78,17 +66,6 @@ public class ImageService {
             product.addImage(savedImage);
         }
     }
-
-    // @Transactional
-    // public void saveImagesFromHttpInProduct(Product product, List<String> rawImages) throws IOException {
-    //     product.clearImages();
-    //     for (String imageUrl : rawImages){
-    //         try {
-    //             Image savedImage = saveImageFromHttp(imageUrl);
-    //             product.addImage(savedImage);
-    //         } catch (IOException e) {}
-    //     }
-    // }
 
     public ResponseEntity<Object> loadImage(Long id) {
         try {

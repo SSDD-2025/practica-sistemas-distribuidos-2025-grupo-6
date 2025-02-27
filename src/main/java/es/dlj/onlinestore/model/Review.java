@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+// import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Size;
 
@@ -36,16 +38,12 @@ public class Review {
     @ManyToOne
     private Product product;
 
-    public Review() {
+    public Review() {}
 
-    }
-
-    public Review(String title, String description, int rating, UserInfo owner, Product product) {
+    public Review(String title, String description, int rating) {
         this.title = title;
         this.description = description;
         this.rating = rating;
-        this.owner = owner;
-        this.product = product;
     }
 
     public Long getId() {

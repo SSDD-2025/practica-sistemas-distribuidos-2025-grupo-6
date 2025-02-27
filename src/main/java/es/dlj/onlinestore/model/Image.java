@@ -27,10 +27,9 @@ public class Image {
 
     private String contentType;
 
-    public Image() {
-    }
+    public Image() {}
 
-    public Image( Blob imageFile, String contentType) {
+    public Image(Blob imageFile, String contentType) {
         this.imageFile = imageFile;
         this.contentType = contentType;
     }

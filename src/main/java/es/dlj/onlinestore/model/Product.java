@@ -1,6 +1,7 @@
 package es.dlj.onlinestore.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -8,20 +9,20 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.constraints.Range;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -38,17 +39,24 @@ public class Product {
 
     @Size(min = 3, max = 100, message = "Product name must be between 3 and 100 characters")
     private String name;
-    @Positive(message = "Price must be positive")
-    private Float price;
-    @PositiveOrZero(message = "Stock must be positive or zero")
-    private int stock;
-    
 
     @Size(min = 3, max = 2000, message = "Description must be between 3 and 2000 characters")	
     private String description;
 
-    @OneToMany (cascade = CascadeType.ALL)
-    private List<Image> images = new LinkedList<>();
+    @Positive(message = "Price must be positive")
+    private Float price;
+
+    @PositiveOrZero(message = "Stock must be positive or zero")
+    private int stock;
+
+    @Range(min = 0, max = 100, message = "Sale must be between 0 and 100")
+    private float sale;
+    
+    @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Image> images = new ArrayList<>();
+
+    @OneToMany (mappedBy="product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne
     private UserInfo seller;
@@ -59,21 +67,9 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductType productType;
 
-    @Min(value = 0, message = "Rating must be positive")
-    @Max(value = 5, message = "Rating must be less than 5")
-    private float rating = 0;
-
-    private int numberReviews = 0;
     private int totalSells = 0;
-    private int lastWeekSells = 0;
 
-    @Min(value = 0, message = "Sale must be positive")
-    @Max(value = 100, message = "Sale must be less than 100%")
-    private float sale;
-
-    public Product(){
-
-    }
+    public Product(){}
 
     public Product(String name, float price, String description, ProductType productType, int stock, List<ProductTag> tags, float sale){
         this.name = name;
@@ -109,20 +105,8 @@ public class Product {
         return productType;
     }
 
-    public float getRating() {
-        return rating;
-    }
-
-    public int getNumberRatings() {
-        return numberReviews;
-    }
-
     public int getTotalSells() {
         return totalSells;
-    }
-
-    public int getLastWeekSells() {
-        return lastWeekSells;
     }
 
     public float getSale() {
@@ -153,38 +137,12 @@ public class Product {
         this.productType = productType;
     }
 
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
-
-    public void setNumberRatings(int numberRatings) {
-        this.numberReviews = numberRatings;
-    }
-
     public void setTotalSells(int totalSells) {
         this.totalSells = totalSells;
     }
 
-    public void setLastWeekSells(int lastWeekSells) {
-        this.lastWeekSells = lastWeekSells;
-    }
-
     public void setSale(float sale) {
         this.sale = sale;
-    }
-
-    public void addRating(float rating){
-        this.rating = (this.rating * this.numberReviews + rating) / (this.numberReviews + 1);
-        this.numberReviews += 1;
-    }
-
-    public void addSells(int sells){
-        this.totalSells += sells;
-        this.lastWeekSells += sells;
-    }
-
-    public void addSale(int sale){
-        this.sale += sale;
     }
 
     public List<ProductTag> getTags() {
@@ -207,63 +165,12 @@ public class Product {
         this.tags.add(tag);
     }
 
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", description='" + description + '\'' +
-                ", stock=" + stock +
-                ", productType=" + productType +
-                ", rating=" + rating +
-                ", numberRatings=" + numberReviews +
-                ", totalSells=" + totalSells +
-                ", lastWeekSells=" + lastWeekSells +
-                ", sale=" + sale +
-                '}';
-    }
-
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(id, product.id);
-    }
-
-    public List<Map<String, Object>> getProductTypesMapped() {
-        return ProductType.getMapped(productType);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    public boolean isOnSale() {
-        return sale > 0;
-    }
-
-    public int getTagsCount() {
-        return tags.size();
-    }
-
-    public float getPriceWithSale() {
-        return Math.round((price - getProductSale()) * 100f) / 100f;
-    }
-
-    public float getProductSale() {
-        return Math.round(price * sale) / 100f;
     }
 
     public UserInfo getSeller() {
@@ -278,13 +185,100 @@ public class Product {
         this.images = images;
     }
 
+    public void clearImages() {
+        this.images.clear();
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
+    }
+
+    public boolean sellOneUnit() {
+        if (stock > 0) {
+            stock--;
+            totalSells++;
+            return true;
+        }
+        return false;
+    }
+
+    public float getRating() {
+        float rating = 0;
+        for (Review review : reviews) {
+            rating += review.getRating();
+        }
+        return ((float) Math.round(rating / ((float) reviews.size()) * 10f)) / 10f;
+    }
+
+    public int getNumberRatings() {
+        return reviews.size();
+    }
+
+    public List<Map<String, Object>> getProductTypesMapped() {
+        return ProductType.getMapped(productType);
+    }
+
+    public boolean isOnSale() {
+        return sale > 0;
+    }
+
+    public int getTagsCount() {
+        return tags.size();
+    }
+
+    public float getPriceWithSale() {
+        return price - getProductSale();
+    }
+
+    public float getProductSale() {
+        return ((float) Math.round(price * sale)) / 100f;
+    }
+
     public String getAllTagsInString() {
         return tags.stream()
            .map(ProductTag::getName)
            .collect(Collectors.joining(", "));
     }
 
-    public void clearImages() {
-        this.images.clear();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", stock=" + stock +
+                ", sale=" + sale +
+                ", images=" + images +
+                ", reviews=" + reviews +
+                ", seller=" + seller +
+                ", tags=" + tags +
+                ", productType=" + productType +
+                '}';
+    }
+
+    public void removeReview(Review review) {
+        this.reviews.remove(review);
     }
 }

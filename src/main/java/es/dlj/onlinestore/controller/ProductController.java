@@ -23,6 +23,7 @@ import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Image;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.Review;
+import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserComponent;
@@ -44,27 +45,40 @@ class ProductController {
     private ProductService productService;
 
     @Autowired
-    private UserReviewService reviewService;
+    private UserReviewService userReviewService;
 
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
         Product product = productService.getProduct(id);
-        List<Review> reviews = reviewService.getReviewsByProduct(product);
-        int numberOfReviews = reviews.size();
-        product.setNumberRatings(numberOfReviews);
 
         List<Map<String, Object>> images = new ArrayList<>();
         List<Image> productImages = product.getImages();
         for (int i = 0; i < productImages.size(); i++) {
-            images.add(Map.of("id", productImages.get(i).getId(), "isMainImage", (i == 0)));
+            images.add(Map.of("name", productImages.get(i).getId(), "selected", (i == 0)));
         }
 
         model.addAttribute("allImages", images);
-        model.addAttribute("reviews", reviews);
         model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));
         
         return "productDetailed_template";
+    }
+
+    @PostMapping("/{id}/add-review")
+    public String submitReview(Model model, @PathVariable Long id, @ModelAttribute Review review) {
+        UserInfo user = userComponent.getUser();
+        Product product = productService.getProduct(id);
+        review.setOwner(user);
+        review.setProduct(product);
+        review.setId(null);
+        userReviewService.save(review);
+        return "redirect:/product/" + id; 
+    }
+
+    @PostMapping("/review/delete/{id}")
+    public String deleteReview(@PathVariable Long id) {
+        userReviewService.delete(id);
+        return "redirect:/";
     }
 
     @PostMapping("/{id}/add-to-cart")
@@ -195,5 +209,11 @@ class ProductController {
         Product savedProduct = productService.saveProduct(newProduct);
         userComponent.addProductForSale(savedProduct);
         return "redirect:/product/" + savedProduct.getId();
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return "redirect:/";
     }
 }

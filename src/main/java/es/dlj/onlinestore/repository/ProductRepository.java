@@ -21,13 +21,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findTop10ByOrderByTotalSellsDesc();
 
     // Top Rated
-    List<Product> findTop10ByOrderByRatingDesc();
+    // List<Product> findTop10ByOrderByRatingDesc();
 
     // On Sale
-    List<Product> findBySaleGreaterThan(int sale);
+    List<Product> findTop10ByOrderBySaleDesc();
 
     // Trending This Week
-    List<Product> findTop10ByOrderByLastWeekSellsDesc();
+    //List<Product> findTop10ByOrderByLastWeekSellsDesc();
 
     // Low Stock
     List<Product> findByStockLessThan(int stock);

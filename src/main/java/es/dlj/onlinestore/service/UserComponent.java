@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
 import es.dlj.onlinestore.model.Product;
+import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.UserInfoRepository;
 
@@ -52,5 +53,10 @@ public class UserComponent {
     public void addProductForSale(Product savedProduct) {
         getUser();
         this.user.addProductForSale(savedProduct);
+    }
+
+    public void addReviewToUser(Review review) {
+        getUser();
+        this.user.addReview(review);
     }
 }
