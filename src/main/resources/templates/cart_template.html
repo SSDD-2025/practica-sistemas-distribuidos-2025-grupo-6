@@ -5,9 +5,14 @@ active
 {{/ cartSectionClass}}
 
 {{$ content}} 
-
 <div class="container mt-5">
-    <h2 class="mb-4">Your Shopping Cart</h2>
+    <h2 class="mb-4 col-7">Your Shopping Cart</h2>
+    <form id="removeForm-all" method="post" action="/cart/remove/all" class="col-5 mb-4">
+        <button type="button" class="btn btn-danger" 
+                onclick="confirmAction('Are you sure that you whant to delete all the products form your cart?', 'removeForm-all')">
+            <i class="bi bi-trash me-2"></i>Remove All Products
+        </button>
+    </form>
     <div id="cart-list" class="row">
 
         <!-- Cart List -->
@@ -60,6 +65,5 @@ active
             </div>
         </div>
     </div>
-    </div>
-
-    {{/ content}} {{/ layouts/layout}}
+</div>
+{{/ content}} {{/ layouts/layout}}

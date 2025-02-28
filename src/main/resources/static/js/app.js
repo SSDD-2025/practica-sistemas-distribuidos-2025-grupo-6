@@ -34,3 +34,14 @@ function confirmRemoval(productId) {
         reloadWithForm('removeForm-' + productId, 'cart-list');
     }
 }
+
+/**
+ * Confirms the action of a form with the given id.
+ * @param {String} message 
+ * @param {String} formId
+ */
+function confirmAction(message, formId) {
+    if (confirm(message)) {
+        document.getElementById(formId).submit();
+    }
+}

@@ -72,6 +72,7 @@ public class UserReviewService {
         return userReviewRepository.save(review);
     }
 
+    @Transactional
     public void delete(Long id) {
         Review review = userReviewRepository.findById(id).orElse(null);
         if (review == null) return;
@@ -80,6 +81,7 @@ public class UserReviewService {
         userReviewRepository.delete(review);
     }
 
+    @Transactional
     private void deepDeleteProduct(Review review) {
         Product product = review.getProduct();
         if (product != null) {
@@ -88,6 +90,7 @@ public class UserReviewService {
         }
     }
 
+    @Transactional
     private void deepDeleteOwner(Review review) {
         UserInfo owner = review.getOwner();
         if (owner != null) {

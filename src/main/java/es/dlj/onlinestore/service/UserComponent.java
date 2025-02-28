@@ -20,9 +20,11 @@ public class UserComponent {
     private UserInfo user;
 
     public UserInfo getUser() {
-        if (this.user == null || !this.user.getId().equals(userId)) {
-            this.user = users.findById(userId).get();
-        }
+        // if (this.user == null || !this.user.getId().equals(userId)) {
+        //     this.user = users.findById(userId).get();
+        // }
+        // return this.user;
+        this.user = users.findById(userId).get();
         return this.user;
     }
 
@@ -38,25 +40,30 @@ public class UserComponent {
     public void addProductToCart(Product product) {
         getUser();
         this.user.addProductToCart(product);
+        users.save(this.user);
     }
 
     public void removeProductFromCart(Product product) {
         getUser();
         this.user.removeProductFromCart(product);
+        users.save(this.user);
     }
 
     public void clearCart() {
         getUser();
         this.user.clearCart();
+        users.save(this.user);
     }
 
     public void addProductForSale(Product savedProduct) {
         getUser();
         this.user.addProductForSale(savedProduct);
+        users.save(this.user);
     }
 
     public void addReviewToUser(Review review) {
         getUser();
         this.user.addReview(review);
+        users.save(this.user);
     }
 }

@@ -9,9 +9,11 @@ import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 
 import es.dlj.onlinestore.enumeration.PaymentMethod;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +33,7 @@ public class OrderInfo {
     @ManyToOne
     private UserInfo user;
     
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Product> products = new HashSet<>();
     
     private Float totalPrice;
@@ -45,8 +47,7 @@ public class OrderInfo {
     
     public OrderInfo() {}
 
-    public OrderInfo(Set<Product> products, Float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
-        this.products = products;
+    public OrderInfo(Float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
         this.address = address;

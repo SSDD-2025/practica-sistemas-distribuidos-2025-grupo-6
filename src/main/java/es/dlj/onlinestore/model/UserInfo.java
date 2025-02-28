@@ -84,7 +84,7 @@ public class UserInfo {
     @OneToOne
     private Image profilePhoto;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Product> cartProducts = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
@@ -304,10 +304,6 @@ public class UserInfo {
         return Objects.hash(id);
     }
 
-    public void addProduct(Product product){
-        this.productsForSell.add(product);
-    }
-
     public List<Product> getProductsForSell(){
         return this.productsForSell;
     }
@@ -318,19 +314,6 @@ public class UserInfo {
 
     public void addProductForSale(Product savedProduct) {
         this.productsForSell.add(savedProduct);
-    }
-
-    public void removeProduct(Product removingProduct){
-        int index = 0;
-        for (int i=0; i<this.productsForSell.size(); i++){
-            Product product = this.productsForSell.get(i);
-            if (removingProduct.getId() == product.getId())
-            {
-                index = i;
-                break;
-            }
-        }
-        this.productsForSell.remove(index);
     }
     
     @Override
@@ -367,5 +350,9 @@ public class UserInfo {
 
     public void setProfilePhoto(Image profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public void removeProductFromSale(Product product) {
+        this.productsForSell.remove(product);
     }
 }

@@ -123,11 +123,13 @@ public class ProductService {
         // Preload products, tags and images
         UserInfo user = userService.findById(1L);
         for (int i = 0; i < productList.size(); i++) {
+
             for (ProductTag tag : productTagsList.get(i)) {
+                
                 tag.addProduct(productList.get(i));
-                productList.get(i).addTag(tag);
                 productTagRepository.save(tag);
             }
+            productList.get(i).setTags(productTagsList.get(i));
             try {
                 for (String productImage : productImages.get(i)) {
                     Image thisImage = imageService.saveFileImageFromPath("src/main/resources/static/images/preloaded/" + productImage);
@@ -139,6 +141,7 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public void updateProduct(Long id, Product updatedProduct) {
         Product product = getProduct(id);
         product.setName(updatedProduct.getName());
@@ -147,14 +150,10 @@ public class ProductService {
         product.setProductType(updatedProduct.getProductType());
         product.setStock(updatedProduct.getStock());
         product.setSale(updatedProduct.getSale());
-        product.setTags(updatedProduct.getTags());
         productRepository.save(product);
     }
 
-    public Product saveProduct(Product product) {
-        return productRepository.save(product);
-    }
-
+    @Transactional
     public List<ProductTag> transformStringToTags(String tagsAsString){
         List<ProductTag> tagList = new ArrayList<>();
         for (String tag: tagsAsString.split(",")){
@@ -253,10 +252,13 @@ public class ProductService {
 
     private void deepDeleteSeller(Product product) {
         UserInfo seller = product.getSeller();
+        System.out.println("\nSeller: " + seller.getProductsForSell());
         if (seller != null) {
-            seller.getProductsForSell().remove(product);
-            userInfoRepository.save(seller);
+            seller.removeProductFromSale(product);
+            UserInfo newSeller = userInfoRepository.save(seller);
+            System.out.println("\nNEW Seller: " + newSeller.getProductsForSell());
         }
+        System.out.println("\nSeller: " + seller.getProductsForSell());
     }
 
     private void deepDeleteTags(Product product) {
@@ -282,5 +284,9 @@ public class ProductService {
 
     public Product save(Product product) {
         return productRepository.save(product);
+    }
+
+    public ProductTag saveTag(ProductTag tag) {
+        return productTagRepository.save(tag);
     }
 }

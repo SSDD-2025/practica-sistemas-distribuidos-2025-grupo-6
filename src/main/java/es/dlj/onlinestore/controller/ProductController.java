@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Image;
 import es.dlj.onlinestore.model.Product;
+import es.dlj.onlinestore.model.ProductTag;
 import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.ImageService;
@@ -139,6 +141,7 @@ class ProductController {
     }
 
     @PostMapping ("/{id}/update")
+    @Transactional
     public String updateProduct (
             Model model,
             @PathVariable Long id,
@@ -158,19 +161,53 @@ class ProductController {
             return "productEdit_template";
         }
 
-        //newProduct.setSeller(userComponent.getUser());
-        newProduct.setTags(productService.transformStringToTags(tagsVal));
+        Product oldProduct = productService.getProduct(id);
+
+        List<ProductTag> oldTags = new ArrayList<>(oldProduct.getTags());
+
+        // Sets the invariant fields
+        newProduct.setId(id);
+        newProduct.setSeller(userComponent.getUser());
+        newProduct.setTotalSells(oldProduct.getTotalSells());
+        newProduct.setReviews(oldProduct.getReviews());
+
+        Product savedProduct = productService.save(newProduct);
+        
         try {
-            if (imagesVal != null)
-                imageService.saveImagesInProduct(productService.getProduct(id), imagesVal);
+            if (imagesVal != null && imagesVal.size() > 1) {
+                imageService.saveImagesInProduct(savedProduct, imagesVal);
+            } else {
+                savedProduct.clearImages();
+                for (Image image : new ArrayList<>(oldProduct.getImages())) {
+                    savedProduct.addImage(image);
+                }
+            }
         } catch (IOException e) {
             // In case of errors in the images, return to the form with the errors mapped
             model.addAttribute("imageError", "Error uploading images");
             model.addAttribute("tagsVal", tagsVal);
             return "productEdit_template";
         }
+        savedProduct.getTags().clear();
+        List<ProductTag> newTags = productService.transformStringToTags(tagsVal);
+        for (ProductTag tag : oldTags) {
+            if (!newTags.contains(tag)) {
+                tag.removeProduct(oldProduct);
+                productService.saveTag(tag);
+            }
+        }
+    
+        for (ProductTag tag : newTags) {
+            newProduct.addTag(tag);
+            if (!oldTags.contains(tag)) {
+                tag.addProduct(newProduct);
+                productService.saveTag(tag);
+            }
+        }
 
-        productService.updateProduct(id, newProduct);
+        productService.save(savedProduct);
+        //newProduct.setId(id);
+        // productService.updateProduct(id, newProduct);
         return "redirect:/product/" + id;
     }
 
@@ -210,7 +247,11 @@ class ProductController {
             return "productForm_template";
         }
 
-        Product savedProduct = productService.saveProduct(newProduct);
+        List<ProductTag> tags = newProduct.getTags();
+        for (ProductTag tag : tags) {
+            tag.addProduct(newProduct);
+        }
+        Product savedProduct = productService.save(newProduct);
         userComponent.addProductForSale(savedProduct);
         return "redirect:/product/" + savedProduct.getId();
     }

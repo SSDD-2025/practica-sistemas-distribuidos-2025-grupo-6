@@ -21,7 +21,7 @@ public class ProductTag {
 
     private String name;
 
-    @ManyToMany(cascade= CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToMany(cascade= CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Product> products = new ArrayList<>();
 
     public ProductTag() {}
@@ -54,6 +54,10 @@ public class ProductTag {
         this.products.add(product);
     }
 
+    public void removeProduct(Product product){
+        this.products.remove(product);
+    }
+
     @Override
     public String toString() {
         return "ProductTag{" +
@@ -78,5 +82,6 @@ public class ProductTag {
     public int hashCode() {
         return Objects.hash(name);
     }
+
 
 }

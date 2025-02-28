@@ -1,5 +1,6 @@
 package es.dlj.onlinestore.controller;
 
+import java.util.HashSet;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.service.UserComponent;
+import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/cart")
@@ -46,8 +48,15 @@ public class CartController {
 
         // Remove the product from the cart if it exists
         if (product.isPresent()) {
-            userComponent.getUser().removeProductFromCart(product.get());
+            userComponent.removeProductFromCart(product.get());
         }
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/remove/all")
+    public String removeProduct() {
+        // Remove all the products from the cart
+        userComponent.clearCart();
         return "redirect:/cart";
     }
     
@@ -59,14 +68,16 @@ public class CartController {
     }
     
     @PostMapping("/confirm-order")
+    @Transactional
     public String confirmOrder(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber) {
         // Add the user to the model in case it changes
         UserInfo user = userComponent.getUser();
         model.addAttribute("user", user);
 
         // Create and save the order
-        OrderInfo order = new OrderInfo(user.getCartProducts(), user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
+        OrderInfo order = new OrderInfo(user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
         order.setUser(user);
+        order.setProducts(new HashSet<>(user.getCartProducts()));
         orderRepository.save(order);
         model.addAttribute("order", order);
         

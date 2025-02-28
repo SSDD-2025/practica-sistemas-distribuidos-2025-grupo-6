@@ -1,12 +1,4 @@
-{{< layouts/layout}} 
-
-{{$ profileSectionClass}}
-active
-{{/ profileSectionClass}}
-
-{{$ content}} 
-
-{{# order}}
+{{< layouts/layout}} {{$ profileSectionClass}} active {{/ profileSectionClass}} {{$ content}} {{# order}} 
 <div class="container mt-4">
     <div class="card shadow-lg p-4 rounded-4">
         <h2 class="text-center mb-3">Order Summary</h2>
@@ -43,21 +35,21 @@ active
 
         <!-- Purchased Products -->
         <h5 class="fw-bold mt-4 mb-4">Purchased Products:</h5>
-        <div class="row g-3">
-            {{#products}}
-            <div class="col-md-3">
-                <div class="card shadow-sm rounded-4">
-                    <div class="card-body text-center">
-                        <h6 class="card-title fw-bold"><a href="/product/{{id}}">{{name}}</a></h6>
-                        <p class="text-muted small">{{description}}</p>
-                        <span class="badge bg-primary rounded-pill">${{price}}</span>
-                        <div class="mt-2">
-                            <a href="/product/{{id}}" class="btn btn-sm btn-outline-primary rounded-pill">View Details</a>
-                        </div>
-                    </div>
+        <div class="d-flex overflow-auto p-4" style="white-space: nowrap; gap: 10px; scroll-snap-type: x mandatory;">
+            <div class="row" id="productList">
+                {{#products}}
+                <div class="col-5 p-3">
+
+                    {{> productPreview_template}}
+
                 </div>
+                {{/products}}
+                {{^products}}
+                <div class="alert alert-info col-2" role="alert">
+                    <i class="bi bi-info-circle me-2"></i> No products found.
+                </div>
+                {{/products}}
             </div>
-            {{/products}}
         </div>
 
         <!-- Back to Home Button -->
@@ -70,5 +62,5 @@ active
 
 {{/ order}}
 
-{{/ content}} 
+{{/ content}}
 {{/ layouts/layout}}
