@@ -164,13 +164,11 @@ Once the user makes the payment, they receive a notification confirming that the
 ## David Pimentel
 
 ### Summary of Contributions
-I have worked on the main menu, advanced search, shopping cart and image service. Additionally, I have contributed styling using Bootstrap to various HTML pages of the project. I have also assisted other team members with certain functionalities, styles, and have been responsible for the general code refactoring.
+I have worked on the main menu, advanced search, shopping cart and image service. Additionally, I have contributed styling using Bootstrap to various HTML pages of the project and the logic of deletions. I have also assisted other team members with certain functionalities, styles, and have been responsible for the general code refactoring.
 
 ### Main commits in the repository
 
 - [UserComponent, Integration products in home page, product service and user service](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/08a1a17b0e2bf16caae4ad42ca026fdbc1b0e30f)
-
-- [add product search functionality with price filtering](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/6f37e405d7c0f5b4001990ba1877ce707e683f82)
 
 - [Refactor templates to use layout system and remove unused files, starting to implement advanced search for products](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/1989bedd22da834bafa3e0ca11830c39a25ba061)
 
@@ -178,13 +176,15 @@ I have worked on the main menu, advanced search, shopping cart and image service
 
 - [Refactoring cart controller, home controller, and serch part in product controller, and some html](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/ec79b3aa94f53ade89d234c28a3dbca089100e17)
 
+[Deletions first implementation, reconfiguration Review relation with product, all dependencies of the changes](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/78e45a8a97510f9835c7c46e9c05225e1d456a41)
+
 ### Main files modified
 
 - [OrderInfo.java](src/main/java/es/dlj/onlinestore/model/OrderInfo.java)
 
 - [ProductController.java](src/main/java/es/dlj/onlinestore/controller/ProductController.java)
 
-- [HomeController.java](src/main/java/es/dlj/onlinestore/controller/HomeController.java)
+- [ProductService.java](src/main/java/es/dlj/onlinestore/service/ProductService.java)
 
 - [CartController.java](src/main/java/es/dlj/onlinestore/controller/CartController.java)
 
