@@ -11,10 +11,6 @@ public enum PaymentMethod {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public static PaymentMethod fromString(String name) {
         for (PaymentMethod pMethod : PaymentMethod.values()) {
             if (pMethod.name.equalsIgnoreCase(name)) {

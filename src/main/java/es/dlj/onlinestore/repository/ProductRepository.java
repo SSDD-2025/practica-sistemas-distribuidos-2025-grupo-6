@@ -11,23 +11,17 @@ import es.dlj.onlinestore.model.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> findByPriceBetween(float minPrice, float maxPrice);
     List<Product> findByProductType(ProductType type);
+
     List<Product> findByNameContaining(String name);
+    
     Long countByProductType(ProductType type);
-    Product findByName(String name);
 
     // Best Sellers
     List<Product> findTop10ByOrderByTotalSellsDesc();
 
-    // Top Rated
-    // List<Product> findTop10ByOrderByRatingDesc();
-
     // On Sale
     List<Product> findTop10ByOrderBySaleDesc();
-
-    // Trending This Week
-    //List<Product> findTop10ByOrderByLastWeekSellsDesc();
 
     // Low Stock
     List<Product> findByStockLessThan(int stock);

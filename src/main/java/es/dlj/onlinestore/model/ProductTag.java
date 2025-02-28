@@ -21,11 +21,10 @@ public class ProductTag {
 
     private String name;
 
-    @ManyToMany(cascade= CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade= CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<Product> products = new ArrayList<>();
 
-    public ProductTag() {
-    }
+    public ProductTag() {}
 
     public ProductTag(String name) {
         this.name = name;

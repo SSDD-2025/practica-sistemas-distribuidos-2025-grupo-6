@@ -2,7 +2,6 @@ package es.dlj.onlinestore.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,33 +51,32 @@ public class Product {
     @Range(min = 0, max = 100, message = "Sale must be between 0 and 100")
     private float sale;
     
-    @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany (mappedBy="product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy="product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne
     private UserInfo seller;
     
     @ManyToMany
-    private List<ProductTag> tags;
+    private List<ProductTag> tags = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private ProductType productType;
 
     private int totalSells = 0;
 
-    public Product(){}
+    public Product() {}
 
-    public Product(String name, float price, String description, ProductType productType, int stock, List<ProductTag> tags, float sale){
+    public Product(String name, float price, String description, ProductType productType, int stock, float sale){
         this.name = name;
         this.price = price;
         this.stock = stock;
         this.description = description;
         this.productType = productType;
         this.sale = sale;
-        this.tags = tags;
     }
 
     public long getId() {

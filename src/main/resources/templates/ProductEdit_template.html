@@ -5,14 +5,14 @@
 <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
     <div class="card p-4 shadow-lg rounded-3 mt-4" style="max-width: 400px;">
         <h3 class="text-center mb-4 text-primary">Edit Product</h3>
-        <form action="/product/update/{{id}}" method="post" enctype="multipart/form-data">
+        <form action="/product/{{id}}/update" method="post" enctype="multipart/form-data">
 
             <!-- Images Section -->
             <fieldset class="mb-3">
                 <legend class="h5">Images</legend>
                 <div class="mb-3">
                     <label for="images" class="form-label">Add images</label>
-                    <input type="file" class="form-control" id="images" name="imagesVal" accept=".jpg, .jpeg, .png" multiple required>
+                    <input type="file" class="form-control" id="images" name="imagesVal" accept=".jpg, .jpeg, .png" multiple>
                     {{#imageError}}
                     <small class="text-danger">{{.}}</small>
                     {{/imageError}}

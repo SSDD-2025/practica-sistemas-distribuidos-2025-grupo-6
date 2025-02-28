@@ -38,7 +38,9 @@ public class OrderInfo {
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+
     private String address;
+
     private String phoneNumber;
     
     public OrderInfo() {}
@@ -72,9 +74,8 @@ public class OrderInfo {
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
+    public LocalDateTime getCreationDate() { return creationDate; }
+    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
 
     public String getCreationDateFormatted() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'of' MMMM, yyyy 'at' HH:mm", Locale.ENGLISH);
@@ -86,7 +87,30 @@ public class OrderInfo {
         return creationDate.format(formatter);
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
+    @Override
+    public String toString() {
+        return "OrderInfo{" +
+                "id=" + id +
+                ", creationDate=" + creationDate +
+                ", user=" + user +
+                ", products=" + products +
+                ", totalPrice=" + totalPrice +
+                ", paymentMethod=" + paymentMethod +
+                ", address='" + address + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof OrderInfo)) return false;
+        OrderInfo other = (OrderInfo) obj;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

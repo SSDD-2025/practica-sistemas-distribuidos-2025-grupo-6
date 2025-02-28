@@ -28,9 +28,8 @@ public class UserReviewService {
     @PostConstruct
     @Transactional
     public void init() {
-
-        userReviewRepository.deleteAll();
-        userReviewRepository.flush();
+        // Checks if there are any reviews in the database
+        // if (userReviewRepository.count() > 0) return;
             
         UserInfo user = userService.findById(1L); 
 

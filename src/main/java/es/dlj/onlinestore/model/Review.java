@@ -4,13 +4,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.constraints.Range;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-// import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Size;
 
@@ -24,12 +23,13 @@ public class Review {
     @CreationTimestamp
     private LocalDateTime creationDate;
 
-    @Size(min = 1, max = 100, message = "Description must be between 1 and 100 characters")	
+    @Size(min = 3, max = 100, message = "Description must be between 3 and 100 characters")	
     private String title;
     
-    @Size(min = 3, max = 2000, message = "Description must be between 3 and 2000 characters")	
+    @Size(min = 3, max = 500, message = "Description must be between 3 and 500 characters")	
     private String description;
 
+    @Range(min = 0, max = 5, message = "Rating must be between 0 and 5")
     private int rating;
 
     @ManyToOne
@@ -112,4 +112,17 @@ public class Review {
         return creationDate.format(formatter);
     }
     
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review otherReview = (Review) o;
+        return id.equals(otherReview.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
 }

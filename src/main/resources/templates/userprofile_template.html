@@ -10,7 +10,7 @@ active
 
 <div class="container mt-3">
     <div class="d-flex justify-content-end">
-        <a href="/editprofile" class="btn btn-primary d-flex align-items-center px-3 py-2 shadow-sm rounded-pill">
+        <a href="/profile/update" class="btn btn-primary d-flex align-items-center px-3 py-2 shadow-sm rounded-pill">
             <i class="bi bi-pencil-square me-2"></i> Edit Profile
         </a>
     </div>
@@ -80,7 +80,7 @@ active
                     {{/products}}
                 </ul>
                 <p><strong>Total Price:</strong> ${{totalPrice}}</p>
-                <a class="btn btn-outline-primary btn-sm" href="/order/{{id}}">View Details</a>
+                <a class="btn btn-outline-primary btn-sm" href="/profile/order/{{id}}">View Details</a>
             </div>
             {{/orders}}
             {{^orders}}

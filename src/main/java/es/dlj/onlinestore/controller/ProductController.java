@@ -51,6 +51,7 @@ class ProductController {
     public String loadProductDetails(Model model, @PathVariable Long id){
         Product product = productService.getProduct(id);
 
+        // Create a list of maps to store image names and stablish if has to be shown as first
         List<Map<String, Object>> images = new ArrayList<>();
         List<Image> productImages = product.getImages();
         for (int i = 0; i < productImages.size(); i++) {
@@ -70,15 +71,17 @@ class ProductController {
         Product product = productService.getProduct(id);
         review.setOwner(user);
         review.setProduct(product);
+
+        // Set the id to null to force to create new review
         review.setId(null);
         userReviewService.save(review);
         return "redirect:/product/" + id; 
     }
 
-    @PostMapping("/review/delete/{id}")
-    public String deleteReview(@PathVariable Long id) {
-        userReviewService.delete(id);
-        return "redirect:/";
+    @PostMapping("/{productId}/review/{reviewId}/delete")
+    public String deleteReview(@PathVariable Long productId, @PathVariable Long reviewId) {
+        userReviewService.delete(reviewId);
+        return "redirect:/product/" + productId;
     }
 
     @PostMapping("/{id}/add-to-cart")
@@ -113,12 +116,12 @@ class ProductController {
 
     @PostMapping("/search")
     public String searchProducts(
-        Model model, 
-        @RequestParam(required=false) String name, 
-        @RequestParam(required=false) Integer minPrice, 
-        @RequestParam(required=false) Integer maxPrice,
-        @RequestParam(required=false) List<String> tags,
-        @RequestParam(required=false) List<String> productType
+            Model model, 
+            @RequestParam(required=false) String name, 
+            @RequestParam(required=false) Integer minPrice, 
+            @RequestParam(required=false) Integer maxPrice,
+            @RequestParam(required=false) List<String> tags,
+            @RequestParam(required=false) List<String> productType
     ) {
         // Add attributes to the model
         model.addAttribute("productList", productService.searchProducts(name, minPrice, maxPrice, tags, productType));
@@ -128,21 +131,21 @@ class ProductController {
         return "search_template";
     }
 
-    @GetMapping("/update/{id}")
+    @GetMapping("/{id}/update")
     public String editProduct(Model model, @PathVariable Long id) {
         Product product = productService.getProduct(id);
         model.addAttribute("product", product);
         return "productEdit_template";
     }
 
-    @PostMapping ("/update/{id}")
+    @PostMapping ("/{id}/update")
     public String updateProduct (
-        Model model,
-        @PathVariable Long id,
-        @RequestParam List<MultipartFile> imagesVal,
-        @RequestParam String tagsVal,
-        @Valid @ModelAttribute Product newProduct,
-        BindingResult bindingResult
+            Model model,
+            @PathVariable Long id,
+            @RequestParam List<MultipartFile> imagesVal,
+            @RequestParam String tagsVal,
+            @Valid @ModelAttribute Product newProduct,
+            BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
             // In case of errors, return to the form with the errors mapped
@@ -158,7 +161,8 @@ class ProductController {
         //newProduct.setSeller(userComponent.getUser());
         newProduct.setTags(productService.transformStringToTags(tagsVal));
         try {
-            imageService.saveImagesInProduct(productService.getProduct(id), imagesVal);
+            if (imagesVal != null)
+                imageService.saveImagesInProduct(productService.getProduct(id), imagesVal);
         } catch (IOException e) {
             // In case of errors in the images, return to the form with the errors mapped
             model.addAttribute("imageError", "Error uploading images");
@@ -178,11 +182,11 @@ class ProductController {
 
     @PostMapping ("/new")
     public String newProduct (
-        Model model,
-        @RequestParam List<MultipartFile> imagesVal,
-        @RequestParam String tagsVal,
-        @Valid @ModelAttribute Product newProduct,
-        BindingResult bindingResult
+            Model model,
+            @RequestParam List<MultipartFile> imagesVal,
+            @RequestParam String tagsVal,
+            @Valid @ModelAttribute Product newProduct,
+            BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
             // In case of errors, return to the form with the errors mapped
@@ -211,7 +215,7 @@ class ProductController {
         return "redirect:/product/" + savedProduct.getId();
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/{id}/delete")
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return "redirect:/";

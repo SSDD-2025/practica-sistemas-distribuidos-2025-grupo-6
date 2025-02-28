@@ -11,13 +11,10 @@ import org.springframework.stereotype.Service;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Image;
-import es.dlj.onlinestore.model.OrderInfo;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductTag;
 import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.model.UserInfo;
-import es.dlj.onlinestore.repository.ImageRepository;
-import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
 import es.dlj.onlinestore.repository.UserInfoRepository;
@@ -30,9 +27,6 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
-
-    @Autowired
-    private ProductTagRepository productTags;
 
     @Autowired
     private UserService userService;
@@ -48,39 +42,35 @@ public class ProductService {
 
     @Autowired
     private ProductTagRepository productTagRepository;
-
-    // @Autowired
-    // private UserReviewService userReviewService;
     
-
     @PostConstruct
     @Transactional
     public void init() {
-        productRepository.deleteAll();
-        productRepository.flush();
+        // Checks if there are products already in the database
+        // if (productRepository.count() > 0) return;
 
         // Preload products
         List<Product> productList = List.of(
-            productRepository.save(new Product("Laptop Dell XPS 15", 1500.99f, "High-end laptop", ProductType.NEW, 10, transformStringToTags("electronics, laptop"), 20)),
-            productRepository.save(new Product("iPhone 13 Pro", 1200.99f, "Latest Apple smartphone", ProductType.NEW, 15, transformStringToTags("smartphone, apple"), 10)),
-            productRepository.save(new Product("Samsung Galaxy S21", 1000.99f, "Samsung flagship phone", ProductType.RECONDITIONED, 20, transformStringToTags("smartphone, android"), 15)),
-            productRepository.save(new Product("HP Pavilion 14", 750.99f, "Affordable HP laptop", ProductType.SECONDHAND, 12, transformStringToTags("laptop, hp"), 5)),
-            productRepository.save(new Product("MacBook Air M1", 999.99f, "Apple M1 laptop", ProductType.NEW, 8, transformStringToTags("laptop, apple"), 25)),
-            productRepository.save(new Product("PlayStation 5", 499.99f, "Next-gen gaming console", ProductType.NEW, 5, transformStringToTags("gaming, console"), 30)),
-            productRepository.save(new Product("Xbox Series X", 499.99f, "Microsoft gaming console", ProductType.RECONDITIONED, 6, transformStringToTags("gaming, console"), 20)),
-            productRepository.save(new Product("iPad Air 4", 599.99f, "Apple tablet", ProductType.NEW, 10, transformStringToTags("tablet, apple"), 10)),
-            productRepository.save(new Product("Kindle Paperwhite", 150.99f, "Amazon e-reader", ProductType.SECONDHAND, 20, transformStringToTags("tablet, reader"), 5)),
-            productRepository.save(new Product("Sony WH-1000XM4", 350.99f, "Noise-canceling headphones", ProductType.NEW, 15, transformStringToTags("audio, headphones"), 25)),
-            productRepository.save(new Product("Bose QC35 II", 299.99f, "Wireless headphones", ProductType.RECONDITIONED, 12, transformStringToTags("audio, headphones"), 15)),
-            productRepository.save(new Product("LG OLED CX 55", 1300.99f, "55-inch OLED TV", ProductType.NEW, 8, transformStringToTags("tv, lg"), 20)),
-            productRepository.save(new Product("Samsung QLED Q80T", 1200.99f, "65-inch QLED TV", ProductType.NEW, 10, transformStringToTags("tv, samsung"), 10)),
-            productRepository.save(new Product("Nikon D3500", 450.99f, "DSLR Camera", ProductType.SECONDHAND, 7, transformStringToTags("camera, nikon"), 5)),
-            productRepository.save(new Product("Canon EOS M50", 600.99f, "Mirrorless Camera", ProductType.NEW, 5, transformStringToTags("camera, canon"), 20)),
-            productRepository.save(new Product("GoPro Hero 9", 400.99f, "Action Camera", ProductType.RECONDITIONED, 10, transformStringToTags("camera, gopro"), 15)),
-            productRepository.save(new Product("Surface Pro 7", 800.99f, "Microsoft tablet-laptop hybrid", ProductType.NEW, 9, transformStringToTags("tablet, microsoft"), 10)),
-            productRepository.save(new Product("Dell UltraSharp 27", 500.99f, "4K Monitor", ProductType.NEW, 11, transformStringToTags("monitor, dell"), 25)),
-            productRepository.save(new Product("Apple Watch Series 7", 399.99f, "Smartwatch", ProductType.NEW, 14, transformStringToTags("watch, apple"), 20)),
-            productRepository.save(new Product("Samsung Galaxy Watch 4", 299.99f, "Smartwatch", ProductType.RECONDITIONED, 13, transformStringToTags("watch, samsung"), 15))
+            productRepository.save(new Product("Laptop Dell XPS 15", 1500.99f, "High-end laptop", ProductType.NEW, 10, 20)),
+            productRepository.save(new Product("iPhone 13 Pro", 1200.99f, "Latest Apple smartphone", ProductType.NEW, 15, 10)),
+            productRepository.save(new Product("Samsung Galaxy S21", 1000.99f, "Samsung flagship phone", ProductType.RECONDITIONED, 20, 15)),
+            productRepository.save(new Product("HP Pavilion 14", 750.99f, "Affordable HP laptop", ProductType.SECONDHAND, 12, 5)),
+            productRepository.save(new Product("MacBook Air M1", 999.99f, "Apple M1 laptop", ProductType.NEW, 8, 25)),
+            productRepository.save(new Product("PlayStation 5", 499.99f, "Next-gen gaming console", ProductType.NEW, 5, 30)),
+            productRepository.save(new Product("Xbox Series X", 499.99f, "Microsoft gaming console", ProductType.RECONDITIONED, 6, 20)),
+            productRepository.save(new Product("iPad Air 4", 599.99f, "Apple tablet", ProductType.NEW, 10, 10)),
+            productRepository.save(new Product("Kindle Paperwhite", 150.99f, "Amazon e-reader", ProductType.SECONDHAND, 20, 5)),
+            productRepository.save(new Product("Sony WH-1000XM4", 350.99f, "Noise-canceling headphones", ProductType.NEW, 15, 25)),
+            productRepository.save(new Product("Bose QC35 II", 299.99f, "Wireless headphones", ProductType.RECONDITIONED, 12, 15)),
+            productRepository.save(new Product("LG OLED CX 55", 1300.99f, "55-inch OLED TV", ProductType.NEW, 8, 20)),
+            productRepository.save(new Product("Samsung QLED Q80T", 1200.99f, "65-inch QLED TV", ProductType.NEW, 10, 10)),
+            productRepository.save(new Product("Nikon D3500", 450.99f, "DSLR Camera", ProductType.SECONDHAND, 7, 5)),
+            productRepository.save(new Product("Canon EOS M50", 600.99f, "Mirrorless Camera", ProductType.NEW, 5, 20)),
+            productRepository.save(new Product("GoPro Hero 9", 400.99f, "Action Camera", ProductType.RECONDITIONED, 10, 15)),
+            productRepository.save(new Product("Surface Pro 7", 800.99f, "Microsoft tablet-laptop hybrid", ProductType.NEW, 9, 10)),
+            productRepository.save(new Product("Dell UltraSharp 27", 500.99f, "4K Monitor", ProductType.NEW, 11, 25)),
+            productRepository.save(new Product("Apple Watch Series 7", 399.99f, "Smartwatch", ProductType.NEW, 14, 20)),
+            productRepository.save(new Product("Samsung Galaxy Watch 4", 299.99f, "Smartwatch", ProductType.RECONDITIONED, 13, 15))
         );
 
         // Preload images
@@ -107,9 +97,37 @@ public class ProductService {
         productImages.add(List.of("image-02-1.png", "image-02-2.png"));
         productImages.add(List.of("image-03-1.png", "image-03-2.png"));
 
+        // Preload tags
+        List<List<ProductTag>> productTagsList = new ArrayList<>();
+        productTagsList.add(transformStringToTags("electronics, laptop"));
+        productTagsList.add(transformStringToTags("smartphone, apple"));
+        productTagsList.add(transformStringToTags("smartphone, android"));
+        productTagsList.add(transformStringToTags("laptop, hp"));
+        productTagsList.add(transformStringToTags("laptop, apple"));
+        productTagsList.add(transformStringToTags("gaming, console"));
+        productTagsList.add(transformStringToTags("gaming, console"));
+        productTagsList.add(transformStringToTags("tablet, apple"));
+        productTagsList.add(transformStringToTags("tablet, reader"));
+        productTagsList.add(transformStringToTags("audio, headphones"));
+        productTagsList.add(transformStringToTags("audio, headphones"));
+        productTagsList.add(transformStringToTags("tv, lg"));
+        productTagsList.add(transformStringToTags("tv, samsung"));
+        productTagsList.add(transformStringToTags("camera, nikon"));
+        productTagsList.add(transformStringToTags("camera, canon"));
+        productTagsList.add(transformStringToTags("camera, gopro"));
+        productTagsList.add(transformStringToTags("tablet, microsoft"));
+        productTagsList.add(transformStringToTags("monitor, dell"));
+        productTagsList.add(transformStringToTags("watch, apple"));
+        productTagsList.add(transformStringToTags("watch, samsung"));
+
+        // Preload products, tags and images
         UserInfo user = userService.findById(1L);
-        
         for (int i = 0; i < productList.size(); i++) {
+            for (ProductTag tag : productTagsList.get(i)) {
+                tag.addProduct(productList.get(i));
+                productList.get(i).addTag(tag);
+                productTagRepository.save(tag);
+            }
             try {
                 for (String productImage : productImages.get(i)) {
                     Image thisImage = imageService.saveFileImageFromPath("src/main/resources/static/images/preloaded/" + productImage);
@@ -119,7 +137,6 @@ public class ProductService {
             if (i < 5) productList.get(i).setSeller(user);
             productRepository.save(productList.get(i));
         }
-
     }
 
     public void updateProduct(Long id, Product updatedProduct) {
@@ -143,27 +160,31 @@ public class ProductService {
         for (String tag: tagsAsString.split(",")){
             tag = tag.trim();
             ProductTag productTag;
-            if (productTags.existsByName(tag)) {
-                productTag = productTags.findByName(tag);
+            if (productTagRepository.existsByName(tag)) {
+                productTag = productTagRepository.findByName(tag);
             } else {
                 productTag = new ProductTag(tag);
-                productTags.save(productTag);
+                productTag = productTagRepository.save(productTag);
             }
             tagList.add(productTag);
         }
         return tagList;
     }
 
-    /**
-     * Gets all tags string and the number of products that have that tag:
-     * [{name: "tag1", count: 5}, {name: "tag2", count: 3}, ...]
-     * @return List of maps with the tag name and the number of products that have that tag
-     */
     public List<Map<String, Object>> getAllTags() {
-        return productTags.findAllWithProductCount();
+        // Get all tags and the number of products that have that tag
+        List<Map<String, Object>> tags = new ArrayList<>();
+        for (ProductTag tag : productTagRepository.findAll()) {
+            tags.add(Map.of("name", tag.getName(), "count", tag.getProducts().size()));
+        }
+
+        // Sort by count descending
+        tags.sort((a, b) -> - ((Integer) a.get("count")).compareTo((Integer) b.get("count")));
+        return tags;
     }
 
     public List<Map<String, Object>> getAllProductTypesAndCount(ProductType selected) {
+        // Get all product types and the number of products that have that type
         List<Map<String, Object>> productTypesList = new ArrayList<>();
         for (ProductType type : ProductType.values()) {
             productTypesList.add(Map.of("name", type.toString(), 

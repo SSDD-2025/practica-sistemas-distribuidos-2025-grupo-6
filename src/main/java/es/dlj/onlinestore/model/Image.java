@@ -12,12 +12,8 @@ import jakarta.persistence.Lob;
 @Entity
 public class Image {
 
-    private static final Map<String, String> EXTENSIONS = Map.of(
-        "image/jpeg", ".jpg",
-        "image/png", ".png",
-        "image/gif", ".gif"
-    );
-    
+    private static final Map<String, String> EXTENSIONS = Map.of("image/jpeg", ".jpg", "image/png", ".png", "image/gif", ".gif");
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -34,27 +30,12 @@ public class Image {
         this.contentType = contentType;
     }
 
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    public Blob getimageFile() { return imageFile; }
+    public void setImageFile(Blob imageFile) { this.imageFile = imageFile; }
 
-    public Blob getimageFile() {
-        return imageFile;
-    }
-
-    public void setImageFile(Blob imageFile) {
-        this.imageFile = imageFile;
-    }
-
-    public void setContentType(String contentType){
-        this.contentType = EXTENSIONS.getOrDefault(contentType, ".jpg");
-    }
-
-    public String getContentType (){
-        return this.contentType;
-    }
+    public String getContentType() { return contentType; }
+    public void setContentType(String contentType){ this.contentType = EXTENSIONS.getOrDefault(contentType, ".jpg"); }
 }

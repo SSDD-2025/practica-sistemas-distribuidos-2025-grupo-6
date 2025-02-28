@@ -8,12 +8,12 @@
 				<div class="carousel-inner rounded-4">
 					{{#allImages}}
 					<div class="carousel-item {{#selected}}active{{/selected}}">
-						<img class="card-img-top object-fit-cover" style="height: 490px; width: 100%; object-fit: cover;" src="/image/{{name}}" alt="Product Image {{name}}">
+						<img class="card-img-top object-fit-contain" style="height: 490px; width: 100%;" src="/image/{{name}}" alt="Product Image {{name}}">
 					</div>
 					{{/allImages}}
 					{{^allImages}}
 					<div class="carousel-item active">
-						<img class="card-img-top object-fit-cover" style="height: 490px; width: 100%; object-fit: cover;" src="/image/{{id}}" alt="Product Image {{id}}">
+						<img class="card-img-top object-fit-cover" style="height: 490px; width: 100%;" src="/image/{{id}}" alt="Product Image {{id}}">
 					</div>
 					{{/allImages}}
 				</div>
@@ -30,14 +30,14 @@
 		<div class="card-body col-5 d-flex flex-column">
 			<div class="row g-2 align-items-center mb-3">
 				<div class="col">
-					<form action="/product/update/{{id}}" method="get">
+					<form action="/product/{{id}}/update" method="get">
 						<button class="btn btn-outline-primary w-100 p-2 rounded-3 shadow-sm d-flex align-items-center justify-content-center" type="submit">
 							<i class="bi bi-pencil-square me-2"></i> Edit Product
 						</button>
 					</form>
 				</div>
 				<div class="col-auto">
-					<form action="/product/delete/{{id}}" method="get">
+					<form action="/product/{{id}}/delete" method="get">
 						<button class="btn btn-danger p-2 rounded-3 shadow-sm d-flex align-items-center justify-content-center px-4" type="submit">
 							<i class="bi bi-trash"></i>
 						</button>
@@ -124,7 +124,7 @@
 				<i class="bi bi-star-fill text-warning me-1"></i> Rating: <span
 					class="ms-1 fw-semibold">{{rating}}/5</span>
 			</small>
-			<form action="/product/review/delete/{{id}}" method="post">
+			<form action="/product/{{product.id}}/review/{{id}}/delete" method="post">
 				<button class="btn btn-danger btn-sm mt-2" type="submit">
 					<i class="bi bi-trash"></i> Delete Review
 				</button>

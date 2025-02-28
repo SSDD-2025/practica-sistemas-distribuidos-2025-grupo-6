@@ -24,25 +24,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class UserInfo {
-
-    public void setProductsForSell(List<Product> productsForSell) {
-        this.productsForSell = productsForSell;
-    }
-
-    public Image getProfilePhoto() {
-        return profilePhoto;
-    }
-
-    public void setProfilePhoto(Image profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
     
-    public static enum Role {
-        USER, ADMIN, UNREGISTERED
-    }
+    public static enum Role { USER, ADMIN, UNREGISTERED }
 
     @Id 
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -51,16 +39,35 @@ public class UserInfo {
     @CreationTimestamp
     private LocalDateTime creationDate;
 
+    @Size(min = 3, max = 100, message = "User name must be between 3 and 100 characters")
     private String userName;
+
+    @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
     private String password;
+
+    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
     private String name;
+
+    @Size(min = 3, max = 100, message = "Surname must be between 3 and 100 characters")
     private String surname;
+
+    @Size(min = 6, max = 200, message = "Email must be between 6 and 200 characters")
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email is not valid, it shoudl be like: example@domain.com")
     private String email;
+
+    @Size(min = 3, max = 200, message = "Address must be between 3 and 200 characters")
     private String address;
+
+    @Size(min = 3, max = 100, message = "City must be between 3 and 100 characters")
     private String city;
+
+    @Size(min = 5, max = 5, message = "Postal code must have 5 numbers")
+    @Pattern(regexp = "^[0-9]{5}$", message = "Postal code is not valid, it should be like: 12345")
     private String postalCode;
+
+    @Size(min = 9, max = 15, message = "Phone number must be between 9 and 15 characters")
+    @Pattern(regexp = "^\\+?[0-9]{1,3}?[0-9]{9,15}$", message = "Phone number is not valid, it should be like: +34123456789 or 123456789")
     private String phone;
-    private String creditCard;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Product> productsForSell = new ArrayList<>();
@@ -167,10 +174,6 @@ public class UserInfo {
         return phone;
     }
 
-    public String getCreditCard() {
-        return creditCard;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -202,12 +205,6 @@ public class UserInfo {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-
-    public void setCreditCard(String creditCard) {
-        this.creditCard = creditCard;
-    }
-
-    
     
     public List<Review> getReviews() {
         return reviews;
@@ -289,7 +286,7 @@ public class UserInfo {
     public List<Map<String, Object>> getPaymentMethodsMapped() {
         List<Map<String, Object>> paymentMethods = new ArrayList<>();
         for (PaymentMethod pMethod : PaymentMethod.values()) {
-            paymentMethods.add(Map.of("name", pMethod.getName(), "selected", (paymentMethod != null && paymentMethod.equals(pMethod))));
+            paymentMethods.add(Map.of("name", pMethod.toString(), "selected", (paymentMethod != null && paymentMethod.equals(pMethod))));
         }
         return paymentMethods;
     }
@@ -358,5 +355,17 @@ public class UserInfo {
     public String getCreationDateFormatted() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'of' MMMM, yyyy 'at' HH:mm", Locale.ENGLISH);
         return creationDate.format(formatter);
+    }
+
+    public void setProductsForSell(List<Product> productsForSell) {
+        this.productsForSell = productsForSell;
+    }
+
+    public Image getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(Image profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 }
