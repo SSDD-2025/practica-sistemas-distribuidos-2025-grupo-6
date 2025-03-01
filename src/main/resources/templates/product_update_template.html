@@ -1,13 +1,15 @@
-{{< layouts/layout }}
+{{< layouts/layout}}
+
 {{$ content}}
+{{# product}}
 <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-    <div class="card p-4 shadow-lg mt-4" style="width: 400px;">
-        <h3 class="text-center mb-4 text-primary">Add New Product</h3>
-        <form action="/product/new" method="post" enctype="multipart/form-data">
-            
+    <div class="card p-4 shadow-lg rounded-3 mt-4" style="max-width: 400px;">
+        <h3 class="text-center mb-4 text-primary">Edit Product</h3>
+        <form action="/product/{{id}}/update" method="post" enctype="multipart/form-data">
+
             <!-- Images Section -->
-            <fieldset class="mb-4">
-                <legend class="fw-bold">Images</legend>
+            <fieldset class="mb-3">
+                <legend class="h5">Images</legend>
                 <div class="mb-3">
                     <label for="images" class="form-label">Add images</label>
                     <input type="file" class="form-control" id="images" name="imagesVal" accept=".jpg, .jpeg, .png" multiple>
@@ -16,80 +18,81 @@
                     {{/imageError}}
                 </div>
             </fieldset>
-            
+
             <!-- Product Details -->
-            <fieldset class="mb-4">
-                <legend class="fw-bold">Product Details</legend>
+            <fieldset class="mb-3">
+                <legend class="h5">Product Details</legend>
+                
                 <div class="mb-3">
                     <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" {{#product.name}} value="{{.}}" {{/product.name}} required>
+                    <input type="text" class="form-control" id="name" name="name" value="{{name}}" required>
                     {{#errors.name}}
                     <small class="text-danger">{{.}}</small>
                     {{/errors.name}}
                 </div>
+
                 <div class="mb-3">
                     <label for="price" class="form-label">Price</label>
-                    <input type="number" class="form-control" id="price" name="price" {{#product.price}} value="{{.}}" {{/product.price}} required step="0.01">
+                    <input type="number" class="form-control" id="price" name="price" value="{{price}}" required step="0.01">
                     {{#errors.price}}
                     <small class="text-danger">{{.}}</small>
                     {{/errors.price}}
                 </div>
+
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
-                    <textarea id="description" class="form-control" name="description" required>{{#product.description}}{{.}}{{/product.description}}</textarea>
+                    <textarea id="description" class="form-control" name="description" required>{{description}}</textarea>
                     {{#errors.description}}
                     <small class="text-danger">{{.}}</small>
                     {{/errors.description}}
                 </div>
+
                 <div class="mb-3">
                     <label for="stock" class="form-label">Stock Available</label>
-                    <input type="number" class="form-control" id="stock" name="stock" {{#product.stock}} value="{{.}}" {{/product.stock}} required>
+                    <input type="number" class="form-control" id="stock" name="stock" value="{{stock}}" required>
                     {{#errors.stock}}
                     <small class="text-danger">{{.}}</small>
                     {{/errors.stock}}
                 </div>
+
                 <div class="mb-3">
                     <label for="sale" class="form-label">Sale Price</label>
-                    <input type="number" class="form-control" id="sale" name="sale" {{#product.sale}} value="{{.}}" {{/product.sale}} required step="0.01">
+                    <input type="number" class="form-control" id="sale" name="sale" value="{{sale}}" required step="0.01">
                     {{#errors.sale}}
                     <small class="text-danger">{{.}}</small>
                     {{/errors.sale}}
                 </div>
             </fieldset>
-            
+
             <!-- Tags -->
-            <fieldset class="mb-4">
-                <legend class="fw-bold">Tags</legend>
-                <div class="mb-3">
+            <fieldset class="mb-3">
+                <legend class="h5">Tags</legend>
+                <div id="tagsDiv">
                     <label for="tags" class="form-label">Tags</label>
-                    <textarea id="tags" class="form-control" name="tagsVal" required>{{#tagsVal}}{{.}}{{/tagsVal}}</textarea>
+                    <textarea id="tags" class="form-control" name="tagsVal">{{allTagsInString}}</textarea>
                 </div>
             </fieldset>
-            
+
             <!-- Product Type -->
-            <fieldset class="mb-4">
-                <legend class="fw-bold">Product Type</legend>
+            <fieldset class="mb-3">
+                <legend class="h5">Product Type</legend>
                 <div class="mb-3">
                     <label for="productType" class="form-label">Product Type</label>
-                    <select class="form-select" name="productType" id="productType" required>
-                        {{#product.productTypesMapped}}
+                    <select name="productType" id="productType" class="form-select" required>
+                        {{#productTypesMapped}}
                         <option value="{{name}}" {{#selected}} selected {{/selected}}>{{name}}</option>
-                        {{/product.productTypesMapped}}
-                        {{^product}}
-                        {{#productTypes}}
-                        <option value="{{name}}" {{#selected}} selected {{/selected}}>{{name}}</option>
-                        {{/productTypes}}
-                        {{/product}}
+                        {{/productTypesMapped}}
                     </select>
                 </div>
             </fieldset>
-            
+
             <!-- Submit Button -->
             <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
             </div>
         </form>
     </div>
 </div>
+{{/ product}}
 {{/ content}}
-{{/ layouts/layout }}
+{{/ layouts/layout}}

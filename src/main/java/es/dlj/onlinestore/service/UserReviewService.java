@@ -79,6 +79,7 @@ public class UserReviewService {
         deepDeleteOwner(review);
         deepDeleteProduct(review);
         userReviewRepository.delete(review);
+        userReviewRepository.flush();
     }
 
     @Transactional

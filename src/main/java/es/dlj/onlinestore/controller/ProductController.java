@@ -64,7 +64,7 @@ class ProductController {
         model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));
         
-        return "productDetailed_template";
+        return "product_template";
     }
 
     @PostMapping("/{id}/add-review")
@@ -137,7 +137,7 @@ class ProductController {
     public String editProduct(Model model, @PathVariable Long id) {
         Product product = productService.getProduct(id);
         model.addAttribute("product", product);
-        return "productEdit_template";
+        return "product_update_template";
     }
 
     @PostMapping ("/{id}/update")
@@ -158,7 +158,7 @@ class ProductController {
             }
             model.addAttribute("errors", errors);
             model.addAttribute("tagsVal", tagsVal);
-            return "productEdit_template";
+            return "product_update_template";
         }
 
         Product oldProduct = productService.getProduct(id);
@@ -171,23 +171,25 @@ class ProductController {
         newProduct.setTotalSells(oldProduct.getTotalSells());
         newProduct.setReviews(oldProduct.getReviews());
 
-        Product savedProduct = productService.save(newProduct);
+        
         
         try {
             if (imagesVal != null && imagesVal.size() > 1) {
-                imageService.saveImagesInProduct(savedProduct, imagesVal);
+                imageService.saveImagesInProduct(newProduct, imagesVal);
             } else {
-                savedProduct.clearImages();
+                newProduct.clearImages();
                 for (Image image : new ArrayList<>(oldProduct.getImages())) {
-                    savedProduct.addImage(image);
+                    oldProduct.removeImage(image);
+                    newProduct.addImage(image);
                 }
             }
         } catch (IOException e) {
             // In case of errors in the images, return to the form with the errors mapped
             model.addAttribute("imageError", "Error uploading images");
             model.addAttribute("tagsVal", tagsVal);
-            return "productEdit_template";
+            return "product_update_template";
         }
+        Product savedProduct = productService.save(newProduct);
         savedProduct.getTags().clear();
         List<ProductTag> newTags = productService.transformStringToTags(tagsVal);
         for (ProductTag tag : oldTags) {
@@ -198,9 +200,9 @@ class ProductController {
         }
     
         for (ProductTag tag : newTags) {
-            newProduct.addTag(tag);
+            savedProduct.addTag(tag);
             if (!oldTags.contains(tag)) {
-                tag.addProduct(newProduct);
+                tag.addProduct(savedProduct);
                 productService.saveTag(tag);
             }
         }
@@ -214,7 +216,7 @@ class ProductController {
     @GetMapping("/new")
     public String ProductForm(Model model) {
         model.addAttribute("productTypes", ProductType.getMapped());
-        return "productForm_template";
+        return "product_create_template";
     }
 
     @PostMapping ("/new")
@@ -233,18 +235,20 @@ class ProductController {
             }
             model.addAttribute("errors", errors);
             model.addAttribute("tagsVal", tagsVal);
-            return "productForm_template";
+            return "product_create_template";
         }
 
         newProduct.setSeller(userComponent.getUser());
         newProduct.setTags(productService.transformStringToTags(tagsVal));
         try {
-            imageService.saveImagesInProduct(newProduct, imagesVal);
+            if (imagesVal != null && imagesVal.size() > 1) {
+                imageService.saveImagesInProduct(newProduct, imagesVal);
+            }
         } catch (IOException e) {
             // In case of errors in the images, return to the form with the errors mapped
             model.addAttribute("imageError", "Error uploading images");
             model.addAttribute("tagsVal", tagsVal);
-            return "productForm_template";
+            return "product_create_template";
         }
 
         List<ProductTag> tags = newProduct.getTags();

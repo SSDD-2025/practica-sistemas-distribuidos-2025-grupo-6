@@ -1,6 +1,8 @@
 package es.dlj.onlinestore.controller;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ import es.dlj.onlinestore.model.OrderInfo;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.OrderRepository;
-import es.dlj.onlinestore.repository.ProductRepository;
+import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserComponent;
 import jakarta.transaction.Transactional;
 
@@ -27,9 +29,9 @@ public class CartController {
 
     @Autowired
     private UserComponent userComponent;
-    
+
     @Autowired
-    private ProductRepository productRepository;
+    private ProductService productService;
     
     @Autowired
     private OrderRepository orderRepository;
@@ -44,7 +46,7 @@ public class CartController {
     @PostMapping("/remove/{productId}")
     public String removeProduct(@PathVariable Long productId) {
         // Find the product by its ID
-        Optional<Product> product = productRepository.findById(productId);
+        Optional<Product> product = productService.findById(productId);
 
         // Remove the product from the cart if it exists
         if (product.isPresent()) {
@@ -61,18 +63,60 @@ public class CartController {
     }
     
     @GetMapping("/checkout")
-    public String checkout(Model model) {
+    public String orderCheckout(Model model) {
+        UserInfo user = userComponent.getUser();
+        // Check if the cart is empty
+        if (user.getCartProducts().isEmpty()) {
+            return "redirect:/cart";
+        }
+
+        // Check if all products are in stock
+        List<Product> productsOutOfStock = new ArrayList<>();
+        for (Product product : user.getCartProducts()) {
+            if (!product.isInStock()) {
+                productsOutOfStock.add(product);
+            }
+        }
+        if (!productsOutOfStock.isEmpty()) {
+            model.addAttribute("outOfStockProducts", productsOutOfStock);
+            model.addAttribute("user", user);
+            return "cart_template";
+        }
+
         // Add the user to the model in case it changes
-        model.addAttribute("user", userComponent.getUser());
-        return "checkout_template";
+        model.addAttribute("user", user);
+        return "order_checkout_template";
     }
     
     @PostMapping("/confirm-order")
     @Transactional
-    public String confirmOrder(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber) {
+    public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber) {
         // Add the user to the model in case it changes
         UserInfo user = userComponent.getUser();
         model.addAttribute("user", user);
+
+        // Check if the cart is empty
+        if (user.getCartProducts().isEmpty()) {
+            return "redirect:/cart";
+        }
+
+        // Check if all products are in stock
+        List<Product> productsOutOfStock = new ArrayList<>();
+        for (Product product : user.getCartProducts()) {
+            if (!product.isInStock()) {
+                productsOutOfStock.add(product);
+            }
+        }
+        if (!productsOutOfStock.isEmpty()) {
+            model.addAttribute("outOfStockProducts", productsOutOfStock);
+            model.addAttribute("user", user);
+            return "cart_template";
+        }
+
+        // Update the stock of the products in the cart
+        for (Product product : user.getCartProducts()) {
+            product.sellOneUnit();
+        }
 
         // Create and save the order
         OrderInfo order = new OrderInfo(user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
@@ -85,6 +129,6 @@ public class CartController {
         user.clearCartProducts();
         user.addOrder(order);
 
-        return "confirmOrder_template";
+        return "order_confirmed_template";
     }
 }

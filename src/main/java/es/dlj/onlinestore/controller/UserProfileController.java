@@ -19,9 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.model.Image;
 import es.dlj.onlinestore.model.UserInfo;
-import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.service.ImageService;
+import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserComponent;
+import es.dlj.onlinestore.service.UserService;
 import jakarta.validation.Valid;
 
 @Controller
@@ -32,7 +33,10 @@ public class UserProfileController {
     private UserComponent userComponent;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderService orderService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ImageService imageService;
@@ -40,13 +44,13 @@ public class UserProfileController {
     @GetMapping
     public String getUserProfile(Model model) {
         model.addAttribute("user", userComponent.getUser());
-        return "userprofile_template";
+        return "profile_template";
     }
 
     @GetMapping("/update")
     public String getEditProfile(Model model) {
         model.addAttribute("user", userComponent.getUser());
-        return "editprofile_template";
+        return "profile_update_template";
     }
 
     @PostMapping("/update")
@@ -65,31 +69,42 @@ public class UserProfileController {
             }
             model.addAttribute("errors", errors);
             model.addAttribute("user", userComponent.getUser());
-            return "editprofile_template";
+            return "profile_update_template";
         }
 
         UserInfo user = userComponent.getUser();
         user.updateWith(newUser);
         if (profilePhotoFile != null) {
             try {
-                Image oldPhoto = user.getProfilePhoto();
-                Image image = imageService.saveFileImage(profilePhotoFile);
-                userComponent.getUser().setProfilePhoto(image);
-                if (oldPhoto != null) {
-                    imageService.deleteImage(oldPhoto);
+                if (!profilePhotoFile.isEmpty()) {
+                    Image oldPhoto = user.getProfilePhoto();
+                    Image image = imageService.saveFileImage(profilePhotoFile);
+                    user.setProfilePhoto(image);
+                    if (oldPhoto != null) {
+                        imageService.deleteImage(oldPhoto);
+                    }
                 }
             } catch (IOException e) {
-                // TODO: inspired in product edit
+                // In case of errors in the images, return to the form with the errors mapped
+                model.addAttribute("imageError", "Error uploading image");
+                model.addAttribute("user", userComponent.getUser());
+                return "profile_update_template";
             }
         }
+        userService.save(user);
         return "redirect:/profile";
     }
 
     @GetMapping("/order/{id}")
     public String getOrderView(Model model, @PathVariable Long id) {
         model.addAttribute("user", userComponent.getUser());
-        model.addAttribute("order", orderRepository.getReferenceById(id));
+        model.addAttribute("order", orderService.getReferenceById(id));
         return "order_template";
     }
 
+    @PostMapping("/order/{id}/delete")
+    public String deleteOrder(@PathVariable Long id) {
+        orderService.delete(id);
+        return "redirect:/profile";
+    }
 }

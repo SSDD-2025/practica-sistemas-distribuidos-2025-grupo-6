@@ -51,7 +51,7 @@ public class Product {
     @Range(min = 0, max = 100, message = "Sale must be between 0 and 100")
     private float sale;
     
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy="product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -208,6 +208,10 @@ public class Product {
         return false;
     }
 
+    public boolean isInStock() {
+        return stock > 0;
+    }
+
     public float getRating() {
         float rating = 0;
         for (Review review : reviews) {
@@ -278,5 +282,9 @@ public class Product {
 
     public void removeReview(Review review) {
         this.reviews.remove(review);
+    }
+
+    public void removeImage(Image image) {
+        this.images.remove(image);
     }
 }

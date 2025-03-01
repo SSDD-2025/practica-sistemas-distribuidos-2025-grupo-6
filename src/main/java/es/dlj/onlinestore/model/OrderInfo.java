@@ -2,8 +2,11 @@ package es.dlj.onlinestore.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,6 +38,8 @@ public class OrderInfo {
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Product> products = new HashSet<>();
+
+    private List<String> nonContinuedProducts = new ArrayList<>();
     
     private Float totalPrice;
 
@@ -88,6 +93,13 @@ public class OrderInfo {
         return creationDate.format(formatter);
     }
 
+    public void removeProduct(Product product) {
+        if (products.contains(product)) {
+            products.remove(product);
+        }
+        nonContinuedProducts.add(product.getName());
+    }
+
     @Override
     public String toString() {
         return "OrderInfo{" +
@@ -113,5 +125,13 @@ public class OrderInfo {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    public List<String> getNonContinuedProducts() {
+        return nonContinuedProducts;
+    }
+
+    public void setNonContinuedProducts(List<String> nonContinuedProducts) {
+        this.nonContinuedProducts = nonContinuedProducts;
     }
 }

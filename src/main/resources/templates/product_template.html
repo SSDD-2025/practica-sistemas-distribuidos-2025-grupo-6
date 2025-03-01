@@ -13,7 +13,7 @@
 					{{/allImages}}
 					{{^allImages}}
 					<div class="carousel-item active">
-						<img class="card-img-top object-fit-cover" style="height: 490px; width: 100%;" src="/image/{{id}}" alt="Product Image {{id}}">
+						<img class="card-img-top object-fit-cover" style="height: 490px; width: 100%;" src="/image/product/{{id}}" alt="Product Image {{id}}">
 					</div>
 					{{/allImages}}
 				</div>
@@ -74,7 +74,7 @@
 			</p>
 
 			<form id="addToCart" action="/product/{{id}}/add-to-cart" method="post" class="mb-3">
-				<button class="btn btn-primary btn-lg w-100 shadow-sm" type="submit">
+				<button class="btn btn-primary btn-lg w-100 shadow-sm" type="submit" {{^inStock}}disabled{{/inStock}}>
 					<i class="bi bi-cart me-2"></i> Add to Cart
 				</button>
 			</form>
@@ -83,7 +83,7 @@
 				<div class="dropdown">
 					<button class="btn btn-outline-primary dropdown-toggle px-4 py-2 rounded-3 shadow-sm" type="button"
 						id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-						<i class="bi bi-star me-2"></i> Make a Review
+						<i class="bi bi-heart me-2"></i> Make a Review
 					</button>
 					<div class="dropdown-menu p-4 shadow-lg" aria-labelledby="dropdownMenuButton" style="width: 650px;">
 						<h5 class="text-center mb-4">Submit Your Review</h5>
@@ -147,8 +147,8 @@
 		</div>
 		{{/reviews}}
 		{{^reviews}}
-		<div class="text-center p-4">
-			<p class="text-muted fst-italic">No reviews yet.</p>
+		<div class="alert alert-info col-2" role="alert">
+			<i class="bi bi-info-circle me-2"></i> No reviews placed yet.
 		</div>
 		{{/reviews}}
 	</div>

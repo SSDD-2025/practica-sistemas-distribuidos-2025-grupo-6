@@ -81,7 +81,7 @@ public class UserInfo {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderInfo> orders = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Image profilePhoto;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -314,6 +314,10 @@ public class UserInfo {
 
     public void addProductForSale(Product savedProduct) {
         this.productsForSell.add(savedProduct);
+    }
+
+    public void removeOrder(OrderInfo order) {
+        this.orders.remove(order);
     }
     
     @Override

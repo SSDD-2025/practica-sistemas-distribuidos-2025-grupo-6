@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Image;
+import es.dlj.onlinestore.model.OrderInfo;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.ProductTag;
 import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
 import es.dlj.onlinestore.repository.UserInfoRepository;
@@ -42,6 +44,9 @@ public class ProductService {
 
     @Autowired
     private ProductTagRepository productTagRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
     
     @PostConstruct
     @Transactional
@@ -141,6 +146,10 @@ public class ProductService {
         }
     }
 
+    public Optional<Product> findById(Long id) {
+        return productRepository.findById(id);
+    }
+
     @Transactional
     public void updateProduct(Long id, Product updatedProduct) {
         Product product = getProduct(id);
@@ -158,6 +167,7 @@ public class ProductService {
         List<ProductTag> tagList = new ArrayList<>();
         for (String tag: tagsAsString.split(",")){
             tag = tag.trim();
+            if (tag.isEmpty()) continue;
             ProductTag productTag;
             if (productTagRepository.existsByName(tag)) {
                 productTag = productTagRepository.findByName(tag);
@@ -241,26 +251,46 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
+    @Transactional
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product == null) return;
+        deepDeleteImages(product);
         deepDeleteReviews(product);
         deepDeleteTags(product);
         deepDeleteSeller(product);
+        deepDeleteOrders(product);
         productRepository.delete(product);
     }
 
-    private void deepDeleteSeller(Product product) {
-        UserInfo seller = product.getSeller();
-        System.out.println("\nSeller: " + seller.getProductsForSell());
-        if (seller != null) {
-            seller.removeProductFromSale(product);
-            UserInfo newSeller = userInfoRepository.save(seller);
-            System.out.println("\nNEW Seller: " + newSeller.getProductsForSell());
+    @Transactional
+    private void deepDeleteImages(Product product) {
+        List<Image> images = new ArrayList<>(product.getImages());
+        for (Image image : images) {
+            imageService.delete(image);
         }
-        System.out.println("\nSeller: " + seller.getProductsForSell());
+        product.clearImages();
     }
 
+    @Transactional
+    private void deepDeleteSeller(Product product) {
+        UserInfo seller = product.getSeller();
+        if (seller != null) {
+            seller.removeProductFromSale(product);
+            userInfoRepository.save(seller);
+        }
+    }
+
+    @Transactional
+    private void deepDeleteOrders(Product product) {
+        List<OrderInfo> orders = orderRepository.findByProductsContaining(product);
+        for (OrderInfo order : orders) {
+            order.removeProduct(product);
+            orderRepository.save(order);
+        }
+    }
+
+    @Transactional
     private void deepDeleteTags(Product product) {
         List<ProductTag> tags = product.getTags();
         for (ProductTag tag : tags) {
@@ -269,8 +299,9 @@ public class ProductService {
         }
     }
 
+    @Transactional
     private void deepDeleteReviews(Product product) {
-        List<Review> reviews = product.getReviews();
+        List<Review> reviews = new ArrayList<>(product.getReviews());
         for (Review review : reviews) {
             UserInfo owner = review.getOwner();
             if (owner != null) {
@@ -278,6 +309,7 @@ public class ProductService {
                 userService.save(owner);
             }
             review.setProduct(null);
+            product.getReviews().remove(review);
             reviewRepository.delete(review);
         }
     }

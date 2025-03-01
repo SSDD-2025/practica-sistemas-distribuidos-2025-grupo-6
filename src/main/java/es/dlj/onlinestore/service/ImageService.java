@@ -94,4 +94,9 @@ public class ImageService {
     public ResponseEntity<Object> loadDefaultImage() {
         return loadImageFromPath("static/images/default.png", "image/png");
     }
+
+    @Transactional
+    void delete(Image image) {
+        imageRepository.delete(image);
+    }
 }
