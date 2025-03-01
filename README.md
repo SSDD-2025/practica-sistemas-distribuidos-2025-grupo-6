@@ -176,7 +176,7 @@ I have worked on the main menu, advanced search, shopping cart and image service
 
 - [Refactoring cart controller, home controller, and serch part in product controller, and some html](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/ec79b3aa94f53ade89d234c28a3dbca089100e17)
 
-[Deletions first implementation, reconfiguration Review relation with product, all dependencies of the changes](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/78e45a8a97510f9835c7c46e9c05225e1d456a41)
+- [Deletions first implementation, reconfiguration Review relation with product, all dependencies of the changes](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/78e45a8a97510f9835c7c46e9c05225e1d456a41)
 
 ### Main files modified
 
@@ -189,3 +189,31 @@ I have worked on the main menu, advanced search, shopping cart and image service
 - [CartController.java](src/main/java/es/dlj/onlinestore/controller/CartController.java)
 
 - [ImageService.java](src/main/java/es/dlj/onlinestore/service/ImageService.java)
+
+## Jaime Ochoa de Alda
+
+### Sumary of contributions
+I have placed most of my efforts in the product's detail page product form and service. The mayority of my work has been on functionalities concerning the product entity such as editing and creating products. Furthermore, I have also worked in the image entity by adding the functionality to load images from a dynamic database and save images in the database. Stablishing entities database's relationships has been as well part of my labour.
+
+### Main commits in the repository
+
+- [creation of RawProduct class and new savingProduct method](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/57b95b4c65b6d02dbec7d53a7ca47460cd6ed275)
+  
+- [Adjusting new product process for second hand products](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/3242b2d61aed4b68da8449385110dd5cd07e4a30)
+  
+- [updating newProduct and updateProduct functions](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/07228bf5e02b21aa3bc676b5b350144520108eae)
+  
+- [Loading product images](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/427b611b25d70edf0aae00a55be3855671d37076)
+  
+- [Image entity and cleaning unused imports in home controller](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/85b3b8d62c17ff6646ee4080683e3829170abd2d)
+
+### Main files modified
+- [ProductService.java](src/main/java/es/dlj/onlinestore/service/ProductService.java)
+  
+- [ProductController.java](src/main/java/es/dlj/onlinestore/controller/ProductController.java)
+  
+- [ImageController.java](src/main/java/es/dlj/onlinestore/controller/ImageController.java)
+  
+- [ImageService.java](src/main/java/es/dlj/onlinestore/service/ImageService.java)
+
+- [Image.java](src/main/java/es/dlj/onlinestore/model/Image.java)
