@@ -217,3 +217,31 @@ I have placed most of my efforts in the product's detail page product form and s
 - [ImageService.java](src/main/java/es/dlj/onlinestore/service/ImageService.java)
 
 - [Image.java](src/main/java/es/dlj/onlinestore/model/Image.java)
+
+## Lídia Budiós Martin
+
+### Sumary of contributions
+I have focused on the user profile section, developing a screen where all user data is displayed and another one that allows editing it. Additionally, I have implemented the functionality for users to leave reviews on various products in the application, including a section to display all ratings, both for each product and in the user profile. Lastly, I have contributed to the design of the application's different screens and have written a large part of the README.
+
+### Main commits in the repository
+
+- [a menu has been added to be able to rate a product and when you add it it is saved in the database, but it is not shown in the profile](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/ee6ebda7b2b09bab3a4c5a5fddb9f2e251d1c3b4)
+  
+- [added user profile screen](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/5b298ce39cb5af6812c74d351479fbe11fe3c454)
+  
+- [change user data functionality added](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/83219a51704bd4c82d2e510258a0913ac1ab5462)
+  
+- [added the averages of the rating and the number of evaluations](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/6b4cbd297edfdcaf40aa3dd6593a471375c3967c)
+  
+- [user reviews class added](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/da803d783e9042aa4e013751c16020c30d4e75fe)
+
+### Main files modified
+- [UserReviewService.java](src/main/java/es/dlj/onlinestore/service/UserReviewService.java)
+  
+- [UserProfileController.java](src/main/java/es/dlj/onlinestore/controller/UserProfileController.java)
+  
+- [UserService.java](src/main/java/es/dlj/onlinestore/service/UserService.java)
+  
+- [Review.java](src/main/java/es/dlj/onlinestore/model/Review.java)
+
+- [UserInfo.java](src/main/java/es/dlj/onlinestore/model/UserInfo.java)
