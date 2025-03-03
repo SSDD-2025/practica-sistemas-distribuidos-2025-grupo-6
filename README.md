@@ -12,9 +12,9 @@
 ## Functionalities 
 Our web application is designed to facilitate buying and selling products, offering an intuitive, modern, and efficient experience for both buyers and sellers. Below are the main features it provides.  
 
-The application allows users to explore a wide variety of products across different categories: new, refurbished, and second-hand. Additionally, a search function and advanced filters are available to refine searches based on user preferences, making it easier to find the ideal product.  
+The application allows users to explore a wide variety of products across different categories: new, reconditioned, and second-hand. Additionally, a search function and advanced filters are available to refine searches based on user preferences, making it easier to find the ideal product.  
 
-Users can list items on the platform by providing images, name, price, description, stock, discounts, filter tags, and specifying whether the product is new, refurbished, or second-hand. They can also modify the details of the products they have listed for sale.  
+Users can list items on the platform by providing images, name, price, description, stock, discounts, filter tags, and specifying whether the product is new, reconditioned, or second-hand. They can also modify the details of the products they have listed for sale.  
 
 A shopping cart feature is available, allowing users to add products to manage their selected items easily or remove them before proceeding to checkout. During the checkout process, the necessary purchase information is requested, and once completed, the user receives a confirmation message ensuring the transaction was successful.  
 
@@ -59,7 +59,7 @@ The web application we have developed is an online buying and selling platform. 
 
 Most screens of the application have a main menu at the top of the screen, consisting of six main sections:
 
-![Main Menu](img/mainMenu.jpg)
+![Main Menu](img/mainMenu.png)
 
 **1. Home** 
 
@@ -77,39 +77,31 @@ On this screen, the user can view all the details of the product, including: the
 
 Additionally, from this same section, users can leave comments and ratings on the product, as well as read the opinions and reviews of other buyers.
 
-![Screen to make reviews](img/makeReview.PNG)
+![Screen to make reviews](img/makeReview.png)
 
 **2. Search**
 
 On this screen, all types of items will be displayed to the user, who can narrow down their search using various available filters, such as category, price, rating, among others. They will also have the option to perform a direct search by entering keywords, as shown below:
 
-![Search Page](img/search1.PNG)
+![Search Page](img/search1.png)
 
-![](img/search2.PNG)
+![Search Page with Filters](img/search2.png)
 
 **3. New**
 
 This screen displays all the new products available on the website. Additionally, it features a search function and filters that allow users to easily find the product they want, tailoring the search to their preferences.
 
-![New Products Page](img/new.PNG)
-
 **4. Reaconditioned** 
 
 Similar to the previous screen, this one displays all the reaconditioned products available on the website. It also includes filters and a search function so that the user can refine their search and easily find the desired product.
-
-![Reconditioned Products Page](img/reconditioned.PNG)
 
 **5. Second-Hand**
 
 This screen is similar to the previous two, but instead of displaying new or reaconditioned products, it shows second-hand products available on the website. As with the previous screens, the user can use filters and a search function to find the specific product they are looking for.
 
-![Second-Hand Products Page](img/second-hand.PNG)
-
 **6. My Profile** 
 
 This button provides access to a dropdown menu that contains several sections related to the user's profile. The available sections are: View Profile, Edit Profile, Sell New Product, and Privacy.
-
-![My Profile Menu](img/myProfile.PNG)
 
 - **6.1. View Profile**
 
@@ -121,11 +113,18 @@ From this screen, the user can also directly access Edit Profile to update their
 
 ![User Profile Page](img/userProfile.png)
 
+- **6.1.1. Order Detailed**
+
+<< COMPLETE THIS PART >>
+
+![Order Detailed Page](img/orderDetailed.png)
+
 - **6.2. Edit Profile**
 
 On this screen, the user can edit all fields of their personal information, including name, username, last name, email, phone number, address, city, postal code, and payment method. Once the changes are made, they can either save them or cancel the edit if they do not wish to apply the modifications.
 
-![Edit Profile Page](img/editProfile.PNG)
+![Edit Profile Page](img/editProfile.png
+)
 
 - **6.3. Sell New Product**
 
@@ -139,7 +138,7 @@ Once this information is completed, the user can publish the product on the plat
 
 This screen explains to the user the terms of the license under which the application is distributed.
 
-![Privacy Page](img/privacy.PNG)
+![Privacy Page](img/privacy.png)
 
 **7. Cart**
 
@@ -156,6 +155,12 @@ In the Checkout process, the user is asked for the necessary information to comp
 Once the user makes the payment, they receive a notification confirming that the transaction has been successfully completed, along with the order ID for reference.
 
 ![Completed Order Page](orderCompleted.PNG) 
+
+-**8. Error Page**
+
+<< COMPLETE THIS PART >>
+
+![Error Page](error.png)
 
 ---
 
