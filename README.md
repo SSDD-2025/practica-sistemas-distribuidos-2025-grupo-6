@@ -42,7 +42,7 @@ Therefore it is related to the entities: user and product.
 Therefore it is related to the entities: user and product.
 
 - **Image**: linked to products and users; each product can have multiple images.
-Therefore it is related to the product entity, also each user has only one image. 
+Therefore it is related to the product entity as well as to the user. 
 
 #### Database entity diagram 
 ![Database Entity Diagram](img/DatabaseEntityDiagram.jpg)
@@ -55,8 +55,8 @@ Therefore it is related to the product entity, also each user has only one image
 In this first installment of the practice, the user will always be an administrator and will be able to use all the functionalities of the web application.
 
 ### Images 
+The images will be loaded from the database every image will be linked either to a product or a user. 
 
----
 ## Navigation 
 The web application we have developed is an online buying and selling platform. Users can both list products for sale and purchase new, refurbished, or second-hand items.
 
