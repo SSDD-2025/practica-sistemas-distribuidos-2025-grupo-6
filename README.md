@@ -55,7 +55,7 @@ Therefore it is related to the product entity as well as to the user.
 In this first installment of the practice, the user will always be an administrator and will be able to use all the functionalities of the web application.
 
 ### Images 
-The images will be loaded from the database every image will be linked either to a product or a user. 
+At this fase of the project, the images will be related either to a product or a user. A product will be related to at least 1 image, while the user may or may not be linked to an image.
 
 ## Navigation 
 The web application we have developed is an online buying and selling platform. Users can both list products for sale and purchase new, refurbished, or second-hand items.
