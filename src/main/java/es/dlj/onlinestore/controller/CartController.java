@@ -18,7 +18,7 @@ import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.model.OrderInfo;
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.UserInfo;
-import es.dlj.onlinestore.repository.OrderRepository;
+import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserComponent;
 import jakarta.transaction.Transactional;
@@ -34,7 +34,7 @@ public class CartController {
     private ProductService productService;
     
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderService orderService;
     
     @GetMapping
     public String showCart(Model model) {
@@ -122,7 +122,7 @@ public class CartController {
         OrderInfo order = new OrderInfo(user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
         order.setUser(user);
         order.setProducts(new HashSet<>(user.getCartProducts()));
-        orderRepository.save(order);
+        orderService.save(order);
         model.addAttribute("order", order);
         
         // Clear the cart after confirming the order

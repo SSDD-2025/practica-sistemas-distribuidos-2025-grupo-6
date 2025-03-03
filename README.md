@@ -47,6 +47,9 @@ Therefore it is related to the product entity.
 #### Database entity diagram 
 ![Database Entity Diagram](img/DatabaseEntityDiagram.jpg)
 
+#### Class Diagram 
+![Class Diagram](img/classDiagram.png)
+
 
 ### User Permissions 
 In this first installment of the practice, the user will always be an administrator and will be able to use all the functionalities of the web application.
