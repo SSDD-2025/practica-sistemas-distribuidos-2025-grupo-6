@@ -41,8 +41,8 @@ Therefore it is related to the entities: user and product.
 - **Order**: an order belongs to a user and is made up of multiple products. 
 Therefore it is related to the entities: user and product.
 
-- **Image**: linked to products; each product can have multiple images.
-Therefore it is related to the product entity. 
+- **Image**: linked to products and users; each product can have multiple images.
+Therefore it is related to the product entity, also each user has only one image. 
 
 #### Database entity diagram 
 ![Database Entity Diagram](img/DatabaseEntityDiagram.jpg)
