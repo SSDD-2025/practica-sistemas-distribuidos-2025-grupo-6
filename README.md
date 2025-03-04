@@ -13,19 +13,19 @@
 ---
 # Functionalities 
 
-<< TRANSFORM INTO REQUIREMENTS >>
+- Buy, sell, filter, search, rate, create, update and delete products
 
-Our web application is designed to facilitate buying and selling products, offering an intuitive, modern, and efficient experience for both buyers and sellers. Below are the main features it provides.  
+- Add product to shopping cart
 
-The application allows users to explore a wide variety of products across different categories: new, reconditioned, and second-hand. Additionally, a search function and advanced filters are available to refine searches based on user preferences, making it easier to find the ideal product.  
+- Remove product from shopping cart
 
-Users can list items on the platform by providing images, name, price, description, stock, discounts, filter tags, and specifying whether the product is new, reconditioned, or second-hand. They can also modify the details of the products they have listed for sale.  
+- Confirm order with necessary purchase information
 
-A shopping cart feature is available, allowing users to add products to manage their selected items easily or remove them before proceeding to checkout. During the checkout process, the necessary purchase information is requested, and once completed, the user receives a confirmation message ensuring the transaction was successful.  
+- View and update profile information.
 
-Each user has a personal profile where they can view and manage their information. From this section, users can edit their profile to update personal details, access the option to sell a new product, or navigate to the privacy section.  
+- View privacy section
 
-Buyers can rate and leave reviews on products, helping other users make informed decisions. Reviews include a title, a description of the opinion, and a star rating (1 to 5).
+- Post a review
 
 ---
 
@@ -67,7 +67,7 @@ The image below illustrates the architecture of the web application. The system 
 In this first installment of the practice, the user will always be an administrator and will be able to use all the functionalities of the web application.
 
 ## Images 
-<< At this fase of the project, the images will be related either to a product or a user. A product will be related to at least 1 image, while the user may or may not be linked to an image. (incorrecto)>>
+At this fase of the project, the images will be related either to a product or a user. A product will be related to at least 1 or more images, while the user will have only 1 image related to itself.
 
 # Navigation 
 The web application we have developed is an online buying and selling platform. Users can both list products for sale and purchase new, refurbished, or second-hand items.
