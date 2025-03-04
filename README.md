@@ -44,7 +44,7 @@ We have decided to develop a web application for buying and selling products. Th
 Therefore it is related to the entities: product, review and order.
     At this moment, only one admin user can be used.
 
-- **Product**: represents the products available in the application. There are thre types of producs: *new*, *reconditioned* and *second-hand*. << Both types of products have images of themselves, can have user reviews, and can be part of orders with the difference that first-hand products can be in multiple orders and second-hand products can only be in one. (esta raro)>>
+- **Product**: represents the products available in the application. There are thre types of producs: *new*, *reconditioned* and *second-hand*. All types of products have images of themselves, can have user reviews, and can be part of orders with the difference that new products can be in multiple orders and second-hand products can only be in one.
 Therefore it is related to the entities: user, review and order. 
 
 - **Review**: a review is created by a user and is associated with a product. 
@@ -129,7 +129,7 @@ On this screen, the user can edit all fields of their personal information, incl
 
 ## 6. Order Detailed
 
-<< COMPLETE THIS PART >>
+This screen displays an order summary, including the buyer's details, the order information such as the date, payment method, and total price, as well as the purchased products.
 
 ![Order Detailed Page](img/orderDetailed.png)
 
