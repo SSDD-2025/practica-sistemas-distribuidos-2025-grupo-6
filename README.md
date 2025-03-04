@@ -92,15 +92,15 @@ On this screen, the user can view all the details of the product, including: the
 
 Additionally, from this same section, users can leave comments and ratings on the product, as well as read the opinions and reviews of other buyers.
 
-![Screen to make reviews](img/makeReview.png)
+![Screen to make reviews](img/makeReview.PNG)
 
 ## 2. Search
 
 On this screen, all types of items will be displayed to the user, who can narrow down their search using various available filters, such as category, price, rating, among others. They will also have the option to perform a direct search by entering keywords, as shown below:
 
-![Search Page](img/search1.png)
+![Search Page](img/search1.PNG)
 
-![Search Page with Filters](img/search2.png)
+![Search Page with Filters](img/search2.PNG)
 <<
 ## 3. New
 
@@ -140,7 +140,7 @@ From this screen, the user can also directly access Edit Profile to update their
 
 On this screen, the user can edit all fields of their personal information, including the profile image, name, username, last name, email, phone number, address, city, postal code, and payment method. Once the changes are made, they can either save them or cancel the edit if they do not wish to apply the modifications.
 
-![Edit Profile Page](img/editProfile.png)
+![Edit Profile Page](img/editProfile.PNG)
 
 ## 6.3. Sell New Product
 
@@ -154,7 +154,7 @@ Once this information is completed, the user can publish the product on the plat
 
 This screen explains to the user the terms of the license under which the application is distributed.
 
-![Privacy Page](img/privacy.png)
+![Privacy Page](img/privacy.PNG)
 
 ## 7. Cart
 
