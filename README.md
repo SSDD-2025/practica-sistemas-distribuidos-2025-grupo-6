@@ -176,19 +176,17 @@ First of all, in order to run the project you will need to download and install 
   
 - [Visual Studio Code](https://code.visualstudio.com/Download) or [IntelliJ IDEA](https://www.jetbrains.com/idea/download/)
 
-After installing the applications you will open Docker as well as Visual Studio or IntelliJ. In case of using Visual Studio, it will be necessary to go to the Extensions section and install the "Spring Boot Extension Pack" extension.
-
-Once the applications are running, you will open Visual Studio Code's or IntelliJ's terminal and run the following command to clone the GitHub repository.
+After installing the applications you will open Docker as well as Visual Studio or IntelliJ. In case of using Visual Studio, it will be necessary to go to the Extensions section and install the "Spring Boot Extension Pack" extension. Once the applications are running, you will open the terminal inside Visual Studio or Intellij and run the following command in order to clone the GitHub repository.
 
 "git clone https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6.git"
 
-Furthermore, in Docker you are also going to enter the next command in its terminal.
+The next step is to enter the next command in Docker's terminal.
 
 "docker run --rm -e MYSQL_ROOT_PASSWORD=Password -e MYSQL_DATABASE=onlinestore -p 3306:3306 -d mysql:8.0"
 
-As a result of running the command you will observe that docker will start to download. You'll have to wait until you see the new container in the Container's section of Docker, its image field should be "mysql:8.0".
+As a result of running the command you will observe that docker will start downloading. You will have to wait until you see the new container in the Container's section of Docker, its image field should be "mysql:8.0".
 
-After the container is running you can go back to IntelliJ or Visual Studio and locate the "Application.java" file. Once located, run the file inside IntelliJ (play button on the top-right side) or Visual Studio (play button on the top-right corner). Afterwards open you computer's Internet browser and enter this URL "http://localhost:8080", it will lead you directly to the website application.
+After the container is running you can go back to IntelliJ or Visual Studio and locate the "Application.java" file. Once located, run the file inside IntelliJ or Visual Studio, the play button on the top left side. Afterwards open you computer's Internet browser and enter this URL "http://localhost:8080", it will lead you directly to the website application.
 
 In order to close the project you will need to press CTR + c in Visual Studio or IntelliJ and press the stop button near the container in Docker.
 
