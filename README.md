@@ -170,9 +170,9 @@ Once the user makes the payment, they receive a notification confirming that the
 
 First of all, in order to run the project you will need to download and install the following applications:
 
-- [Docker] (https://www.docker.com/)
+- [Docker](https://www.docker.com/)
   
-- [Java Development Kit 21 (JDK21)] (https://www.oracle.com/java/technologies/downloads/#java21)
+- [Java Development Kit 21 (JDK21)](https://www.oracle.com/java/technologies/downloads/#java21)
   
 - [Visual Studio Code](https://code.visualstudio.com/Download) or [IntelliJ IDEA](https://www.jetbrains.com/idea/download/)
 
