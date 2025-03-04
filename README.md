@@ -58,7 +58,7 @@ Therefore it is related to the product entity as well as to the user.
 
 ## Class Diagram 
 
-<< Breve descripcion e introduccion al MVC>>
+The image below illustrates the architecture of the web application. The system follows the MVC (Model-View-Controller) pattern, where controllers handle user interactions, services manage business logic, and repositories interact with the data layer. On the left side of the diagram, each view has been represented with its different templates which are used based on the corresponding controller.
 
 ![Class Diagram](img/classDiagram.png)
 
@@ -174,7 +174,7 @@ Once the user makes the payment, they receive a notification confirming that the
 
 ## 8. Error Page
 
-<< COMPLETE THIS PART >>
+The Error Page will show every time an internall error occurrs or the user tries to access a page which does not exist. The page will display a general message and a button to go back to the Home page.
 
 ![Error Page](img/error.png)
 
