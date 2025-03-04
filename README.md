@@ -37,13 +37,12 @@
 ## Database Design
 ### Entities 
 
-<< Explicar que existen los tipos con sus responsabilidades correctas pero indicar que ahora solo se puede ser admin debido al estado alpha de la aplicación web >>
-
 - **User**: there are three types of users: *anonymous*, *registered* and *administrator*. 
     - The *registered* user can place multiple orders, leave multiple reviews and add products to the cart 
     - The *admin* user can manage the products, the reviews and the orders 
     - The *anonymous* user Anonymous user can only see the products, but has no relation with the other entities
 Therefore it is related to the entities: product, review and order.
+    At this moment, only one admin user can be used.
 
 - **Product**: represents the products available in the application. There are thre types of producs: *new*, *reconditioned* and *second-hand*. << Both types of products have images of themselves, can have user reviews, and can be part of orders with the difference that first-hand products can be in multiple orders and second-hand products can only be in one. (esta raro)>>
 Therefore it is related to the entities: user, review and order. 
@@ -106,25 +105,13 @@ On this screen, all types of items will be displayed to the user, who can narrow
 
 ![Search Page with Filters](img/search2.PNG)
 <<
-## 3. New
+## 3. New, Reaconditioned, Second-Hand
 
-This screen displays all the new products available on the website. Additionally, it features a search function and filters that allow users to easily find the product they want, tailoring the search to their preferences.
+These three screens display all the products from the corresponding category: new, reaconditioned, or second-hand, depending on the section the user accesses. 
 
-## 4. Reaconditioned
+Additionally, each one includes a search tool and advanced filters that make it easier to locate the desired product, allowing users to refine their search based on their preferences.
 
-Similar to the previous screen, this one displays all the reaconditioned products available on the website. It also includes filters and a search function so that the user can refine their search and easily find the desired product.
-
-## 5. Second-Hand
-
-This screen is similar to the previous two, but instead of displaying new or reaconditioned products, it shows second-hand products available on the website. As with the previous screens, the user can use filters and a search function to find the specific product they are looking for.
-
-(reformular para que indique que aplica filtros y busqueda)>>
-
-<< ## 6. My Profile
-
-This button provides access to a dropdown menu that contains several sections related to the user's profile. The available sections are: View Profile, Edit Profile, Sell New Product, and Privacy. (innecesario)>>
-
-## 6.1. View Profile
+## 4. View Profile
 
 On this screen, the user can view all their personal information, including their full name, username, profile picture, email, location, and phone number.
 
