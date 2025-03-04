@@ -37,13 +37,11 @@ We have decided to develop a web application for buying and selling products. Th
 ## Database Design
 ### Entities 
 
-- **User**: there are three types of users: *anonymous*, *registered* and *administrator*. 
+- **User**: there are three types of users: *anonymous*, *registered* and *administrator*, but at this moment, only one admin user can be used.
     - The *registered* user can place multiple orders, leave multiple reviews and add products to the cart 
     - The *admin* user can manage the products, the reviews and the orders 
     - The *anonymous* user Anonymous user can only see the products, but has no relation with the other entities
 Therefore it is related to the entities: product, review and order.
-
-At this moment, only one admin user can be used.
 
 - **Product**: represents the products available in the application. There are thre types of producs: *new*, *reconditioned* and *second-hand*. All types of products have images of themselves, can have user reviews, and can be part of orders with the difference that new products can be in multiple orders and second-hand products can only be in one.
 Therefore it is related to the entities: user, review and order. 
