@@ -176,7 +176,7 @@ First of all, in order to run the project you will need to download and install 
   
 - [Visual Studio Code](https://code.visualstudio.com/Download) or [IntelliJ IDEA](https://www.jetbrains.com/idea/download/)
 
-After installing the applications you will open Docker as well as Visual Studio or IntelliJ. In case of using Visual Studio, it will be necessary to go to the Extions section and install the "Spring Boot Extensión Pack" extension.
+After installing the applications you will open Docker as well as Visual Studio or IntelliJ. In case of using Visual Studio, it will be necessary to go to the Extensions section and install the "Spring Boot Extension Pack" extension.
 
 Once the applications are running, you will open Visual Studio Code's or IntelliJ's terminal and run the following command to clone the GitHub repository.
 
