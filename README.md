@@ -13,19 +13,23 @@
 ---
 # Functionalities 
 
-- Buy, sell, filter, search, rate, create, update and delete products
-
-- Add product to shopping cart
-
-- Remove product from shopping cart
-
-- Confirm order with necessary purchase information
-
-- View and update profile information.
-
-- View privacy section
-
-- Post a review
+- Products must belong to one of the following categories: new, refurbished, or second-hand.
+- The application must allow users to explore products across different categories.
+- The application must organize and display products on the home screen according to different sections, such as best sellers, discounted items, and low-stock products.
+- Users must be able to search for specific products using a search bar.
+- Filters must be provided to allow users to search for products based on their preferences.
+- Users must be able to list products for sale by providing images, name, price, description, stock, discounts, and filter tags, and specifying whether the product is new, refurbished, or second-hand.
+- Users must be able to modify the details of the products they have listed for sale.
+- Users must be able to add products to a shopping cart.
+- Users must be able to remove products from the cart before completing the purchase.
+- The application must request the necessary information to complete the purchase during the checkout process.
+- The application must display a confirmation message to the user once the purchase has been completed.
+- The application must provide each user with a personal profile where they can view all their data, such as profile picture, name, address, email, phone number, reviews, order history, and products listed for sale.
+- Users must be able to edit their profile to update their personal information.
+- Users must be able to access the option to sell a product from their profile.
+- Users must be able to access a privacy section within their profile.
+- Users must be able to rate and leave reviews on products.
+- Reviews must include a title, a description, and a rating from 1 to 5.
 
 ---
 
