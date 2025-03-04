@@ -1,6 +1,6 @@
 # Swappy  
 
-<< BRIEF DESCRIPTION OF THE PROJECT >>
+We have decided to develop a web application for buying and selling products. This application will allow users to both purchase and list all types of items for sale, offering an intuitive, modern, and efficient experience for both buyers and sellers.
 
 ---
 # Team Members
@@ -104,7 +104,7 @@ On this screen, all types of items will be displayed to the user, who can narrow
 ![Search Page](img/search1.PNG)
 
 ![Search Page with Filters](img/search2.PNG)
-<<
+
 ## 3. New, Reaconditioned, Second-Hand
 
 These three screens display all the products from the corresponding category: new, reaconditioned, or second-hand, depending on the section the user accesses. 
@@ -121,19 +121,19 @@ From this screen, the user can also directly access Edit Profile to update their
 
 ![User Profile Page](img/userProfile.png)
 
-## 6.1.1. Order Detailed
-
-<< COMPLETE THIS PART >>
-
-![Order Detailed Page](img/orderDetailed.png)
-
-## 6.2. Edit Profile
+## 5. Edit Profile
 
 On this screen, the user can edit all fields of their personal information, including the profile image, name, username, last name, email, phone number, address, city, postal code, and payment method. Once the changes are made, they can either save them or cancel the edit if they do not wish to apply the modifications.
 
 ![Edit Profile Page](img/editProfile.PNG)
 
-## 6.3. Sell New Product
+## 6. Order Detailed
+
+<< COMPLETE THIS PART >>
+
+![Order Detailed Page](img/orderDetailed.png)
+
+## 7. Sell New Product
 
 On this screen, the user can add a new item for sale so that other users can purchase it. To list the product, they must provide the following information: product images, product name, price, detailed description, stock quantity, discount (if applicable), tags to facilitate search through filters, and the product condition: new, second-hand, or reaconditioned.  
 
@@ -141,19 +141,19 @@ Once this information is completed, the user can publish the product on the plat
 
 ![Sell New Product Page](img/addProduct.png)
 
-## 6.4. Privacy
+## 8. Privacy
 
 This screen explains to the user the terms of the license under which the application is distributed.
 
 ![Privacy Page](img/privacy.PNG)
 
-## 7. Cart
+## 9. Cart
 
 The cart section, where the user can add products they are interested in or remove those they no longer want. Once they have selected the items, they can proceed to the payment process by clicking the "Checkout" button.
 
 ![Cart Page](img/cart.png)
 
-## 7.1. Checkout
+## 9.1. Checkout
 
 In the Checkout process, the user is asked for the necessary information to complete the purchase, such as the payment method, shipping address, and phone number. 
 
@@ -163,7 +163,7 @@ Once the user makes the payment, they receive a notification confirming that the
 
 ![Completed Order Page](img/orderCompleted.PNG) 
 
-## 8. Error Page
+## 10. Error Page
 
 The Error Page will show every time an internall error occurrs or the user tries to access a page which does not exist. The page will display a general message and a button to go back to the Home page.
 
