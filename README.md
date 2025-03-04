@@ -18,12 +18,12 @@ To coordinate our team, we have been using Trello:
 
 # Functionalities 
 
-- Products must belong to one of the following categories: new, refurbished, or second-hand.
+- Products must belong to one of the following categories: new, reaconditioned, or second-hand.
 - The application must allow users to explore products across different categories.
 - The application must organize and display products on the home screen according to different sections, such as best sellers, discounted items, and low-stock products.
 - Users must be able to search for specific products using a search bar.
 - Filters must be provided to allow users to search for products based on their preferences.
-- Users must be able to list products for sale by providing images, name, price, description, stock, discounts, and filter tags, and specifying whether the product is new, refurbished, or second-hand.
+- Users must be able to list products for sale by providing images, name, price, description, stock, discounts, and filter tags, and specifying whether the product is new, reaconditioned, or second-hand.
 - Users must be able to modify the details of the products they have listed for sale.
 - Users must be able to add products to a shopping cart.
 - Users must be able to remove products from the cart before completing the purchase.
@@ -51,6 +51,8 @@ Therefore it is related to the entities: product, review and order.
 - **Product**: represents the products available in the application. There are thre types of producs: *new*, *reconditioned* and *second-hand*. All types of products have images of themselves, can have user reviews, and can be part of orders with the difference that new products can be in multiple orders and second-hand products can only be in one.
 Therefore it is related to the entities: user, review and order. 
 
+- **Product Tag**: a product can have multiple tags, and each tag can be associated with multiple products.
+
 - **Review**: a review is created by a user and is associated with a product. 
 Therefore it is related to the entities: user and product.
 
@@ -77,9 +79,9 @@ In this first installment of the practice, the user will always be an administra
 At this fase of the project, the images will be related either to a product or a user. A product will be related to at least 1 or more images, while the user will have only 1 image related to itself.
 
 # Navigation 
-The web application we have developed is an online buying and selling platform. Users can both list products for sale and purchase new, refurbished, or second-hand items.
+The web application we have developed is an online buying and selling platform. Users can both list products for sale and purchase new, reaconditioned, or second-hand items.
 
-Most screens of the application have a main menu at the top of the screen, consisting of six main sections:
+Most screens of the application have a main menu at the top of the screen, consisting of seven main sections:
 
 ![Main Menu](img/mainMenu.png)
 
