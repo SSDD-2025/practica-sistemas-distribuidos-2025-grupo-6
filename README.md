@@ -11,6 +11,11 @@ We have decided to develop a web application for buying and selling products. Th
 | **Lídia Budiós**   |  l.budios.2024@alumnos.urjc.es | lidiabm |
 
 ---
+# Methodologies used
+To coordinate our team, we have been using Trello: 
+[Link to Trello commit](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/da803d783e9042aa4e013751c16020c30d4e75fe)
+
+
 # Functionalities 
 
 - Products must belong to one of the following categories: new, refurbished, or second-hand.
