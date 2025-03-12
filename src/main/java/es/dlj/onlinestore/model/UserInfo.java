@@ -14,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import es.dlj.onlinestore.enumeration.PaymentMethod;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,8 +30,6 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 public class UserInfo {
-    
-    public static enum Role { USER, ADMIN, UNREGISTERED }
 
     @Id 
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -87,13 +86,13 @@ public class UserInfo {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Product> cartProducts = new HashSet<>();
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> role = new ArrayList<String>();
 
     public UserInfo() {
     }
 
-    public UserInfo(String userName, String password, String name, String surname, String email, Role role, String address, String city, String postalCode, String phone) {
+    public UserInfo(String userName, String password, String name, String surname, String email, List<String> role, String address, String city, String postalCode, String phone) {
         this.userName = userName;
         this.password = password;
         this.name = name;
@@ -154,7 +153,7 @@ public class UserInfo {
         return email;
     }
 
-    public Role getRole() {
+    public List<String> getRole() {
         return role;
     }
 
@@ -186,7 +185,7 @@ public class UserInfo {
         this.email = email;
     }
 
-    public void setRole(Role role) {
+    public void setRole(List<String> role) {
         this.role = role;
     }
 

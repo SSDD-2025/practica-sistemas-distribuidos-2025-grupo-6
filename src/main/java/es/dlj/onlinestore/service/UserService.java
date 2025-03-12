@@ -18,7 +18,7 @@ public class UserService {
     public void init() {
         // Checks if there are any users in the database
         // if (userRepository.count() > 0) return;
-        userRepository.save(new UserInfo("admin", "Password", "Name", "Surname", "admin@gmail.com", UserInfo.Role.ADMIN, "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
+        userRepository.save(new UserInfo("admin", "Password", "Name", "Surname", "admin@gmail.com", null, "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
     }
 
     public void save(UserInfo user) {
