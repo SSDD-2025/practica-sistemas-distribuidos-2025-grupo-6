@@ -1,18 +1,24 @@
 package es.dlj.onlinestore.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
+    @Autowired
+    public RepositoryUserDetailsService userDetailService;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -22,36 +28,27 @@ public class WebSecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userDetailService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
-    
 
     @Bean
-    public UserDetails userDetailsService(){
-        UserDetails user = User.builder().username("user").password(passwordEncoder().encode("password")).roles("USER").build();
-        UserDetails admin = User.builder().username("admin").password(passwordEncoder().encode("password")).roles("USER", "ADMIN").build();
-
-        return new InMemoryUserDetailsManager(user, admin);
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authenticationProvider(authenticationProvider());
         http
         .authorizeHttpRequests(authorize -> authorize
             //Public pages
-            .requestMatchers("/", "/post/{id}", "/privacy").permitAll()
+            .requestMatchers("/").permitAll()
             //Private Pages
-            .requestMatchers("/private").hasAnyRole("USER")
-            .requestMatchers("/admin").hasAnyRole("ADMIN")
+            .requestMatchers("/profile").hasAnyRole("USER")
+            .requestMatchers("/register").hasAnyRole("ADMIN")
             .requestMatchers("/")
         )
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
             .failureUrl("/loginerror")
-            .defaultSuccessUrl("/user")
+            .defaultSuccessUrl("/profile")
             .permitAll()
         )
         .logout(logout -> logout
@@ -59,5 +56,10 @@ public class WebSecurityConfig {
             .logoutSuccessUrl("/")
             .permitAll()
         );
+        
+        // Disable CSRF at the moment
+        http.csrf(csrf -> csrf.disable());
+
+        return http.build();
     }
 }

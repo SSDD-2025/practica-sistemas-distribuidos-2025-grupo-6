@@ -41,8 +41,8 @@ public class UserInfo {
     @Size(min = 3, max = 100, message = "User name must be between 3 and 100 characters")
     private String userName;
 
-    @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
-    private String password;
+    // @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
+    private String encodedPassword;
 
     @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
     private String name;
@@ -87,18 +87,18 @@ public class UserInfo {
     private Set<Product> cartProducts = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> role = new ArrayList<String>();
+    private List<String> roles = new ArrayList<String>();
 
     public UserInfo() {
     }
 
     public UserInfo(String userName, String password, String name, String surname, String email, List<String> role, String address, String city, String postalCode, String phone) {
         this.userName = userName;
-        this.password = password;
+        this.encodedPassword = password;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.role = role;
+        this.roles = role;
         this.address = address;
         this.city = city;
         this.postalCode = postalCode;
@@ -107,7 +107,7 @@ public class UserInfo {
 
     public void updateWith(UserInfo user) {
         this.userName = user.userName != null ? user.userName : this.userName;
-        this.password = user.password != null ? user.password : this.password;
+        this.encodedPassword = user.encodedPassword != null ? user.encodedPassword : this.encodedPassword;
         this.name = user.name != null ? user.name : this.name;
         this.surname = user.surname != null ? user.surname : this.surname;
         this.email = user.email != null ? user.email : this.email;
@@ -125,8 +125,8 @@ public class UserInfo {
         return userName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getEncodedPassword() {
+        return encodedPassword;
     }
 
     public void setId(Long id) {
@@ -137,8 +137,8 @@ public class UserInfo {
         this.userName = userName;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setEncodedPassword(String password) {
+        this.encodedPassword = password;
     }
 
     public String getName() {
@@ -153,8 +153,8 @@ public class UserInfo {
         return email;
     }
 
-    public List<String> getRole() {
-        return role;
+    public List<String> getRoles() {
+        return roles;
     }
 
     public String getAddress() {
@@ -185,8 +185,8 @@ public class UserInfo {
         this.email = email;
     }
 
-    public void setRole(List<String> role) {
-        this.role = role;
+    public void setRoles(List<String> role) {
+        this.roles = role;
     }
 
     public void setAddress(String address) {
@@ -325,7 +325,7 @@ public class UserInfo {
                 "id=" + id +
                 ", creationDate=" + creationDate +
                 ", userName='" + userName + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + encodedPassword + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
@@ -334,7 +334,7 @@ public class UserInfo {
                 ", postalCode='" + postalCode + '\'' +
                 ", phone='" + phone + '\'' +
                 ", paymentMethod=" + paymentMethod +
-                ", role=" + role +
+                ", role=" + roles +
                 '}';    
     }
 
