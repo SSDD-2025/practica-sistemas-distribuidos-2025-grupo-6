@@ -31,16 +31,16 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception{
         http.authenticationProvider(authenticationProvider());
         http
         .authorizeHttpRequests(authorize -> authorize
             //Public pages
-            .requestMatchers("/", "/image/**").permitAll()
+            .requestMatchers("/", "/product/*", "/privacy", "/product/search", "/image/**").permitAll()
             //Private Pages
-            .requestMatchers("/profile").hasAnyRole("ADMIN", "USER")
-            .requestMatchers("/register").hasAnyRole("ADMIN")
-            .requestMatchers("/")
+            .requestMatchers("/profile", "/cart/*", "/profile/order/*").hasAnyRole("USER", "ADMIN")
+            .requestMatchers("/admin").hasAnyRole("ADMIN")
+            .requestMatchers("/product/new").hasAnyRole("ADMIN")
         )
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
@@ -53,9 +53,6 @@ public class WebSecurityConfig {
             .logoutSuccessUrl("/")
             .permitAll()
         );
-        
-        // Disable CSRF at the moment
-        http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }
