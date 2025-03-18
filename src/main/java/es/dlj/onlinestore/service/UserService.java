@@ -25,8 +25,8 @@ public class UserService {
     public void init() {
         // Checks if there are any users in the database
         // if (userRepository.count() > 0) return;
-        userRepository.save(new UserInfo("admin", passwordEncoder.encode("password"), "NameAdmin", "SurnameAdmin", "admin@gmail.com", List.of("admin"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
-        userRepository.save(new UserInfo("user", passwordEncoder.encode("password"), "NameUser", "SurnameUser", "user@gmail.com", List.of("user "), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
+        userRepository.save(new UserInfo("admin", passwordEncoder.encode("password"), "NameAdmin", "SurnameAdmin", "admin@gmail.com", List.of("ADMIN"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
+        userRepository.save(new UserInfo("user", passwordEncoder.encode("password"), "NameUser", "SurnameUser", "user@gmail.com", List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
     }
 
     public void save(UserInfo user) {

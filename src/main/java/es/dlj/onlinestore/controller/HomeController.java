@@ -1,15 +1,13 @@
 package es.dlj.onlinestore.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import java.security.Principal;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.UserInfo;
@@ -83,8 +81,10 @@ public class HomeController {
 
     // @PostMapping("/login")
     // public String postLogin() {
+
     //     return "redirect:/profile";
     // }
+    
     @GetMapping("/register")
     public String getRegister() {
         return "register_template";
