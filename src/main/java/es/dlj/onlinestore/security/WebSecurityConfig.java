@@ -6,11 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -34,21 +31,21 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception{
         http.authenticationProvider(authenticationProvider());
         http
         .authorizeHttpRequests(authorize -> authorize
             //Public pages
-            .requestMatchers("/").permitAll()
+            .requestMatchers("/", "/product/*", "/privacy", "/product/search").permitAll()
             //Private Pages
-            .requestMatchers("/profile").hasAnyRole("USER")
-            .requestMatchers("/register").hasAnyRole("ADMIN")
-            .requestMatchers("/")
+            .requestMatchers("/profile", "/cart/*", "/profile/order/*").hasAnyRole("USER", "ADMIN")
+            .requestMatchers("/admin").hasAnyRole("ADMIN")
+            .requestMatchers("/product/new").hasAnyRole("ADMIN")
         )
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
             .failureUrl("/loginerror")
-            .defaultSuccessUrl("/profile")
+            .defaultSuccessUrl("/user")
             .permitAll()
         )
         .logout(logout -> logout
@@ -56,9 +53,6 @@ public class WebSecurityConfig {
             .logoutSuccessUrl("/")
             .permitAll()
         );
-        
-        // Disable CSRF at the moment
-        http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }
