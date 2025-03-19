@@ -10,8 +10,7 @@ active
     
     <div id="cart-list" class="row">
         <form id="removeForm-all" method="post" action="/cart/remove/all" class="col-5 mb-4 position-absolute top-0 end-0">
-            <button type="button" class="btn btn-danger" 
-                    onclick="confirmAction('Are you sure that you whant to delete all the products form your cart?', 'removeForm-all')" {{^user.cartProducts}}disabled{{/user.cartProducts}}>
+            <button type="submit" class="btn btn-danger" {{^user.cartProducts}}disabled{{/user.cartProducts}}>
                 <i class="bi bi-trash me-2"></i>Remove All Products
             </button>
         </form>
@@ -34,8 +33,7 @@ active
                     </div>
                     <div>
                         <form id="removeForm-{{id}}" method="post" action="/cart/remove/{{id}}">
-                            <button type="button" class="btn btn-danger"
-                                onclick="confirmRemoval('{{id}}')"><i class="bi bi-trash"></i>Remove</button>
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i>Remove</button>
                         </form>
                     </div>
                 </div>

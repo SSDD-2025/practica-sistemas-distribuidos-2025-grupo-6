@@ -41,7 +41,7 @@ public class UserInfo {
     @Size(min = 3, max = 100, message = "User name must be between 3 and 100 characters")
     private String userName;
 
-    // @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
+    @Size(min = 8, message = "Password must have at least 8 characters")
     private String encodedPassword;
 
     @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")

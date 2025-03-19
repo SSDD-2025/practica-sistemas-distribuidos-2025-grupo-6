@@ -1,6 +1,7 @@
 package es.dlj.onlinestore.controller;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.transaction.annotation.Transactional;
 
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.model.Image;
@@ -28,8 +29,9 @@ import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
-import es.dlj.onlinestore.service.UserComponent;
 import es.dlj.onlinestore.service.UserReviewService;
+import es.dlj.onlinestore.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 
@@ -41,13 +43,28 @@ class ProductController {
     private ImageService imageService;
 
     @Autowired
-    private UserComponent userComponent;
-
-    @Autowired
     private ProductService productService;
 
     @Autowired
     private UserReviewService userReviewService;
+
+    @Autowired
+    private UserService userService;
+
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (principal != null) {
+            UserInfo user = userService.findByUserName(principal.getName()).get();
+            model.addAttribute("user", user);
+            model.addAttribute("isLogged", true);
+            model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
+            model.addAttribute("isUser", request.isUserInRole("USER"));
+
+        } else {
+            model.addAttribute("isLogged", false);
+        }
+    }
 
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
@@ -61,15 +78,17 @@ class ProductController {
         }
 
         model.addAttribute("allImages", images);
-        model.addAttribute("user", userComponent.getUser());
+        // model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));
         
         return "product_template";
     }
 
     @PostMapping("/{id}/add-review")
-    public String submitReview(Model model, @PathVariable Long id, @ModelAttribute Review review) {
-        UserInfo user = userComponent.getUser();
+    public String submitReview(Model model, @PathVariable Long id, @ModelAttribute Review review, HttpServletRequest request) {
+        UserInfo user = userService.getLoggedUser(request);
+        if (user == null) return "redirect:/login";
+
         Product product = productService.getProduct(id);
         review.setOwner(user);
         review.setProduct(product);
@@ -87,8 +106,12 @@ class ProductController {
     }
 
     @PostMapping("/{id}/add-to-cart")
-    public String addProductToCart(Model model, @PathVariable Long id){
-        userComponent.addProductToCart(productService.getProduct(id));
+    public String addProductToCart(Model model, @PathVariable Long id, HttpServletRequest request){
+        UserInfo user = userService.getLoggedUser(request);
+        if (user == null) return "redirect:/login";
+
+        user.addProductToCart(productService.getProduct(id));
+        userService.save(user);
         return "redirect:/cart";
     }
 
@@ -111,7 +134,7 @@ class ProductController {
         }
 
         model.addAttribute("tags", productService.getAllTags());
-        model.addAttribute("user", userComponent.getUser());
+        // model.addAttribute("user", userComponent.getUser());
 
 		return "search_template";
     }
@@ -148,7 +171,8 @@ class ProductController {
             @RequestParam List<MultipartFile> imagesVal,
             @RequestParam String tagsVal,
             @Valid @ModelAttribute Product newProduct,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            HttpServletRequest request
     ) {
         if (bindingResult.hasErrors()) {
             // In case of errors, return to the form with the errors mapped
@@ -167,7 +191,11 @@ class ProductController {
 
         // Sets the invariant fields
         newProduct.setId(id);
-        newProduct.setSeller(userComponent.getUser());
+
+        UserInfo user = userService.getLoggedUser(request);
+        if (user == null) return "redirect:/login";
+
+        newProduct.setSeller(user);
         newProduct.setTotalSells(oldProduct.getTotalSells());
         newProduct.setReviews(oldProduct.getReviews());
 
@@ -225,7 +253,8 @@ class ProductController {
             @RequestParam List<MultipartFile> imagesVal,
             @RequestParam String tagsVal,
             @Valid @ModelAttribute Product newProduct,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            HttpServletRequest request
     ) {
         if (bindingResult.hasErrors()) {
             // In case of errors, return to the form with the errors mapped
@@ -238,7 +267,10 @@ class ProductController {
             return "product_create_template";
         }
 
-        newProduct.setSeller(userComponent.getUser());
+        UserInfo user = userService.getLoggedUser(request);
+        if (user == null) return "redirect:/login";
+
+        newProduct.setSeller(user);
         newProduct.setTags(productService.transformStringToTags(tagsVal));
         try {
             if (imagesVal != null && imagesVal.size() > 1) {
@@ -256,7 +288,8 @@ class ProductController {
             tag.addProduct(newProduct);
         }
         Product savedProduct = productService.save(newProduct);
-        userComponent.addProductForSale(savedProduct);
+        user.addProductForSale(savedProduct);
+        userService.save(user);
         return "redirect:/product/" + savedProduct.getId();
     }
 

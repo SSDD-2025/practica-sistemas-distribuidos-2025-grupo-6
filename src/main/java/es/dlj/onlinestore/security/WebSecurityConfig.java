@@ -31,20 +31,31 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
         http
         .authorizeHttpRequests(authorize -> authorize
             //Public pages
-            .requestMatchers("/", "/product/*", "/privacy", "/product/search", "/image/**").permitAll()
+            .requestMatchers(
+                "/", "/css/**", "/js/**",
+                "/privacy",
+                "/image/**",
+                "/product/*", 
+                "/register"
+                ).permitAll()
             //Private Pages
-            .requestMatchers("/profile", "/cart/*", "/profile/order/*").hasAnyRole("USER", "ADMIN")
-            .requestMatchers("/admin").hasAnyRole("ADMIN")
-            .requestMatchers("/product/new").hasAnyRole("ADMIN")
+            .requestMatchers(
+                "/profile", "/profile/**", 
+                "/cart", "/cart/**", 
+                "/product/*/**"
+                ).authenticated()
+            .requestMatchers(
+                "/product/new"
+                ).hasAnyRole("ADMIN")
         )
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
-            .failureUrl("/loginerror")
+            .failureUrl("/login-error")
             .defaultSuccessUrl("/profile", true)
             .permitAll()
         )
@@ -53,6 +64,9 @@ public class WebSecurityConfig {
             .logoutSuccessUrl("/")
             .permitAll()
         );
+
+        // Disable CSRF at the moment
+        http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }

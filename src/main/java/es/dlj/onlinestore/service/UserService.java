@@ -1,5 +1,6 @@
 package es.dlj.onlinestore.service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import es.dlj.onlinestore.model.Review;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.UserInfoRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserService {
@@ -29,8 +31,11 @@ public class UserService {
         userRepository.save(new UserInfo("user", passwordEncoder.encode("password"), "NameUser", "SurnameUser", "user@gmail.com", List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
     }
 
-    public void save(UserInfo user) {
-        userRepository.save(user);
+    public UserInfo save(UserInfo user) {
+        if (user.getRoles().isEmpty()) user.setRoles(List.of("USER")); 
+        String encodedPassword = passwordEncoder.encode(user.getEncodedPassword());
+        user.setEncodedPassword(encodedPassword);
+        return userRepository.save(user);
     }
 
     public UserInfo findById(Long id) {
@@ -44,6 +49,12 @@ public class UserService {
     public void addReviewToUser(UserInfo user, Review review) {
         user.addReview(review);
         userRepository.save(user);
+    }
+
+    public UserInfo getLoggedUser(HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) return null;
+        return findByUserName(principal.getName()).get();
     }
 
 }

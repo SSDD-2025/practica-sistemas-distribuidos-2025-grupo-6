@@ -1,5 +1,6 @@
 package es.dlj.onlinestore.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,8 @@ import es.dlj.onlinestore.model.Product;
 import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.ProductService;
-import es.dlj.onlinestore.service.UserComponent;
+import es.dlj.onlinestore.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -28,43 +31,66 @@ import jakarta.transaction.Transactional;
 public class CartController {
 
     @Autowired
-    private UserComponent userComponent;
-
-    @Autowired
     private ProductService productService;
     
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private UserService userService;
+
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (principal != null) {
+            UserInfo user = userService.findByUserName(principal.getName()).get();
+            model.addAttribute("user", user);
+            model.addAttribute("isLogged", true);
+            model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
+            model.addAttribute("isUser", request.isUserInRole("USER"));
+
+        } else {
+            model.addAttribute("isLogged", false);
+        }
+    }
     
     @GetMapping
     public String showCart(Model model) {
-        // Add the user to the model in case it changes
-        model.addAttribute("user", userComponent.getUser());
         return "cart_template";
     }
     
     @PostMapping("/remove/{productId}")
-    public String removeProduct(@PathVariable Long productId) {
+    public String removeProduct(@PathVariable Long productId, HttpServletRequest request) {
+        UserInfo user = userService.getLoggedUser(request);
+        if (user == null) return "redirect:/login";
+
         // Find the product by its ID
         Optional<Product> product = productService.findById(productId);
 
         // Remove the product from the cart if it exists
         if (product.isPresent()) {
-            userComponent.removeProductFromCart(product.get());
+            user.removeProductFromCart(product.get());
         }
+        userService.save(user);
         return "redirect:/cart";
     }
 
     @PostMapping("/remove/all")
-    public String removeProduct() {
+    public String removeProduct(HttpServletRequest request) {
+        UserInfo user = userService.getLoggedUser(request);
+        if (user == null) return "redirect:/login";
+
         // Remove all the products from the cart
-        userComponent.clearCart();
+        user.clearCart();
+        userService.save(user);
         return "redirect:/cart";
     }
     
     @GetMapping("/checkout")
-    public String orderCheckout(Model model) {
-        UserInfo user = userComponent.getUser();
+    public String orderCheckout(Model model, HttpServletRequest request) {
+        UserInfo user = userService.getLoggedUser(request);
+        if (user == null) return "redirect:/login";
+
         // Check if the cart is empty
         if (user.getCartProducts().isEmpty()) {
             return "redirect:/cart";
@@ -83,17 +109,14 @@ public class CartController {
             return "cart_template";
         }
 
-        // Add the user to the model in case it changes
-        model.addAttribute("user", user);
         return "order_checkout_template";
     }
     
     @PostMapping("/confirm-order")
     @Transactional
-    public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber) {
-        // Add the user to the model in case it changes
-        UserInfo user = userComponent.getUser();
-        model.addAttribute("user", user);
+    public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber, HttpServletRequest request) {
+        UserInfo user = userService.getLoggedUser(request);
+        if (user == null) return "redirect:/login";
 
         // Check if the cart is empty
         if (user.getCartProducts().isEmpty()) {
@@ -109,7 +132,7 @@ public class CartController {
         }
         if (!productsOutOfStock.isEmpty()) {
             model.addAttribute("outOfStockProducts", productsOutOfStock);
-            model.addAttribute("user", user);
+            // model.addAttribute("user", user);
             return "cart_template";
         }
 
@@ -128,6 +151,7 @@ public class CartController {
         // Clear the cart after confirming the order
         user.clearCartProducts();
         user.addOrder(order);
+        userService.save(user);
 
         return "order_confirmed_template";
     }

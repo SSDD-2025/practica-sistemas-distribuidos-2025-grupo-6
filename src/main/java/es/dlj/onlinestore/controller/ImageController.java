@@ -11,22 +11,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import es.dlj.onlinestore.model.Image;
 import es.dlj.onlinestore.model.Product;
+import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
-import es.dlj.onlinestore.service.UserComponent;
+import es.dlj.onlinestore.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 
  @Controller
  @RequestMapping("/image")
  class ImageController {
 
     @Autowired
-    private UserComponent userComponent;
-
-    @Autowired
     private ImageService imageService;
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserService userService;
  
     @GetMapping("/{id}")
     public ResponseEntity<Object> getImage(@PathVariable Long id) {
@@ -44,11 +46,12 @@ import es.dlj.onlinestore.service.UserComponent;
     }
 
     @GetMapping("/user")
-    public ResponseEntity<Object> getUserImage() {
-        Image image = userComponent.getUser().getProfilePhoto();
-        if (image == null) {
-            return imageService.loadDefaultImage();
-        }
+    public ResponseEntity<Object> getUserImage(HttpServletRequest request) {
+        UserInfo user = userService.getLoggedUser(request);
+        if (user == null) return imageService.loadDefaultImage();
+
+        Image image = user.getProfilePhoto();
+        if (image == null) return imageService.loadDefaultImage();
         return imageService.loadImage(image.getId());
     }
 }
