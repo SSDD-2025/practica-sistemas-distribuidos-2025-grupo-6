@@ -58,7 +58,7 @@ public class Product {
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne
-    private UserInfo seller;
+    private User seller;
     
     @ManyToMany
     private List<ProductTag> tags = new ArrayList<>();
@@ -171,11 +171,11 @@ public class Product {
         this.creationDate = creationDate;
     }
 
-    public UserInfo getSeller() {
+    public User getSeller() {
         return seller;
     }
 
-    public void setSeller(UserInfo seller) {
+    public void setSeller(User seller) {
         this.seller = seller;
     }
 

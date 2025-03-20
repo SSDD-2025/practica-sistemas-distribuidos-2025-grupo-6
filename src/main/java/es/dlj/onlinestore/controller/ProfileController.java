@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Image;
-import es.dlj.onlinestore.domain.UserInfo;
+import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
@@ -28,7 +28,7 @@ import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/profile")
-public class UserProfileController {
+public class ProfileController {
 
     @Autowired
     private OrderService orderService;
@@ -43,7 +43,7 @@ public class UserProfileController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserInfo user = userService.findByUserName(principal.getName()).get();
+            User user = userService.findByUserName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -69,7 +69,7 @@ public class UserProfileController {
     @PostMapping("/update")
     public String saveProfileChanges(
             Model model, 
-            @Valid @ModelAttribute UserInfo newUser, 
+            @Valid @ModelAttribute User newUser, 
             BindingResult bindingResult,
             @RequestParam(required=false) MultipartFile profilePhotoFile, 
             HttpServletRequest request
@@ -86,7 +86,7 @@ public class UserProfileController {
             return "profile_update_template";
         }
 
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         user.updateWith(newUser);

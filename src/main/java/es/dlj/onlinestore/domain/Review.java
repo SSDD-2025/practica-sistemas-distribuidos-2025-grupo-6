@@ -33,7 +33,7 @@ public class Review {
     private int rating;
 
     @ManyToOne
-    private UserInfo owner;
+    private User owner;
 
     @ManyToOne
     private Product product;
@@ -62,7 +62,7 @@ public class Review {
         return rating;
     }
     
-    public UserInfo getOwner() {
+    public User getOwner() {
         return owner;
     }
 
@@ -86,7 +86,7 @@ public class Review {
         this.rating = rating;
     }
 
-    public void setOwner(UserInfo owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     } 
 

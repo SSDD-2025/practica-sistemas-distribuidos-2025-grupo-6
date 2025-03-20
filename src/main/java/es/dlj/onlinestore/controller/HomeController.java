@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Product;
-import es.dlj.onlinestore.domain.UserInfo;
+import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
@@ -41,7 +41,7 @@ public class HomeController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserInfo user = userService.findByUserName(principal.getName()).get();
+            User user = userService.findByUserName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -97,7 +97,7 @@ public class HomeController {
     @PostMapping("/register")
     public String registerUser(
             Model model, 
-            @Valid @ModelAttribute UserInfo newUser, 
+            @Valid @ModelAttribute User newUser, 
             BindingResult bindingResult, 
             @RequestParam String passwordConfirm, 
             @RequestParam MultipartFile image
@@ -128,7 +128,7 @@ public class HomeController {
             return "register_template";
         }
 
-        UserInfo updatedUser = userService.save(newUser);
+        User updatedUser = userService.save(newUser);
 
         try {
             if (image != null && !image.isEmpty()) {

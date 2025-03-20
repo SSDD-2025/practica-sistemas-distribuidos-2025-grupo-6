@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Product;
-import es.dlj.onlinestore.domain.UserInfo;
+import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.repository.ImageRepository;
 
 
@@ -67,7 +67,7 @@ public class ImageService {
     }
 
     @Transactional
-    public void saveImageInUser(UserInfo user, MultipartFile rawImage) throws IOException {
+    public void saveImageInUser(User user, MultipartFile rawImage) throws IOException {
         Image savedImage = saveFileImage(rawImage);
         user.setProfilePhoto(savedImage);
     }

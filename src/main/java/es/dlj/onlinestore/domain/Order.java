@@ -36,7 +36,7 @@ public class Order {
     private LocalDateTime creationDate;
     
     @ManyToOne
-    private UserInfo user;
+    private User user;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Product> products = new HashSet<>();
@@ -64,8 +64,8 @@ public class Order {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public UserInfo getUser() { return user; }
-    public void setUser(UserInfo user) { this.user = user; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
     public Set<Product> getProducts() { return products; }
     public void setProducts(Set<Product> products) { this.products = products; }

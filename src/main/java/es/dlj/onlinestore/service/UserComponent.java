@@ -6,20 +6,20 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
-import es.dlj.onlinestore.domain.UserInfo;
-import es.dlj.onlinestore.repository.UserInfoRepository;
+import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.repository.UserRepository;
 
 @Component
 @SessionScope
 public class UserComponent {
 
     @Autowired
-    private UserInfoRepository users;
+    private UserRepository users;
 
     private Long userId = 1L;
-    private UserInfo user;
+    private User user;
 
-    public UserInfo getUser() {
+    public User getUser() {
         // if (this.user == null || !this.user.getId().equals(userId)) {
         //     this.user = users.findById(userId).get();
         // }

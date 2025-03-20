@@ -25,11 +25,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
-public class UserInfo {
+@Table(name = "UserInfo")
+public class User {
 
     @Id 
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -87,10 +89,10 @@ public class UserInfo {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<String>();
 
-    public UserInfo() {
+    public User() {
     }
 
-    public UserInfo(String userName, String password, String name, String surname, String email, List<String> role, String address, String city, String postalCode, String phone) {
+    public User(String userName, String password, String name, String surname, String email, List<String> role, String address, String city, String postalCode, String phone) {
         this.userName = userName;
         this.encodedPassword = password;
         this.name = name;
@@ -103,7 +105,7 @@ public class UserInfo {
         this.phone = phone;
     }
 
-    public void updateWith(UserInfo user) {
+    public void updateWith(User user) {
         this.userName = user.userName != null ? user.userName : this.userName;
         this.encodedPassword = user.encodedPassword != null ? user.encodedPassword : this.encodedPassword;
         this.name = user.name != null ? user.name : this.name;
@@ -292,7 +294,7 @@ public class UserInfo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserInfo otherUser = (UserInfo) o;
+        User otherUser = (User) o;
         return Objects.equals(id, otherUser.id);
     }
 
@@ -319,7 +321,7 @@ public class UserInfo {
     
     @Override
     public String toString() {
-        return "UserInfo{" +
+        return "User{" +
                 "id=" + id +
                 ", creationDate=" + creationDate +
                 ", userName='" + userName + '\'' +

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
-import es.dlj.onlinestore.domain.UserInfo;
+import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 
@@ -37,7 +37,7 @@ public class OrderService {
 
     @Transactional
     private void deepDeleteUser(Order order) {
-        UserInfo user = order.getUser();
+        User user = order.getUser();
         if (user != null) {
             user.removeOrder(order);
             userService.save(user);

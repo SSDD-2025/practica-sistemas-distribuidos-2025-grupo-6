@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
-import es.dlj.onlinestore.domain.UserInfo;
+import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.ProductService;
@@ -43,7 +43,7 @@ public class CartController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserInfo user = userService.findByUserName(principal.getName()).get();
+            User user = userService.findByUserName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -61,7 +61,7 @@ public class CartController {
     
     @PostMapping("/remove/{productId}")
     public String removeProduct(@PathVariable Long productId, HttpServletRequest request) {
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         // Find the product by its ID
@@ -77,7 +77,7 @@ public class CartController {
 
     @PostMapping("/remove/all")
     public String removeProduct(HttpServletRequest request) {
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         // Remove all the products from the cart
@@ -88,7 +88,7 @@ public class CartController {
     
     @GetMapping("/checkout")
     public String orderCheckout(Model model, HttpServletRequest request) {
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         // Check if the cart is empty
@@ -115,7 +115,7 @@ public class CartController {
     @PostMapping("/confirm-order")
     @Transactional
     public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber, HttpServletRequest request) {
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         // Check if the cart is empty

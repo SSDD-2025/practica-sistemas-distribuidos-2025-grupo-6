@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Product;
-import es.dlj.onlinestore.domain.UserInfo;
+import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
@@ -47,7 +47,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
     @GetMapping("/user")
     public ResponseEntity<Object> getUserImage(HttpServletRequest request) {
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return imageService.loadDefaultImage();
 
         Image image = user.getProfilePhoto();

@@ -14,15 +14,15 @@ import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.domain.Review;
-import es.dlj.onlinestore.domain.UserInfo;
+import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
-import es.dlj.onlinestore.repository.UserInfoRepository;
-import es.dlj.onlinestore.repository.UserReviewRepository;
+import es.dlj.onlinestore.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import es.dlj.onlinestore.repository.ReviewRepository;
 
 @Service
 public class ProductService {
@@ -37,10 +37,10 @@ public class ProductService {
     private ImageService imageService;
 
     @Autowired
-    private UserInfoRepository userInfoRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserReviewRepository reviewRepository;
+    private ReviewRepository reviewRepository;
 
     @Autowired
     private ProductTagRepository productTagRepository;
@@ -126,7 +126,7 @@ public class ProductService {
         productTagsList.add(transformStringToTags("watch, samsung"));
 
         // Preload products, tags and images
-        UserInfo user = userService.findById(1L);
+        User user = userService.findById(1L);
         for (int i = 0; i < productList.size(); i++) {
 
             for (ProductTag tag : productTagsList.get(i)) {
@@ -274,10 +274,10 @@ public class ProductService {
 
     @Transactional
     private void deepDeleteSeller(Product product) {
-        UserInfo seller = product.getSeller();
+        User seller = product.getSeller();
         if (seller != null) {
             seller.removeProductFromSale(product);
-            userInfoRepository.save(seller);
+            userRepository.save(seller);
         }
     }
 
@@ -303,7 +303,7 @@ public class ProductService {
     private void deepDeleteReviews(Product product) {
         List<Review> reviews = new ArrayList<>(product.getReviews());
         for (Review review : reviews) {
-            UserInfo owner = review.getOwner();
+            User owner = review.getOwner();
             if (owner != null) {
                 owner.removeReview(review);
                 userService.save(owner);

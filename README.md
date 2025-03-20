@@ -277,7 +277,7 @@ I have focused on the user profile section, developing a screen where all user d
 - [user reviews class added](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/da803d783e9042aa4e013751c16020c30d4e75fe)
 
 ### Main files modified
-- [UserReviewService.java](src/main/java/es/dlj/onlinestore/service/UserReviewService.java)
+- [ReviewService.java](src/main/java/es/dlj/onlinestore/service/ReviewService.java)
   
 - [UserProfileController.java](src/main/java/es/dlj/onlinestore/controller/UserProfileController.java)
   
@@ -285,4 +285,4 @@ I have focused on the user profile section, developing a screen where all user d
   
 - [Review.java](src/main/java/es/dlj/onlinestore/model/Review.java)
 
-- [UserInfo.java](src/main/java/es/dlj/onlinestore/model/UserInfo.java)
+- [User.java](src/main/java/es/dlj/onlinestore/model/User.java)

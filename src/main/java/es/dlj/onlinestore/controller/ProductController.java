@@ -25,11 +25,11 @@ import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.domain.Review;
-import es.dlj.onlinestore.domain.UserInfo;
+import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
-import es.dlj.onlinestore.service.UserReviewService;
+import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -46,7 +46,7 @@ class ProductController {
     private ProductService productService;
 
     @Autowired
-    private UserReviewService userReviewService;
+    private ReviewService reviewService;
 
     @Autowired
     private UserService userService;
@@ -55,7 +55,7 @@ class ProductController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserInfo user = userService.findByUserName(principal.getName()).get();
+            User user = userService.findByUserName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -86,7 +86,7 @@ class ProductController {
 
     @PostMapping("/{id}/add-review")
     public String submitReview(Model model, @PathVariable Long id, @ModelAttribute Review review, HttpServletRequest request) {
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         Product product = productService.getProduct(id);
@@ -95,19 +95,19 @@ class ProductController {
 
         // Set the id to null to force to create new review
         review.setId(null);
-        userReviewService.save(review);
+        reviewService.save(review);
         return "redirect:/product/" + id; 
     }
 
     @PostMapping("/{productId}/review/{reviewId}/delete")
     public String deleteReview(@PathVariable Long productId, @PathVariable Long reviewId) {
-        userReviewService.delete(reviewId);
+        reviewService.delete(reviewId);
         return "redirect:/product/" + productId;
     }
 
     @PostMapping("/{id}/add-to-cart")
     public String addProductToCart(Model model, @PathVariable Long id, HttpServletRequest request){
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         user.addProductToCart(productService.getProduct(id));
@@ -192,7 +192,7 @@ class ProductController {
         // Sets the invariant fields
         newProduct.setId(id);
 
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         newProduct.setSeller(user);
@@ -267,7 +267,7 @@ class ProductController {
             return "product_create_template";
         }
 
-        UserInfo user = userService.getLoggedUser(request);
+        User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         newProduct.setSeller(user);
