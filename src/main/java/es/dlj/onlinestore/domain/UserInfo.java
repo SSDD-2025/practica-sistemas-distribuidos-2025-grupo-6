@@ -54,18 +54,16 @@ public class UserInfo {
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email is not valid, it shoudl be like: example@domain.com")
     private String email;
 
-    @Size(min = 3, max = 200, message = "Address must be between 3 and 200 characters")
+    @Size(max = 200, message = "Address must be between 3 and 200 characters")
     private String address;
 
-    @Size(min = 3, max = 100, message = "City must be between 3 and 100 characters")
+    @Size(max = 100, message = "City must be between 3 and 100 characters")
     private String city;
 
-    @Size(min = 5, max = 5, message = "Postal code must have 5 numbers")
-    @Pattern(regexp = "^[0-9]{5}$", message = "Postal code is not valid, it should be like: 12345")
+    @Pattern(regexp = "^$|^[0-9]{5}$", message = "Postal code must have 5 numbers, it should be like: 12345")
     private String postalCode;
 
-    @Size(min = 9, max = 15, message = "Phone number must be between 9 and 15 characters")
-    @Pattern(regexp = "^\\+?[0-9]{1,3}?[0-9]{9,15}$", message = "Phone number is not valid, it should be like: +34123456789 or 123456789")
+    @Pattern(regexp = "^$|^\\+?[0-9]{1,3}?[0-9]{9,15}$", message = "Phone number is not valid, it should be like: +34123456789 or 123456789")
     private String phone;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
