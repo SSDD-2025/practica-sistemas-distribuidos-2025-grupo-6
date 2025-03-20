@@ -55,9 +55,7 @@ public class HomeController {
     @GetMapping("/")
     public String getHome(Model model) {
         // Define a record to hold the information of a section
-        record Section(String title, String color, String icon, List<Product> products) {
-
-        }
+        record Section(String title, String color, String icon, List<Product> products) {}
 
         // Define the sections to show at the Home page
         List<Section> sections = List.of(
