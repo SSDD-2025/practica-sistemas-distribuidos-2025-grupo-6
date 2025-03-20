@@ -1,5 +1,9 @@
 package es.dlj.onlinestore.dto;
 
-public class ImageDTO {
-    
-}
+import java.sql.Blob;
+
+public record ImageDTO(
+    long id,
+    Blob imageFile,
+    String contentType
+){}
