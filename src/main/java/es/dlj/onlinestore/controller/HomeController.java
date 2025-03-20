@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import es.dlj.onlinestore.model.Image;
-import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.domain.Image;
+import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;

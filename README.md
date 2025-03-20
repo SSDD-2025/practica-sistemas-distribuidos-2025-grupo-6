@@ -221,7 +221,7 @@ I have worked on the main menu, advanced search, shopping cart and image service
 
 ### Main files modified
 
-- [OrderInfo.java](src/main/java/es/dlj/onlinestore/model/OrderInfo.java)
+- [Order.java](src/main/java/es/dlj/onlinestore/model/Order.java)
 
 - [ProductController.java](src/main/java/es/dlj/onlinestore/controller/ProductController.java)
 

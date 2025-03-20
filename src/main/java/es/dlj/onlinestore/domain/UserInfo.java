@@ -1,4 +1,4 @@
-package es.dlj.onlinestore.model;
+package es.dlj.onlinestore.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -78,7 +78,7 @@ public class UserInfo {
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<OrderInfo> orders = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Image profilePhoto;
@@ -230,11 +230,11 @@ public class UserInfo {
         this.reviews = reviews;
     }
 
-    public List<OrderInfo> getOrders() {
+    public List<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrderInfo> orders) {
+    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 
@@ -307,7 +307,7 @@ public class UserInfo {
         return this.productsForSell;
     }
 
-    public void addOrder(OrderInfo order){
+    public void addOrder(Order order){
         orders.add(order);
     }
 
@@ -315,7 +315,7 @@ public class UserInfo {
         this.productsForSell.add(savedProduct);
     }
 
-    public void removeOrder(OrderInfo order) {
+    public void removeOrder(Order order) {
         this.orders.remove(order);
     }
     

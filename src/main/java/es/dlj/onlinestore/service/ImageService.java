@@ -21,9 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import es.dlj.onlinestore.model.Image;
-import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.domain.Image;
+import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.repository.ImageRepository;
 
 

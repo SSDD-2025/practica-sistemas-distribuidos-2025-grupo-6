@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import es.dlj.onlinestore.domain.Image;
+import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.domain.ProductTag;
+import es.dlj.onlinestore.domain.Review;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.enumeration.ProductType;
-import es.dlj.onlinestore.model.Image;
-import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.ProductTag;
-import es.dlj.onlinestore.model.Review;
-import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserReviewService;

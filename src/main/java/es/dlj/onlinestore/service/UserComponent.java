@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
-import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.Review;
-import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.domain.Review;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.repository.UserInfoRepository;
 
 @Component

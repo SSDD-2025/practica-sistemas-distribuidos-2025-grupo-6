@@ -3,9 +3,9 @@ package es.dlj.onlinestore.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.dlj.onlinestore.model.OrderInfo;
-import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.domain.Order;
+import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 
@@ -18,17 +18,17 @@ public class OrderService {
     @Autowired
     private UserService userService;
 
-    public OrderInfo getReferenceById(Long id) {
+    public Order getReferenceById(Long id) {
         return orderRepository.getReferenceById(id);
     }
 
-    public OrderInfo save(OrderInfo order) {
+    public Order save(Order order) {
         return orderRepository.save(order);
     }
 
     @Transactional
     public void delete(Long id) {
-        OrderInfo order = orderRepository.findById(id).orElse(null);
+        Order order = orderRepository.findById(id).orElse(null);
         if (order == null) return;
         deepDeleteUser(order);
         deepDeleteProducts(order);
@@ -36,7 +36,7 @@ public class OrderService {
     }
 
     @Transactional
-    private void deepDeleteUser(OrderInfo order) {
+    private void deepDeleteUser(Order order) {
         UserInfo user = order.getUser();
         if (user != null) {
             user.removeOrder(order);
@@ -45,7 +45,7 @@ public class OrderService {
     }
 
     @Transactional
-    private void deepDeleteProducts(OrderInfo order) {
+    private void deepDeleteProducts(Order order) {
         order.getProducts().clear();
     }
 }

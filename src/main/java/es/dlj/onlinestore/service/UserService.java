@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import es.dlj.onlinestore.model.Review;
-import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.domain.Review;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.repository.UserInfoRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;

@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import es.dlj.onlinestore.domain.Order;
+import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.enumeration.PaymentMethod;
-import es.dlj.onlinestore.model.OrderInfo;
-import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
@@ -142,7 +142,7 @@ public class CartController {
         }
 
         // Create and save the order
-        OrderInfo order = new OrderInfo(user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
+        Order order = new Order(user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
         order.setUser(user);
         order.setProducts(new HashSet<>(user.getCartProducts()));
         orderService.save(order);

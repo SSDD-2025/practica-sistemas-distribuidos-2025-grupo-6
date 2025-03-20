@@ -1,4 +1,4 @@
-package es.dlj.onlinestore.model;
+package es.dlj.onlinestore.domain;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;

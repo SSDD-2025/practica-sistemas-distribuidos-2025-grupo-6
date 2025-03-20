@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import es.dlj.onlinestore.model.OrderInfo;
-import es.dlj.onlinestore.model.Product;
+import es.dlj.onlinestore.domain.Order;
+import es.dlj.onlinestore.domain.Product;
 
-public interface OrderRepository extends JpaRepository<OrderInfo, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    public List<OrderInfo> findByProductsContaining(Product product);
+    public List<Order> findByProductsContaining(Product product);
 
 }

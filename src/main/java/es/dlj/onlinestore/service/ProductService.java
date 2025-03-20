@@ -9,13 +9,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import es.dlj.onlinestore.domain.Image;
+import es.dlj.onlinestore.domain.Order;
+import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.domain.ProductTag;
+import es.dlj.onlinestore.domain.Review;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.enumeration.ProductType;
-import es.dlj.onlinestore.model.Image;
-import es.dlj.onlinestore.model.OrderInfo;
-import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.ProductTag;
-import es.dlj.onlinestore.model.Review;
-import es.dlj.onlinestore.model.UserInfo;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
@@ -283,8 +283,8 @@ public class ProductService {
 
     @Transactional
     private void deepDeleteOrders(Product product) {
-        List<OrderInfo> orders = orderRepository.findByProductsContaining(product);
-        for (OrderInfo order : orders) {
+        List<Order> orders = orderRepository.findByProductsContaining(product);
+        for (Order order : orders) {
             order.removeProduct(product);
             orderRepository.save(order);
         }

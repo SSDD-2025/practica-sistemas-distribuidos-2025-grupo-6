@@ -1,4 +1,4 @@
-package es.dlj.onlinestore.model;
+package es.dlj.onlinestore.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,9 +22,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-public class OrderInfo {
+@Table(name = "OrderInfo")
+public class Order {
     
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
@@ -50,9 +52,9 @@ public class OrderInfo {
 
     private String phoneNumber;
     
-    public OrderInfo() {}
+    public Order() {}
 
-    public OrderInfo(Float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
+    public Order(Float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
         this.address = address;
@@ -102,7 +104,7 @@ public class OrderInfo {
 
     @Override
     public String toString() {
-        return "OrderInfo{" +
+        return "Order{" +
                 "id=" + id +
                 ", creationDate=" + creationDate +
                 ", user=" + user +
@@ -117,8 +119,8 @@ public class OrderInfo {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof OrderInfo)) return false;
-        OrderInfo other = (OrderInfo) obj;
+        if (!(obj instanceof Order)) return false;
+        Order other = (Order) obj;
         return id != null && id.equals(other.id);
     }
 

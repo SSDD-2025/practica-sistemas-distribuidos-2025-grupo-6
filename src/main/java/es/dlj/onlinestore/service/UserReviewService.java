@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.dlj.onlinestore.model.Product;
-import es.dlj.onlinestore.model.Review;
-import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.domain.Review;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.repository.UserReviewRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;

@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import es.dlj.onlinestore.model.UserInfo;
+import es.dlj.onlinestore.domain.UserInfo;
 import es.dlj.onlinestore.repository.UserInfoRepository;
 
 @Service

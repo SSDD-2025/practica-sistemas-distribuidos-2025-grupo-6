@@ -1,4 +1,4 @@
-package es.dlj.onlinestore.model;
+package es.dlj.onlinestore.domain;
 
 import java.sql.Blob;
 import java.util.Map;
