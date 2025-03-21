@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +26,8 @@ import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -122,5 +126,15 @@ public class ProfileController {
     public String deleteOrder(@PathVariable Long id) {
         orderService.delete(id);
         return "redirect:/profile";
+    }
+
+    @GetMapping("/deleteaccount") 
+    public String deleteAccount(Model model) { 
+        userService.deleteUser(1L);
+        
+        //SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        //logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        
+        return "redirect:/";
     }
 }

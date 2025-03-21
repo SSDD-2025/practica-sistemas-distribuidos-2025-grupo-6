@@ -47,7 +47,8 @@ public class WebSecurityConfig {
             .requestMatchers(
                 "/profile", "/profile/**", 
                 "/cart", "/cart/**", 
-                "/product/*/**"
+                "/product/*/**", 
+                "/deleteaccount"
                 ).authenticated()
             .requestMatchers(
                 "/product/new"
