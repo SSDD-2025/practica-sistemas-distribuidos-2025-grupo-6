@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,8 +24,6 @@ import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -129,8 +125,14 @@ public class ProfileController {
     }
 
     @GetMapping("/deleteaccount") 
-    public String deleteAccount(Model model) { 
-        userService.deleteUser(1L);
+    public String deleteAccount(Model model, HttpServletRequest request) { 
+        System.out.println("Delete account");
+        User user = userService.getLoggedUser(request);
+        if (user == null) return "redirect:/login";
+        
+        userService.deleteUser(user.getId());
+
+        System.out.println("User deleted");
         
         //SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         //logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());

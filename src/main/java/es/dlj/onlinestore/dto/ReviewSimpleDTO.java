@@ -2,10 +2,10 @@ package es.dlj.onlinestore.dto;
 
 import java.time.LocalDateTime;
 
-public record OrderSimpleDTO(
+public record ReviewSimpleDTO(
     Long id,
     LocalDateTime creationDate,
-    float totalPrice,
-    String address,
-    String phoneNumber
+    String title,
+    String description,
+    int rating
 ) {}
