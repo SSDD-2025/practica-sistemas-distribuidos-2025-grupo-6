@@ -45,10 +45,9 @@ public class WebSecurityConfig {
                 ).permitAll()
             //Private Pages
             .requestMatchers(
-                "/profile", "/profile/**", 
+                "/profile", "/profile/**", "/profile/deleteaccount",
                 "/cart", "/cart/**", 
                 "/product/*/**" 
-                // "/profile/deleteaccount"
                 ).authenticated()
             .requestMatchers(
                 "/product/new"

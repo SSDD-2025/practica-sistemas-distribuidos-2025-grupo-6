@@ -94,6 +94,7 @@ public class UserService {
         deepDeleteReviews(user);
         deepDeleteOrders(user);
         deepDeleteImage(user);
+        deepDeleteRoles(user);
         userRepository.delete(user);
     }
 
@@ -122,7 +123,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deepDeleteProducts(User user) {
+    private void deepDeleteProducts(User user) {
         List<Product> cartProducts = new ArrayList<>(user.getCartProducts());
         for (Product product : cartProducts) {
             user.removeProductFromCart(product);
@@ -136,7 +137,7 @@ public class UserService {
     }
 
     @Transactional
-    void deepDeleteOrders(User user) {
+    private void deepDeleteOrders(User user) {
         List<Order> orders = new ArrayList<>(user.getOrders());
         for (Order order : orders) {
             List<Product> products = new ArrayList<>(order.getProducts());
@@ -147,5 +148,11 @@ public class UserService {
             user.removeOrder(order);  
         }
     }
+
+    @Transactional 
+    private void deepDeleteRoles(User user) {
+        user.getRoles().clear();
+    }
+
 
 }

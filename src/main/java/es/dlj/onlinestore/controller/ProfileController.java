@@ -126,13 +126,9 @@ public class ProfileController {
 
     @GetMapping("/deleteaccount") 
     public String deleteAccount(Model model, HttpServletRequest request) { 
-        System.out.println("Delete account");
         User user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
-        
         userService.deleteUser(user.getId());
-
-        System.out.println("User deleted");
         
         //SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         //logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
