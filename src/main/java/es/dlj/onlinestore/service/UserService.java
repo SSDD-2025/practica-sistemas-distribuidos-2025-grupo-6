@@ -14,6 +14,7 @@ import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ReviewRepository;
 import es.dlj.onlinestore.repository.UserRepository;
@@ -41,6 +42,9 @@ public class UserService {
 
     @Autowired
     private UserComponent userComponent;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @PostConstruct
     public void init() {
@@ -124,27 +128,33 @@ public class UserService {
 
     @Transactional
     private void deepDeleteProducts(User user) {
-        List<Product> cartProducts = new ArrayList<>(user.getCartProducts());
-        for (Product product : cartProducts) {
-            user.removeProductFromCart(product);
-            productRepository.save(product);
-        }
+        user.getCartProducts().clear();
+
         List<Product> productsForSell = new ArrayList<>(user.getProductsForSell());
         for (Product product : productsForSell) {
-            user.removeProductFromSale(product);
-            productRepository.save(product);
+            List<Review> reviews = new ArrayList<>(product.getReviews());
+            for (Review review : reviews) {
+                reviewRepository.delete(review);
+            }
+            product.getReviews().clear();
+    
+            List<Order> ordersWithProduct = orderRepository.findByProductsContaining(product);
+            for (Order order : ordersWithProduct) {
+                order.getProducts().remove(product);
+                orderRepository.save(order);
+            }
+    
+            productRepository.delete(product);
         }
+        
+        user.getProductsForSell().clear();
     }
 
     @Transactional
     private void deepDeleteOrders(User user) {
         List<Order> orders = new ArrayList<>(user.getOrders());
         for (Order order : orders) {
-            List<Product> products = new ArrayList<>(order.getProducts());
-            for (Product product : products) {
-                order.removeProduct(product);
-                productRepository.save(product);
-            }
+            orderRepository.delete(order);
             user.removeOrder(order);  
         }
     }
@@ -153,6 +163,5 @@ public class UserService {
     private void deepDeleteRoles(User user) {
         user.getRoles().clear();
     }
-
 
 }
