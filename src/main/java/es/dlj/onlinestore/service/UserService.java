@@ -16,17 +16,12 @@ import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
-<<<<<<< HEAD
 import es.dlj.onlinestore.dto.OrderDTO;
-import es.dlj.onlinestore.dto.OrderMapper;
+import es.dlj.onlinestore.mapper.OrderMapper;
 import es.dlj.onlinestore.dto.ProductDTO;
-import es.dlj.onlinestore.dto.ProductMapper;
-import es.dlj.onlinestore.dto.UserDTO;
-import es.dlj.onlinestore.dto.UserMapper;
-=======
+import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.mapper.UserMapper;
->>>>>>> 1e5c4fceb4bf43bd47ee7e6824a672c403997898
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ReviewRepository;
@@ -40,9 +35,6 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserMapper mapper; 
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -86,7 +78,6 @@ public class UserService {
     
     }
 
-<<<<<<< HEAD
     public void removeProductFromCart(UserDTO userDTO, ProductDTO product) {
         User user = userMapper.toDomain(userDTO);
         user.removeProductFromCart(productMapper.toDomain(product));
@@ -104,19 +95,20 @@ public class UserService {
         Order orderDomain = orderMapper.toDomain(order);
         userDomain.addOrder(orderDomain);
         userRepository.save(userDomain);
-=======
+    }
+    
     public UserDTO createUser(UserDTO userDTO) {
-        User user = mapper.toDomain(userDTO);
+        User user = userMapper.toDomain(userDTO);
         userRepository.save(user); 
-        return mapper.toDTO(user);
+        return userMapper.toDTO(user);
     }
 
     public UserDTO replaceUser (Long id, UserDTO userDTO) {
         if (userRepository.existsById(id)) {
-            User updateUser = mapper.toDomain(userDTO);
+            User updateUser = userMapper.toDomain(userDTO);
             updateUser.setId(id);
             userRepository.save(updateUser);
-            return mapper.toDTO(updateUser);
+            return userMapper.toDTO(updateUser);
         } else {
             throw new NoSuchElementException(); 
         }
@@ -126,16 +118,15 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow();
         deleteUserById(id);
         userRepository.deleteById(id);
-        return mapper.toDTO(user);
+        return userMapper.toDTO(user);
     }
 
     public Collection<UserDTO> getUsers() {
-        return mapper.toDTOs(userRepository.findAll());
+        return userMapper.toDTOs(userRepository.findAll());
     } 
 
     public UserDTO getUser(Long id) {
-        return mapper.toDTO(userRepository.findById(id).orElseThrow());
->>>>>>> 1e5c4fceb4bf43bd47ee7e6824a672c403997898
+        return userMapper.toDTO(userRepository.findById(id).orElseThrow());
     }
 
     public User save(User user) {

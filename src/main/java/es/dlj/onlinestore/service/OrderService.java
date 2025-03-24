@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.OrderDTO;
-import es.dlj.onlinestore.dto.OrderMapper;
+import es.dlj.onlinestore.mapper.OrderMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 
