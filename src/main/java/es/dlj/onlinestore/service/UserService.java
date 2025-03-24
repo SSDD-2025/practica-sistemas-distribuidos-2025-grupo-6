@@ -173,16 +173,13 @@ public class UserService {
                 reviewRepository.delete(review);
             }
             product.getReviews().clear();
-    
             List<Order> ordersWithProduct = orderRepository.findByProductsContaining(product);
             for (Order order : ordersWithProduct) {
                 order.getProducts().remove(product);
                 orderRepository.save(order);
             }
-    
             productRepository.delete(product);
         }
-        
         user.getProductsForSell().clear();
     }
 

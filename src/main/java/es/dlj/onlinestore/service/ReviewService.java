@@ -2,6 +2,7 @@ package es.dlj.onlinestore.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Service;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.ReviewDTO;
+import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.mapper.ReviewMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import es.dlj.onlinestore.repository.ReviewRepository;
@@ -18,6 +22,9 @@ public class ReviewService {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private ReviewMapper mapper;
 
     @Autowired
     private UserService userService;
@@ -63,6 +70,31 @@ public class ReviewService {
             reviewRepository.save(reviews.get(i));
         }
     }
+
+    public ReviewDTO createUser(ReviewDTO reviewDTO) {
+        Review review = mapper.toDomain(reviewDTO);
+        reviewRepository.save(review); 
+        return mapper.toDTO(review);
+    }
+
+    public ReviewDTO replaceUser (Long id, ReviewDTO reviewDTO) {
+        if (reviewRepository.existsById(id)) {
+            Review updateReview = mapper.toDomain(reviewDTO);
+            updateReview.setId(id);
+            reviewRepository.save(updateReview);
+            return mapper.toDTO(updateReview);
+        } else {
+            throw new NoSuchElementException(); 
+        }
+    }
+
+    public ReviewDTO deleteUser(Long id) {
+        Review review = reviewRepository.findById(id).orElseThrow();
+        reviewRepository.deleteById(id);
+        delete(id);
+        return mapper.toDTO(review);
+    }
+
 
     public List<Review> getUserRatings(User owner) {
         return reviewRepository.findByOwner(owner);
