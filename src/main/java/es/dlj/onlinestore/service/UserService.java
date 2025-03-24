@@ -2,7 +2,9 @@ package es.dlj.onlinestore.service;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ReviewRepository;
@@ -24,9 +28,12 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
-
+    
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserMapper mapper; 
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -39,9 +46,6 @@ public class UserService {
 
     @Autowired
     private ReviewRepository reviewRepository;
-
-    @Autowired
-    private UserComponent userComponent;
 
     @Autowired
     private OrderRepository orderRepository;
@@ -62,6 +66,38 @@ public class UserService {
                 List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
         }
     
+    }
+
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = mapper.toDomain(userDTO);
+        userRepository.save(user); 
+        return mapper.toDTO(user);
+    }
+
+    public UserDTO replaceUser (Long id, UserDTO userDTO) {
+        if (userRepository.existsById(id)) {
+            User updateUser = mapper.toDomain(userDTO);
+            updateUser.setId(id);
+            userRepository.save(updateUser);
+            return mapper.toDTO(updateUser);
+        } else {
+            throw new NoSuchElementException(); 
+        }
+    }
+
+    public UserDTO deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        deleteUserById(id);
+        userRepository.deleteById(id);
+        return mapper.toDTO(user);
+    }
+
+    public Collection<UserDTO> getUsers() {
+        return mapper.toDTOs(userRepository.findAll());
+    } 
+
+    public UserDTO getUser(Long id) {
+        return mapper.toDTO(userRepository.findById(id).orElseThrow());
     }
 
     public User save(User user) {
@@ -91,7 +127,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long id) {
+    public void deleteUserById(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) return;
         deepDeleteProducts(user);
