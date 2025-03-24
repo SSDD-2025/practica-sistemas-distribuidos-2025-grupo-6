@@ -14,6 +14,12 @@ import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.OrderDTO;
+import es.dlj.onlinestore.dto.OrderMapper;
+import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ProductMapper;
+import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.dto.UserMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ReviewRepository;
@@ -46,6 +52,15 @@ public class UserService {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
+    private OrderMapper orderMapper;
+
     @PostConstruct
     public void init() {
         // Checks if there are any users in the database
@@ -62,6 +77,25 @@ public class UserService {
                 List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
         }
     
+    }
+
+    public void removeProductFromCart(UserDTO userDTO, ProductDTO product) {
+        User user = userMapper.toDomain(userDTO);
+        user.removeProductFromCart(productMapper.toDomain(product));
+        userRepository.save(user);
+    }
+
+    public void clearCart(UserDTO userDTO) {
+        User user = userMapper.toDomain(userDTO);
+        user.clearCart();
+        userRepository.save(user);
+    }
+
+    public void addOrderToUser(UserDTO user, OrderDTO order) {
+        User userDomain = userMapper.toDomain(user);
+        Order orderDomain = orderMapper.toDomain(order);
+        userDomain.addOrder(orderDomain);
+        userRepository.save(userDomain);
     }
 
     public User save(User user) {

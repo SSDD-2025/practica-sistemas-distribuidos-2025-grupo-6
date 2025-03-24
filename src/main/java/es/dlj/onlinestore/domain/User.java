@@ -40,32 +40,18 @@ public class User {
     @CreationTimestamp
     private LocalDateTime creationDate;
 
-    @Size(min = 3, max = 100, message = "User name must be between 3 and 100 characters")
-    private String userName;
+    
+    private String username;
 
-    @Size(min = 8, message = "Password must have at least 8 characters")
+    
     private String encodedPassword;
 
-    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
     private String name;
-
-    @Size(min = 3, max = 100, message = "Surname must be between 3 and 100 characters")
     private String surname;
-
-    @Size(min = 6, max = 200, message = "Email must be between 6 and 200 characters")
-    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Email is not valid, it shoudl be like: example@domain.com")
     private String email;
-
-    @Size(max = 200, message = "Address must be between 3 and 200 characters")
     private String address;
-
-    @Size(max = 100, message = "City must be between 3 and 100 characters")
     private String city;
-
-    @Pattern(regexp = "^$|^[0-9]{5}$", message = "Postal code must have 5 numbers, it should be like: 12345")
     private String postalCode;
-
-    @Pattern(regexp = "^$|^\\+?[0-9]{1,3}?[0-9]{9,15}$", message = "Phone number is not valid, it should be like: +34123456789 or 123456789")
     private String phone;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -93,7 +79,7 @@ public class User {
     }
 
     public User(String userName, String password, String name, String surname, String email, List<String> role, String address, String city, String postalCode, String phone) {
-        this.userName = userName;
+        this.username = userName;
         this.encodedPassword = password;
         this.name = name;
         this.surname = surname;
@@ -106,7 +92,7 @@ public class User {
     }
 
     public void updateWith(User user) {
-        this.userName = user.userName != null ? user.userName : this.userName;
+        this.username = user.username != null ? user.username : this.username;
         this.encodedPassword = user.encodedPassword != null ? user.encodedPassword : this.encodedPassword;
         this.name = user.name != null ? user.name : this.name;
         this.surname = user.surname != null ? user.surname : this.surname;
@@ -121,8 +107,8 @@ public class User {
         return id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
     public String getEncodedPassword() {
@@ -133,8 +119,8 @@ public class User {
         this.id = id;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
     public void setEncodedPassword(String password) {
@@ -324,7 +310,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", creationDate=" + creationDate +
-                ", userName='" + userName + '\'' +
+                ", userName='" + username + '\'' +
                 ", password='" + encodedPassword + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +

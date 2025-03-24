@@ -7,4 +7,12 @@ public record ProductSimpleDTO(
     int stock,
     float sale,
     int totalSells
-) {}
+) {
+    public float getProductSale() {
+        return ((float) Math.round(price * sale)) / 100f;
+    }
+
+    public float getPriceWithSale() {
+        return price - getProductSale();
+    }
+}
