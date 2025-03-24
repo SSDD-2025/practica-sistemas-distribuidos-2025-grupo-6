@@ -19,6 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.OrderDTO;
+import es.dlj.onlinestore.dto.OrderSimpleDTO;
+import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ProductSimpleDTO;
+import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.dto.UserMapper;
+import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.ProductService;
@@ -39,11 +46,14 @@ public class CartController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            User user = userService.findByUserName(principal.getName()).get();
+            UserSimpleDTO user = userService.findByUserName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -61,51 +71,47 @@ public class CartController {
     
     @PostMapping("/remove/{productId}")
     public String removeProduct(@PathVariable Long productId, HttpServletRequest request) {
-        User user = userService.getLoggedUser(request);
+        UserDTO user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         // Find the product by its ID
-        Optional<Product> product = productService.findById(productId);
+        Optional<ProductDTO> product = productService.findById(productId);
 
         // Remove the product from the cart if it exists
         if (product.isPresent()) {
-            user.removeProductFromCart(product.get());
+            userService.removeProductFromCart(user, product.get());
         }
-        userService.save(user);
         return "redirect:/cart";
     }
 
     @PostMapping("/remove/all")
     public String removeProduct(HttpServletRequest request) {
-        User user = userService.getLoggedUser(request);
+        UserDTO user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
-
         // Remove all the products from the cart
-        user.clearCart();
-        userService.save(user);
+        userService.clearCart(user);
         return "redirect:/cart";
     }
     
     @GetMapping("/checkout")
     public String orderCheckout(Model model, HttpServletRequest request) {
-        User user = userService.getLoggedUser(request);
+        UserDTO user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         // Check if the cart is empty
-        if (user.getCartProducts().isEmpty()) {
+        if (user.cartProducts().isEmpty()) {
             return "redirect:/cart";
         }
 
         // Check if all products are in stock
-        List<Product> productsOutOfStock = new ArrayList<>();
-        for (Product product : user.getCartProducts()) {
-            if (!product.isInStock()) {
+        List<ProductSimpleDTO> productsOutOfStock = new ArrayList<>();
+        for (ProductSimpleDTO product : user.cartProducts()) {
+            if (product.stock() <= 0) {
                 productsOutOfStock.add(product);
             }
         }
         if (!productsOutOfStock.isEmpty()) {
             model.addAttribute("outOfStockProducts", productsOutOfStock);
-            model.addAttribute("user", user);
             return "cart_template";
         }
 
@@ -115,43 +121,39 @@ public class CartController {
     @PostMapping("/confirm-order")
     @Transactional
     public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber, HttpServletRequest request) {
-        User user = userService.getLoggedUser(request);
+        UserDTO user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
         // Check if the cart is empty
-        if (user.getCartProducts().isEmpty()) {
+        if (user.cartProducts().isEmpty()) {
             return "redirect:/cart";
         }
 
         // Check if all products are in stock
-        List<Product> productsOutOfStock = new ArrayList<>();
-        for (Product product : user.getCartProducts()) {
-            if (!product.isInStock()) {
+        List<ProductSimpleDTO> productsOutOfStock = new ArrayList<>();
+        for (ProductSimpleDTO product : user.cartProducts()) {
+            if (product.stock() <= 0) {
                 productsOutOfStock.add(product);
             }
         }
         if (!productsOutOfStock.isEmpty()) {
             model.addAttribute("outOfStockProducts", productsOutOfStock);
-            // model.addAttribute("user", user);
             return "cart_template";
         }
 
         // Update the stock of the products in the cart
-        for (Product product : user.getCartProducts()) {
-            product.sellOneUnit();
+        for (ProductSimpleDTO product : user.cartProducts()) {
+            productService.updateStock(product.id(), product.stock() - 1);
         }
 
         // Create and save the order
-        Order order = new Order(user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
-        order.setUser(user);
-        order.setProducts(new HashSet<>(user.getCartProducts()));
+        OrderDTO order = new OrderDTO(null, null, userMapper.toSimpleDTO(user), user.cartProducts(), new ArrayList<>(),  user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
         orderService.save(order);
         model.addAttribute("order", order);
         
         // Clear the cart after confirming the order
-        user.clearCartProducts();
-        user.addOrder(order);
-        userService.save(user);
+        userService.clearCart(user);
+        userService.addOrderToUser(user, order);
 
         return "order_confirmed_template";
     }

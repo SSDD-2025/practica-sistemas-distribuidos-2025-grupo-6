@@ -76,15 +76,15 @@
 			</div>
 
 			<div class="mb-3">
-				<label for="encodedPassword" class="form-label">Password *</label>
-				<input type="password" class="form-control" id="encodedPassword" name="encodedPassword" required>
-				{{#errors.encodedPassword}}
+				<label for="password" class="form-label">Password *</label>
+				<input type="password" class="form-control" id="password" name="password" required>
+				{{#errors.password}}
 				<small class="text-danger">{{.}}</small>
 				{{/errors.encodedPassword}}
 			</div>
 			<div class="mb-3">
-				<label for="passwordConfirm" class="form-label">Confirm Password *</label>
-				<input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" required>
+				<label for="repeatedPassword" class="form-label">Confirm Password *</label>
+				<input type="password" class="form-control" id="repeatedPassword" name="repeatedPassword" required>
 				{{# confirmPasswordError}}
 				<small class="text-danger">{{.}}</small>
 				{{/ confirmPasswordError}}

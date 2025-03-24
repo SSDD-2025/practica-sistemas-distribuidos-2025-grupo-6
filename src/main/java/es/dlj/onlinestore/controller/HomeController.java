@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.UserFormDTO;
+import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
@@ -41,7 +43,7 @@ public class HomeController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            User user = userService.findByUserName(principal.getName()).get();
+            UserSimpleDTO user = userService.findByUserName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -65,7 +67,6 @@ public class HomeController {
         );
 
         // Add atributtes to the model
-        // model.addAttribute("user", userComponent.getUser());
         model.addAttribute("sections", sections);
         model.addAttribute("tags", productService.getAllTags());
         model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
@@ -97,9 +98,8 @@ public class HomeController {
     @PostMapping("/register")
     public String registerUser(
             Model model, 
-            @Valid @ModelAttribute User newUser, 
+            @Valid @ModelAttribute UserFormDTO newUser, 
             BindingResult bindingResult, 
-            @RequestParam String passwordConfirm, 
             @RequestParam MultipartFile image
     ) {
 
@@ -115,14 +115,14 @@ public class HomeController {
             return "register_template";
         }
 
-        if (!newUser.getEncodedPassword().equals(passwordConfirm)) {
+        if (!newUser.password().equals(newUser.repeatedPassword())) {
             model.addAttribute("confirmPasswordError", "Passwords do not match");
             model.addAttribute("user", newUser);
             return "register_template";
         }
 
         // Check if the user already exists
-        if (userService.findByUserName(newUser.getUserName()).isPresent()) {
+        if (userService.findByUserName(newUser.username()).isPresent()) {
             model.addAttribute("userNameError", "User already exists, try to login instead");
             model.addAttribute("user", newUser);
             return "register_template";

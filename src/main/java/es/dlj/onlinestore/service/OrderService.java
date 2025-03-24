@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 
 import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.OrderDTO;
+import es.dlj.onlinestore.mapper.OrderMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 
@@ -17,12 +19,17 @@ public class OrderService {
     @Autowired
     private UserService userService;
 
-    public Order getReferenceById(Long id) {
-        return orderRepository.getReferenceById(id);
+    @Autowired
+    private OrderMapper orderMapper;
+
+    public OrderDTO getReferenceById(Long id) {
+        return orderMapper.toDTO(orderRepository.getReferenceById(id));
     }
 
-    public Order save(Order order) {
-        return orderRepository.save(order);
+    public OrderDTO save(OrderDTO order) {
+        Order orderEntity = orderMapper.toDomain(order);
+        Order savedOrder = orderRepository.save(orderEntity);
+        return orderMapper.toDTO(savedOrder);
     }
 
     @Transactional

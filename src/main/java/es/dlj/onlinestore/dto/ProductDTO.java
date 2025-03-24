@@ -19,4 +19,13 @@ public record ProductDTO(
     List<ProductTagSimpleDTO> tags,
     ProductType productType,
     int totalSells
-) {}
+) {
+    
+    public float getProductSale() {
+        return ((float) Math.round(price * sale)) / 100f;
+    }
+
+    public float getPriceWithSale() {
+        return price - getProductSale();
+    }
+}

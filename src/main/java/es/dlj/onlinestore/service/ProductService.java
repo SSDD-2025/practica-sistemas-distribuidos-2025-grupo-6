@@ -321,4 +321,10 @@ public class ProductService {
     public ProductTag saveTag(ProductTag tag) {
         return productTagRepository.save(tag);
     }
+
+    public void updateStock(Long id, int i) {
+        Product product = productRepository.findById(id).get();
+        product.setStock(product.getStock() - i);
+        productRepository.save(product);
+    }
 }
