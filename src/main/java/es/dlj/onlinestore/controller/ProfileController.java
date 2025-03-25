@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
@@ -44,8 +48,8 @@ public class ProfileController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            User user = userService.findByUserName(principal.getName()).get();
-            model.addAttribute("user", user);
+            UserDTO userDTO = userService.findByUserName(principal.getName()).get();
+            model.addAttribute("user", userDTO);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
             model.addAttribute("isUser", request.isUserInRole("USER"));
@@ -55,11 +59,13 @@ public class ProfileController {
         }
     }
 
+    /* 
     @GetMapping
     public String getUserProfile(Model model, HttpServletRequest request) {
         // model.addAttribute("user", userComponent.getUser());
         return "profile_template";
     }
+     */
 
     @GetMapping("/update")
     public String getEditProfile(Model model) {
@@ -70,12 +76,11 @@ public class ProfileController {
     @PostMapping("/update")
     public String saveProfileChanges(
             Model model, 
-            @Valid @ModelAttribute User newUser, 
+            @Valid @ModelAttribute UserDTO newUserDTO, 
             BindingResult bindingResult,
             @RequestParam(required=false) MultipartFile profilePhotoFile, 
             HttpServletRequest request
     ) {
-
         if (bindingResult.hasErrors()) {
             // In case of errors, return to the form with the errors mapped
             Map<String, String> errors = new HashMap<>();
@@ -87,18 +92,21 @@ public class ProfileController {
             return "profile_update_template";
         }
 
-        User user = userService.getLoggedUser(request);
-        if (user == null) return "redirect:/login";
+        UserDTO userDTO = userService.getLoggedUser(request);
+        if (userDTO == null) return "redirect:/login";
 
-        user.updateWith(newUser);
+        userService.replaceUser(userDTO.id(), newUserDTO);
+        //user.replaceUser(userDTO.id(), newUser);
+        
         if (profilePhotoFile != null) {
             try {
                 if (!profilePhotoFile.isEmpty()) {
-                    Image oldPhoto = user.getProfilePhoto();
-                    Image image = imageService.saveFileImage(profilePhotoFile);
-                    user.setProfilePhoto(image);
-                    if (oldPhoto != null) {
-                        imageService.deleteImage(oldPhoto);
+                    ImageDTO oldPhotoDTO = userDTO.profilePhoto();
+                    ImageDTO imageDTO = imageService.saveFileImage(profilePhotoFile);
+
+                    userService.setProfilePhoto(userDTO, imageDTO);
+                    if (oldPhotoDTO != null) {
+                        imageService.deleteImage(oldPhotoDTO);
                     }
                 }
             } catch (IOException e) {
@@ -108,7 +116,7 @@ public class ProfileController {
                 return "profile_update_template";
             }
         }
-        userService.save(user);
+        userService.saveUser(userDTO);
         return "redirect:/profile";
     }
 
@@ -119,17 +127,17 @@ public class ProfileController {
         return "order_template";
     }
 
-    @PostMapping("/order/{id}/delete")
+    @DeleteMapping("/order/{id}/delete")
     public String deleteOrder(@PathVariable Long id) {
         orderService.delete(id);
         return "redirect:/profile";
     }
 
-    @GetMapping("/deleteaccount") 
+    @DeleteMapping("/deleteaccount") 
     public String deleteAccount(Model model, HttpServletRequest request) { 
-        User user = userService.getLoggedUser(request);
-        if (user == null) return "redirect:/login";
-        userService.deleteUser(user.getId());
+        UserDTO userDTO = userService.getLoggedUser(request);
+        if (userDTO == null) return "redirect:/login";
+        userService.deleteUser(userDTO.id());
 
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();

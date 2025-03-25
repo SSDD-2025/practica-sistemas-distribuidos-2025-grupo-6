@@ -16,10 +16,14 @@ import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.OrderDTO;
+import es.dlj.onlinestore.mapper.ImageMapper;
 import es.dlj.onlinestore.mapper.OrderMapper;
 import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.mapper.ProductMapper;
+import es.dlj.onlinestore.mapper.ReviewMapper;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
@@ -60,6 +64,12 @@ public class UserService {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    private ReviewMapper reviewMapper;
+
+    @Autowired
+    private ImageMapper imageMapper;
+
     @PostConstruct
     public void init() {
         // Checks if there are any users in the database
@@ -76,6 +86,13 @@ public class UserService {
                 List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
         }
     
+    }
+
+    public void setProfilePhoto(UserDTO userDTO, ImageDTO imageDTO) {
+        User user = userMapper.toDomain(userDTO);
+        Image image = imageMapper.toDomain(imageDTO);
+        user.setProfilePhoto(image);
+        userRepository.save(user);
     }
 
     public void removeProductFromCart(UserDTO userDTO, ProductDTO product) {
@@ -99,7 +116,16 @@ public class UserService {
     
     public UserDTO createUser(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
+        if (user.getRoles().isEmpty()) user.setRoles(List.of("USER"));
+        String encodedPassword = passwordEncoder.encode(user.getEncodedPassword());
+        user.setEncodedPassword(encodedPassword);
         userRepository.save(user); 
+        return userMapper.toDTO(user);
+    }
+
+    public UserDTO saveUser(UserDTO userDTO) {
+        User user = userMapper.toDomain(userDTO);
+        userRepository.save(user);
         return userMapper.toDTO(user);
     }
 
@@ -117,7 +143,6 @@ public class UserService {
     public UserDTO deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow();
         deleteUserById(id);
-        userRepository.deleteById(id);
         return userMapper.toDTO(user);
     }
 
@@ -129,27 +154,22 @@ public class UserService {
         return userMapper.toDTO(userRepository.findById(id).orElseThrow());
     }
 
-    public User save(User user) {
-        if (user.getRoles().isEmpty()) user.setRoles(List.of("USER")); 
-        String encodedPassword = passwordEncoder.encode(user.getEncodedPassword());
-        user.setEncodedPassword(encodedPassword);
-        return userRepository.save(user);
+    public UserDTO findById(Long id) {
+        return userMapper.toDTO(userRepository.findById(id).orElse(null));
+    }
+    
+    public Optional<UserDTO> findByUserName(String userName) {
+        return userRepository.findByUserName(userName).map(userMapper::toDTO);
     }
 
-    public User findById(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-    public Optional<User> findByUserName(String userName) {
-        return userRepository.findByUserName(userName);
-    }
-
-    public void addReviewToUser(User user, Review review) {
+    public void addReviewToUser(UserDTO userDTO, ReviewDTO reviewDTO) {
+        User user = userMapper.toDomain(userDTO);
+        Review review = reviewMapper.toDomain(reviewDTO);
         user.addReview(review);
         userRepository.save(user);
     }
 
-    public User getLoggedUser(HttpServletRequest request) {
+    public UserDTO getLoggedUser(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal == null) return null;
         return findByUserName(principal.getName()).get();

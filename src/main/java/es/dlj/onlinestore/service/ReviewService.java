@@ -13,9 +13,11 @@ import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.mapper.ReviewMapper;
+import es.dlj.onlinestore.mapper.UserMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import es.dlj.onlinestore.repository.ReviewRepository;
+import es.dlj.onlinestore.repository.UserRepository;
 
 @Service
 public class ReviewService {
@@ -27,10 +29,13 @@ public class ReviewService {
     private ReviewMapper mapper;
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @PostConstruct
     @Transactional
@@ -38,7 +43,7 @@ public class ReviewService {
         // Checks if there are any reviews in the database
         // if (reviewRepository.count() > 0) return;
             
-        User user = userService.findById(1L); 
+        User user = userRepository.findById(1L).orElse(null);
 
         List<Product> products = productService.getAllProducts(); 
 
@@ -71,13 +76,13 @@ public class ReviewService {
         }
     }
 
-    public ReviewDTO createUser(ReviewDTO reviewDTO) {
+    public ReviewDTO createReview(ReviewDTO reviewDTO) {
         Review review = mapper.toDomain(reviewDTO);
         reviewRepository.save(review); 
         return mapper.toDTO(review);
     }
 
-    public ReviewDTO replaceUser (Long id, ReviewDTO reviewDTO) {
+    public ReviewDTO replaceReview (Long id, ReviewDTO reviewDTO) {
         if (reviewRepository.existsById(id)) {
             Review updateReview = mapper.toDomain(reviewDTO);
             updateReview.setId(id);
@@ -88,20 +93,15 @@ public class ReviewService {
         }
     }
 
-    public ReviewDTO deleteUser(Long id) {
+    public ReviewDTO deleteReview (Long id) {
         Review review = reviewRepository.findById(id).orElseThrow();
-        reviewRepository.deleteById(id);
         delete(id);
         return mapper.toDTO(review);
     }
 
-
-    public List<Review> getUserRatings(User owner) {
-        return reviewRepository.findByOwner(owner);
-    }
-
-    public Review save(Review review) {
-        return reviewRepository.save(review);
+    public List<ReviewDTO> getUserRatings(UserDTO userDTO) {
+        User user = userMapper.toDomain(userDTO);
+        return mapper.toDTOs(reviewRepository.findByOwner(user));
     }
 
     @Transactional
@@ -113,6 +113,7 @@ public class ReviewService {
         reviewRepository.delete(review);
         reviewRepository.flush();
     }
+
 
     @Transactional
     private void deepDeleteProduct(Review review) {
@@ -128,7 +129,7 @@ public class ReviewService {
         User owner = review.getOwner();
         if (owner != null) {
             owner.removeReview(review);
-            userService.save(owner);
+            userRepository.save(owner);
         }
     }
 }

@@ -26,8 +26,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+
 
 @Entity
 @Table(name = "UserInfo")
