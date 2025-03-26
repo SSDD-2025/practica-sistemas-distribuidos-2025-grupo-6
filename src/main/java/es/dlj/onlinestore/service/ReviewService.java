@@ -17,7 +17,6 @@ import es.dlj.onlinestore.mapper.UserMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import es.dlj.onlinestore.repository.ReviewRepository;
-import es.dlj.onlinestore.repository.UserRepository;
 
 @Service
 public class ReviewService {
@@ -29,7 +28,7 @@ public class ReviewService {
     private ReviewMapper mapper;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private ProductService productService;
@@ -43,7 +42,7 @@ public class ReviewService {
         // Checks if there are any reviews in the database
         // if (reviewRepository.count() > 0) return;
             
-        User user = userRepository.findById(1L).orElse(null);
+        User user = userService.findUserById(1L);
 
         List<Product> products = productService.getAllProducts(); 
 
@@ -93,27 +92,20 @@ public class ReviewService {
         }
     }
 
-    public ReviewDTO deleteReview (Long id) {
-        Review review = reviewRepository.findById(id).orElseThrow();
-        delete(id);
-        return mapper.toDTO(review);
-    }
-
     public List<ReviewDTO> getUserRatings(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
         return mapper.toDTOs(reviewRepository.findByOwner(user));
     }
 
     @Transactional
-    public void delete(Long id) {
-        Review review = reviewRepository.findById(id).orElse(null);
-        if (review == null) return;
+    public ReviewDTO delete (Long id) {
+        Review review = reviewRepository.findById(id).orElseThrow();
         deepDeleteOwner(review);
         deepDeleteProduct(review);
         reviewRepository.delete(review);
         reviewRepository.flush();
+        return mapper.toDTO(review);
     }
-
 
     @Transactional
     private void deepDeleteProduct(Review review) {
@@ -129,7 +121,7 @@ public class ReviewService {
         User owner = review.getOwner();
         if (owner != null) {
             owner.removeReview(review);
-            userRepository.save(owner);
+            userService.saveUser(owner);
         }
     }
 }

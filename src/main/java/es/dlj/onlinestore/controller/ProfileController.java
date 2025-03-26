@@ -48,7 +48,7 @@ public class ProfileController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserDTO userDTO = userService.findByUserName(principal.getName()).get();
+            UserDTO userDTO = userService.findByUserDTOName(principal.getName()).get();
             model.addAttribute("user", userDTO);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -59,13 +59,13 @@ public class ProfileController {
         }
     }
 
-    /* 
+     
     @GetMapping
     public String getUserProfile(Model model, HttpServletRequest request) {
         // model.addAttribute("user", userComponent.getUser());
         return "profile_template";
     }
-     */
+     
 
     @GetMapping("/update")
     public String getEditProfile(Model model) {
@@ -116,7 +116,7 @@ public class ProfileController {
                 return "profile_update_template";
             }
         }
-        userService.saveUser(userDTO);
+        userService.saveUserDTO(userDTO);
         return "redirect:/profile";
     }
 
@@ -137,7 +137,7 @@ public class ProfileController {
     public String deleteAccount(Model model, HttpServletRequest request) { 
         UserDTO userDTO = userService.getLoggedUser(request);
         if (userDTO == null) return "redirect:/login";
-        userService.deleteUser(userDTO.id());
+        userService.deleteUserDTO(userDTO.id());
 
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();

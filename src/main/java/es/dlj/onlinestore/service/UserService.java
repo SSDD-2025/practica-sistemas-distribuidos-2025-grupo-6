@@ -114,7 +114,7 @@ public class UserService {
         userRepository.save(userDomain);
     }
     
-    public UserDTO createUser(UserDTO userDTO) {
+    public UserDTO createUserDTO(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
         if (user.getRoles().isEmpty()) user.setRoles(List.of("USER"));
         String encodedPassword = passwordEncoder.encode(user.getEncodedPassword());
@@ -123,10 +123,14 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
-    public UserDTO saveUser(UserDTO userDTO) {
+    public UserDTO saveUserDTO(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
-        userRepository.save(user);
+        saveUser(user);
         return userMapper.toDTO(user);
+    }
+
+    User saveUser(User user) {
+        return userRepository.save(user);
     }
 
     public UserDTO replaceUser (Long id, UserDTO userDTO) {
@@ -140,25 +144,19 @@ public class UserService {
         }
     }
 
-    public UserDTO deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow();
-        deleteUserById(id);
-        return userMapper.toDTO(user);
-    }
-
     public Collection<UserDTO> getUsers() {
         return userMapper.toDTOs(userRepository.findAll());
     } 
 
-    public UserDTO getUser(Long id) {
-        return userMapper.toDTO(userRepository.findById(id).orElseThrow());
-    }
-
-    public UserDTO findById(Long id) {
+    public UserDTO findUserDTOById(Long id) {
         return userMapper.toDTO(userRepository.findById(id).orElse(null));
     }
+
+    User findUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
     
-    public Optional<UserDTO> findByUserName(String userName) {
+    public Optional<UserDTO> findByUserDTOName(String userName) {
         return userRepository.findByUserName(userName).map(userMapper::toDTO);
     }
 
@@ -172,11 +170,18 @@ public class UserService {
     public UserDTO getLoggedUser(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal == null) return null;
-        return findByUserName(principal.getName()).get();
+        return findByUserDTOName(principal.getName()).get();
     }
 
     @Transactional
-    public void deleteUserById(Long id) {
+    public UserDTO deleteUserDTO(Long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        deleteUser(id);
+        return userMapper.toDTO(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) return;
         deepDeleteProducts(user);
