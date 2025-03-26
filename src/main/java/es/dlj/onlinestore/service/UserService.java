@@ -175,21 +175,20 @@ public class UserService {
 
     @Transactional
     public UserDTO deleteUserDTO(Long id) {
-        User user = userRepository.findById(id).orElseThrow();
-        deleteUser(id);
+        User user = deleteUser(id);
         return userMapper.toDTO(user);
     }
 
     @Transactional
-    public void deleteUser(Long id) {
+    public User deleteUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
-        if (user == null) return;
         deepDeleteProducts(user);
         deepDeleteReviews(user);
         deepDeleteOrders(user);
         deepDeleteImage(user);
         deepDeleteRoles(user);
         userRepository.delete(user);
+        return user;
     }
 
     @Transactional
