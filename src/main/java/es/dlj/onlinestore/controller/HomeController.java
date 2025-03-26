@@ -19,8 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
+import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
@@ -39,11 +41,14 @@ public class HomeController {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserSimpleDTO user = userService.findByUserName(principal.getName()).get();
+            UserDTO user = userService.findByUserDTOName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -122,13 +127,13 @@ public class HomeController {
         }
 
         // Check if the user already exists
-        if (userService.findByUserName(newUser.username()).isPresent()) {
-            model.addAttribute("userNameError", "User already exists, try to login instead");
+        if (userService.findByUserDTOName(newUser.username()).isPresent()) {
+            model.addAttribute("usernameError", "User already exists, try to login instead");
             model.addAttribute("user", newUser);
             return "register_template";
         }
 
-        User updatedUser = userService.save(newUser);
+        UserDTO updatedUser = userService.saveUserDTO(userMapper.toDTO(newUser));
 
         try {
             if (image != null && !image.isEmpty()) {
@@ -142,7 +147,7 @@ public class HomeController {
         }
 
         // Save the new user
-        userService.save(updatedUser);
+        userService.saveUserDTO(updatedUser);
         return "redirect:/login";
     }
     

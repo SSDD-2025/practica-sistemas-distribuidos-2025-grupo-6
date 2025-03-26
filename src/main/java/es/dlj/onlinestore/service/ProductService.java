@@ -133,7 +133,7 @@ public class ProductService {
         productTagsList.add(transformStringToTags("watch, samsung"));
 
         // Preload products, tags and images
-        User user = userService.findById(1L);
+        User user = userService.findUserById(1L);
         for (int i = 0; i < productList.size(); i++) {
 
             for (ProductTag tag : productTagsList.get(i)) {
@@ -160,7 +160,7 @@ public class ProductService {
     @Transactional
     public void updateProduct(Long id, ProductDTO updatedProductDTO) {
         Product updatedProduct = productMapper.toDomain(updatedProductDTO);
-        Product product = getProduct(id);
+        Product product = productMapper.toDomain(getProduct(id));
         product.setName(updatedProduct.getName());
         product.setPrice(updatedProduct.getPrice());
         product.setDescription(updatedProduct.getDescription());
@@ -215,8 +215,12 @@ public class ProductService {
         return getAllProductTypesAndCount(null);
     }
 
-    public Collection<ProductSimpleDTO> getAllProducts() {
+    public Collection<ProductSimpleDTO> getAllProductsDTO() {
         return productMapper.toDTOs(productRepository.findAll());
+    }
+
+    Collection<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     public List<Product> getProductsByProductType(ProductType type) {
@@ -314,7 +318,7 @@ public class ProductService {
             User owner = review.getOwner();
             if (owner != null) {
                 owner.removeReview(review);
-                userService.save(owner);
+                userService.saveUser(owner);
             }
             review.setProduct(null);
             product.getReviews().remove(review);

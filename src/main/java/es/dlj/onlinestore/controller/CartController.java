@@ -2,10 +2,7 @@ package es.dlj.onlinestore.controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,17 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.dlj.onlinestore.domain.Order;
-import es.dlj.onlinestore.domain.Product;
-import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.OrderDTO;
-import es.dlj.onlinestore.dto.OrderSimpleDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.UserDTO;
-import es.dlj.onlinestore.dto.UserMapper;
-import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.enumeration.PaymentMethod;
+import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
@@ -53,7 +45,7 @@ public class CartController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserSimpleDTO user = userService.findByUserName(principal.getName()).get();
+            UserDTO user = userService.findByUserDTOName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -74,13 +66,10 @@ public class CartController {
         UserDTO user = userService.getLoggedUser(request);
         if (user == null) return "redirect:/login";
 
-        // Find the product by its ID
-        Optional<ProductDTO> product = productService.findById(productId);
+        ProductDTO product = productService.findById(productId);
 
-        // Remove the product from the cart if it exists
-        if (product.isPresent()) {
-            userService.removeProductFromCart(user, product.get());
-        }
+        userService.removeProductFromCart(user, product);
+
         return "redirect:/cart";
     }
 

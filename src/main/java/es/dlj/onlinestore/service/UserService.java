@@ -26,6 +26,7 @@ import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.ReviewMapper;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.mapper.UserMapper;
+import es.dlj.onlinestore.repository.ImageRepository;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ReviewRepository;
@@ -47,13 +48,13 @@ public class UserService {
     private ProductRepository productRepository;
 
     @Autowired
-    private ImageService imageService;
-
-    @Autowired
     private ReviewRepository reviewRepository;
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
 
     @Autowired
     private UserMapper userMapper;
@@ -76,12 +77,12 @@ public class UserService {
         // if (userRepository.count() > 0) return;
         //userRepository.save(new User("admin", passwordEncoder.encode("password"), "NameAdmin", "SurnameAdmin", "admin@gmail.com", List.of("ADMIN"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
         //userRepository.save(new User("user", passwordEncoder.encode("password"), "NameUser", "SurnameUser", "user@gmail.com", List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
-        if (userRepository.findByUserName("admin").isEmpty()) {
+        if (userRepository.findByUsername("admin").isEmpty()) {
             userRepository.save(new User("admin", passwordEncoder.encode("password"), "NameAdmin", "SurnameAdmin", "admin@gmail.com", 
                 List.of("ADMIN"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
         }
         
-        if (userRepository.findByUserName("user").isEmpty()) {
+        if (userRepository.findByUsername("user").isEmpty()) {
             userRepository.save(new User("user", passwordEncoder.encode("password"), "NameUser", "SurnameUser", "user@gmail.com", 
                 List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
         }
@@ -156,8 +157,8 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
     
-    public Optional<UserDTO> findByUserDTOName(String userName) {
-        return userRepository.findByUserName(userName).map(userMapper::toDTO);
+    public Optional<UserDTO> findByUserDTOName(String username) {
+        return userRepository.findByUsername(username).map(userMapper::toDTO);
     }
 
     public void addReviewToUser(UserDTO userDTO, ReviewDTO reviewDTO) {
@@ -210,7 +211,7 @@ public class UserService {
     private void deepDeleteImage(User user) {
         Image image = user.getProfilePhoto();
         if (image != null) {
-            imageService.delete(image);
+            imageRepository.delete(image);
             user.setProfilePhoto(null);            
         }
     }
@@ -248,6 +249,13 @@ public class UserService {
     @Transactional 
     private void deepDeleteRoles(User user) {
         user.getRoles().clear();
+    }
+
+    public void addProductToCart(ProductDTO product, UserDTO userDTO) {
+        User user = userMapper.toDomain(userDTO);
+        Product productDomain = productMapper.toDomain(product);
+        user.addProductToCart(productDomain);
+        userRepository.save(user);
     }
 
 }

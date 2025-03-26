@@ -35,6 +35,8 @@ public abstract class UserMapper {
     @Mapping(target = "profilePhoto", expression = "java(imageMapper.toDomain(userFormDTO.getProfilePhoto()))")
     @Mapping(target = "roles", expression = "java(List.of(\"USER\"))")
     public abstract User toDomain(UserFormDTO userFormDTO);
+
+    public abstract UserDTO toDTO(UserFormDTO userFormDTO);
     
     @Mapping(target = "profilePhoto", expression = "java(imageMapper.toDomain(userFormDTO.getProfilePhoto()))")
     public abstract User toDomain(UserDTO userDTO);

@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.ReviewMapper;
 import es.dlj.onlinestore.mapper.UserMapper;
 import jakarta.annotation.PostConstruct;
@@ -25,7 +28,11 @@ public class ReviewService {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private ReviewMapper mapper;
+    private ReviewMapper reviewMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
+
 
     @Autowired
     private UserService userService;
@@ -44,7 +51,7 @@ public class ReviewService {
             
         User user = userService.findUserById(1L);
 
-        List<Product> products = productService.getAllProducts(); 
+        List<Product> products = new ArrayList<>(productService.getAllProducts()); 
 
         List<Review> reviews = new ArrayList<>();
         reviews.add(reviewRepository.save(new Review("Excellent laptop", "The Dell XPS 15 is incredibly fast and efficient. Highly recommended.", 5)));
@@ -76,17 +83,17 @@ public class ReviewService {
     }
 
     public ReviewDTO createReview(ReviewDTO reviewDTO) {
-        Review review = mapper.toDomain(reviewDTO);
+        Review review = reviewMapper.toDomain(reviewDTO);
         reviewRepository.save(review); 
-        return mapper.toDTO(review);
+        return reviewMapper.toDTO(review);
     }
 
     public ReviewDTO replaceReview (Long id, ReviewDTO reviewDTO) {
         if (reviewRepository.existsById(id)) {
-            Review updateReview = mapper.toDomain(reviewDTO);
+            Review updateReview = reviewMapper.toDomain(reviewDTO);
             updateReview.setId(id);
             reviewRepository.save(updateReview);
-            return mapper.toDTO(updateReview);
+            return reviewMapper.toDTO(updateReview);
         } else {
             throw new NoSuchElementException(); 
         }
@@ -94,7 +101,7 @@ public class ReviewService {
 
     public List<ReviewDTO> getUserRatings(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
-        return mapper.toDTOs(reviewRepository.findByOwner(user));
+        return reviewMapper.toDTOs(reviewRepository.findByOwner(user));
     }
 
     @Transactional
@@ -104,7 +111,7 @@ public class ReviewService {
         deepDeleteProduct(review);
         reviewRepository.delete(review);
         reviewRepository.flush();
-        return mapper.toDTO(review);
+        return reviewMapper.toDTO(review);
     }
 
     @Transactional
@@ -123,5 +130,20 @@ public class ReviewService {
             owner.removeReview(review);
             userService.saveUser(owner);
         }
+    }
+
+    public void saveReview(ProductDTO productDTO, ReviewDTO reviewDTO, UserDTO userDTO) {
+        Product product = productMapper.toDomain(productService.findById(productDTO.id()));
+        Review review = reviewMapper.toDomain(reviewDTO);
+        User user = userMapper.toDomain(userDTO);
+
+        review.setProduct(product);
+        review.setOwner(user);
+
+        product.addReview(review);
+        user.addReview(review);
+
+        productService.save(product);
+        userService.saveUser(user);
     }
 }

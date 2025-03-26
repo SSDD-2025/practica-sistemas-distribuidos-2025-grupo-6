@@ -28,15 +28,15 @@
 			</div>
 			<div class="mb-3">
 				<label for="username" class="form-label">Username *</label>
-				<input type="username" class="form-control" id="username" name="userName" {{# user.userName}}value="{{.}}"{{/ user.userName}} required>
-				{{# userNameError}}
+				<input type="username" class="form-control" id="username" name="username" {{# user.username}}value="{{.}}"{{/ user.username}} required>
+				{{# usernameError}}
 					<small class="text-danger">{{.}}</small>
-				{{/ userNameError}}
-				{{^ userNameError}}
-					{{# errors.userName}}
+				{{/ usernameError}}
+				{{^ usernameError}}
+					{{# errors.username}}
 						<small class="text-danger">{{.}}</small>
-					{{/ errors.userName}}
-				{{/ userNameError}}
+					{{/ errors.username}}
+				{{/ usernameError}}
 				
 			</div>
 			<div class="mb-3">

@@ -8,5 +8,5 @@ import es.dlj.onlinestore.domain.User;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUserName(String userName);
+    Optional<User> findByUsername(String username);
 }

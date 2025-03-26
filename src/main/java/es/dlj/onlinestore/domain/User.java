@@ -77,8 +77,8 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String password, String name, String surname, String email, List<String> role, String address, String city, String postalCode, String phone) {
-        this.username = userName;
+    public User(String username, String password, String name, String surname, String email, List<String> role, String address, String city, String postalCode, String phone) {
+        this.username = username;
         this.encodedPassword = password;
         this.name = name;
         this.surname = surname;
@@ -118,8 +118,8 @@ public class User {
         this.id = id;
     }
 
-    public void setUsername(String userName) {
-        this.username = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setEncodedPassword(String password) {
@@ -309,7 +309,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", creationDate=" + creationDate +
-                ", userName='" + username + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + encodedPassword + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +

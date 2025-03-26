@@ -24,6 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.mapper.ImageMapper;
+import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
 
 
@@ -34,13 +38,22 @@ public class ImageService {
     @Autowired
     private ImageRepository imageRepository;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ImageMapper imageMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
     @Transactional
-    public Image saveFileImage(MultipartFile rawImage) throws IOException {
+    public ImageDTO saveFileImage(MultipartFile rawImage) throws IOException {
         Image image = new Image();
         image.setContentType(rawImage.getContentType());
         byte[] imageData = rawImage.getBytes();
         image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
-        return imageRepository.save(image);
+        return imageMapper.toDTO(imageRepository.save(image));
     }
 
     @Transactional
@@ -61,15 +74,18 @@ public class ImageService {
     public void saveImagesInProduct(Product product, List<MultipartFile> rawImages) throws IOException {
         product.clearImages();
         for (MultipartFile rawImage : rawImages){
-            Image savedImage = saveFileImage(rawImage);
+            Image savedImage = imageMapper.toDomain(saveFileImage(rawImage));
             product.addImage(savedImage);
         }
     }
 
     @Transactional
-    public void saveImageInUser(User user, MultipartFile rawImage) throws IOException {
-        Image savedImage = saveFileImage(rawImage);
+    public UserDTO saveImageInUser(UserDTO userDTO, MultipartFile rawImage) throws IOException {
+        Image savedImage = imageMapper.toDomain(saveFileImage(rawImage));
+        User user = userMapper.toDomain(userDTO);
+
         user.setProfilePhoto(savedImage);
+        return userMapper.toDTO(userService.saveUser(user));
     }
 
     public ResponseEntity<Object> loadImage(Long id) {
@@ -84,7 +100,11 @@ public class ImageService {
         }
     }
 
-    public void deleteImage(Image profilePhoto) {
+    public void deleteImage(ImageDTO profilePhoto) {
+        imageRepository.delete(imageMapper.toDomain(profilePhoto));
+    }
+
+    void deleteImage(Image profilePhoto) {
         imageRepository.delete(profilePhoto);
     }
 

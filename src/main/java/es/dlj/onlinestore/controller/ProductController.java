@@ -69,8 +69,7 @@ class ProductController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserSimpleDTO user = userService.findByUserName(principal.getName()).get();
-            UserDTO user = userService.findByUserName(principal.getName());
+            UserDTO user = userService.findByUserDTOName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -120,7 +119,7 @@ class ProductController {
         UserDTO userDTO = userService.getLoggedUser(request);
         if (userDTO == null) return "redirect:/login";
 
-        userService.addProductToCart(productMapper.toDomain(productService.getProduct(id)), userMapper.toDomain(userDTO));
+        userService.addProductToCart(productService.getProduct(id), userDTO);
         return "redirect:/cart";
     }
 
@@ -138,7 +137,7 @@ class ProductController {
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount(productTypeObj));
         } else {
             // Otherwise loads all products
-            model.addAttribute("productList", productService.getAllProducts());
+            model.addAttribute("productList", productService.getAllProductsDTO());
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         }
 
@@ -297,7 +296,7 @@ class ProductController {
         }
         Product savedProduct = productService.save(newProduct);
         user.addProductForSale(savedProduct);
-        userService.save(userMapper.toDTO(user));
+        userService.saveUserDTO(userMapper.toDTO(user));
         return "redirect:/product/" + savedProduct.getId();
     }
 
