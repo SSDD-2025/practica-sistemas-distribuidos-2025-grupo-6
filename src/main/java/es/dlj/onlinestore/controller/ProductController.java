@@ -26,7 +26,15 @@ import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ReviewDTO;
+import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.enumeration.ProductType;
+import es.dlj.onlinestore.mapper.ProductMapper;
+import es.dlj.onlinestore.mapper.ReviewMapper;
+import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ReviewService;
@@ -51,11 +59,18 @@ class ProductController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
     @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            User user = userService.findByUserName(principal.getName()).get();
+            UserSimpleDTO user = userService.findByUserName(principal.getName()).get();
+            UserDTO user = userService.findByUserName(principal.getName());
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
@@ -68,13 +83,13 @@ class ProductController {
 
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id){
-        Product product = productService.getProduct(id);
+        ProductDTO product = productService.getProduct(id);
 
         // Create a list of maps to store image names and stablish if has to be shown as first
         List<Map<String, Object>> images = new ArrayList<>();
-        List<Image> productImages = product.getImages();
+        List<ImageDTO> productImages = product.images();
         for (int i = 0; i < productImages.size(); i++) {
-            images.add(Map.of("name", productImages.get(i).getId(), "selected", (i == 0)));
+            images.add(Map.of("name", productImages.get(i).id(), "selected", (i == 0)));
         }
 
         model.addAttribute("allImages", images);
@@ -85,17 +100,12 @@ class ProductController {
     }
 
     @PostMapping("/{id}/add-review")
-    public String submitReview(Model model, @PathVariable Long id, @ModelAttribute Review review, HttpServletRequest request) {
-        User user = userService.getLoggedUser(request);
-        if (user == null) return "redirect:/login";
+    public String submitReview(Model model, @PathVariable Long id, @ModelAttribute ReviewDTO reviewDTO, HttpServletRequest request) {
+        UserDTO userDTO = userService.getLoggedUser(request);
+        if (userDTO == null) return "redirect:/login";
 
-        Product product = productService.getProduct(id);
-        review.setOwner(user);
-        review.setProduct(product);
-
-        // Set the id to null to force to create new review
-        review.setId(null);
-        reviewService.save(review);
+        ProductDTO productDTO = productService.getProduct(id);
+        reviewService.saveReview(productDTO, reviewDTO, userDTO);
         return "redirect:/product/" + id; 
     }
 
@@ -107,11 +117,10 @@ class ProductController {
 
     @PostMapping("/{id}/add-to-cart")
     public String addProductToCart(Model model, @PathVariable Long id, HttpServletRequest request){
-        User user = userService.getLoggedUser(request);
-        if (user == null) return "redirect:/login";
+        UserDTO userDTO = userService.getLoggedUser(request);
+        if (userDTO == null) return "redirect:/login";
 
-        user.addProductToCart(productService.getProduct(id));
-        userService.save(user);
+        userService.addProductToCart(productMapper.toDomain(productService.getProduct(id)), userMapper.toDomain(userDTO));
         return "redirect:/cart";
     }
 
@@ -158,7 +167,7 @@ class ProductController {
 
     @GetMapping("/{id}/update")
     public String editProduct(Model model, @PathVariable Long id) {
-        Product product = productService.getProduct(id);
+        ProductDTO product = productService.getProduct(id);
         model.addAttribute("product", product);
         return "product_update_template";
     }
@@ -185,14 +194,13 @@ class ProductController {
             return "product_update_template";
         }
 
-        Product oldProduct = productService.getProduct(id);
-
+        Product oldProduct = productMapper.toDomain(productService.getProduct(id));
         List<ProductTag> oldTags = new ArrayList<>(oldProduct.getTags());
 
         // Sets the invariant fields
         newProduct.setId(id);
 
-        User user = userService.getLoggedUser(request);
+        User user = userMapper.toDomain(userService.getLoggedUser(request));
         if (user == null) return "redirect:/login";
 
         newProduct.setSeller(user);
@@ -267,7 +275,7 @@ class ProductController {
             return "product_create_template";
         }
 
-        User user = userService.getLoggedUser(request);
+        User user = userMapper.toDomain(userService.getLoggedUser(request));
         if (user == null) return "redirect:/login";
 
         newProduct.setSeller(user);
@@ -289,7 +297,7 @@ class ProductController {
         }
         Product savedProduct = productService.save(newProduct);
         user.addProductForSale(savedProduct);
-        userService.save(user);
+        userService.save(userMapper.toDTO(user));
         return "redirect:/product/" + savedProduct.getId();
     }
 
@@ -298,4 +306,5 @@ class ProductController {
         productService.deleteProduct(id);
         return "redirect:/";
     }
+    
 }

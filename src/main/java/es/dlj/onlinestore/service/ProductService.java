@@ -2,6 +2,7 @@ package es.dlj.onlinestore.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,7 +16,10 @@ import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.enumeration.ProductType;
+import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
@@ -47,6 +51,9 @@ public class ProductService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private ProductMapper productMapper;
     
     @PostConstruct
     @Transactional
@@ -146,12 +153,13 @@ public class ProductService {
         }
     }
 
-    public Optional<Product> findById(Long id) {
-        return productRepository.findById(id);
+    public ProductDTO findById(Long id) {
+        return productMapper.toDTO(productRepository.findById(id).orElseThrow());
     }
 
     @Transactional
-    public void updateProduct(Long id, Product updatedProduct) {
+    public void updateProduct(Long id, ProductDTO updatedProductDTO) {
+        Product updatedProduct = productMapper.toDomain(updatedProductDTO);
         Product product = getProduct(id);
         product.setName(updatedProduct.getName());
         product.setPrice(updatedProduct.getPrice());
@@ -207,20 +215,20 @@ public class ProductService {
         return getAllProductTypesAndCount(null);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Collection<ProductSimpleDTO> getAllProducts() {
+        return productMapper.toDTOs(productRepository.findAll());
     }
 
     public List<Product> getProductsByProductType(ProductType type) {
         return productRepository.findByProductType(type);
     }
 
-    public List<Product> findByNameContaining(String name) {
-        return productRepository.findByNameContaining(name);
+    public Collection<ProductSimpleDTO> findByNameContaining(String name) {
+        return productMapper.toDTOs(productRepository.findByNameContaining(name));
     }
 
-    public Product getProduct(long id) {
-        return productRepository.findById(id).get();
+    public ProductDTO getProduct(long id) {
+        return productMapper.toDTO(productRepository.findById(id).orElseThrow());
     }
 
     public List<Product> searchProducts(String name, Integer minPrice, Integer maxPrice, List<String> tags, List<String> productTypeStrings) {
