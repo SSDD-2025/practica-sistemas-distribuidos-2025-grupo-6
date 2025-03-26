@@ -69,6 +69,7 @@ class ProductController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
+            UserSimpleDTO user = userService.findByUserName(principal.getName()).get();
             UserDTO user = userService.findByUserName(principal.getName());
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
