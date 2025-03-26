@@ -26,6 +26,7 @@ import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
@@ -55,7 +56,7 @@ class ProductController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            User user = userService.findByUserName(principal.getName()).get();
+            UserSimpleDTO user = userService.findByUserName(principal.getName()).get();
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));

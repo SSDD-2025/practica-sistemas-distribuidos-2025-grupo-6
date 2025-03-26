@@ -48,8 +48,8 @@ public class ProfileController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserDTO userDTO = userService.findByUserName(principal.getName()).get();
-            model.addAttribute("user", userDTO);
+            UserSimpleDTO user = userService.findByUserName(principal.getName()).get();
+            model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
             model.addAttribute("isUser", request.isUserInRole("USER"));
@@ -59,13 +59,13 @@ public class ProfileController {
         }
     }
 
-    /* 
+    
     @GetMapping
     public String getUserProfile(Model model, HttpServletRequest request) {
         // model.addAttribute("user", userComponent.getUser());
         return "profile_template";
     }
-     */
+     
 
     @GetMapping("/update")
     public String getEditProfile(Model model) {
