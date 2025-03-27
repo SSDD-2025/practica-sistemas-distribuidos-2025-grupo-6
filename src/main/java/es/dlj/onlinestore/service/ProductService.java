@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Order;
@@ -134,6 +136,7 @@ public class ProductService {
 
         // Preload products, tags and images
         User user = userService.findUserById(1L);
+
         for (int i = 0; i < productList.size(); i++) {
 
             for (ProductTag tag : productTagsList.get(i)) {
@@ -148,6 +151,7 @@ public class ProductService {
                     productList.get(i).addImage(thisImage);
                 }
             } catch (IOException e) {}
+
             if (i < 5) productList.get(i).setSeller(user);
             productRepository.save(productList.get(i));
         }
@@ -158,16 +162,45 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(Long id, ProductDTO updatedProductDTO) {
-        Product updatedProduct = productMapper.toDomain(updatedProductDTO);
-        Product product = productMapper.toDomain(getProduct(id));
-        product.setName(updatedProduct.getName());
-        product.setPrice(updatedProduct.getPrice());
-        product.setDescription(updatedProduct.getDescription());
-        product.setProductType(updatedProduct.getProductType());
-        product.setStock(updatedProduct.getStock());
-        product.setSale(updatedProduct.getSale());
-        productRepository.save(product);
+    public void updateProduct(Long id, ProductDTO newProductDTO, List<MultipartFile> imagesVal, String tagsVal) {
+        Product newProduct = productMapper.toDomain(newProductDTO);
+        Product oldProduct = productMapper.toDomain(getProduct(id));
+        oldProduct.setName(newProduct.getName());
+        oldProduct.setPrice(newProduct.getPrice());
+        oldProduct.setDescription(newProduct.getDescription());
+        oldProduct.setProductType(newProduct.getProductType());
+        oldProduct.setStock(newProduct.getStock());
+        oldProduct.setSale(newProduct.getSale());
+
+        
+        if (imagesVal != null && imagesVal.size() > 1) {
+            try {
+                imageService.saveImagesInProduct(newProduct, imagesVal);
+            } catch (IOException e) {
+                throw new NoSuchElementException("Error loading images"); 
+            }
+        }   
+
+        List<ProductTag> oldTags = oldProduct.getTags();        
+        Product savedProduct = save(oldProduct);
+        savedProduct.getTags().clear();
+        List<ProductTag> newTags = transformStringToTags(tagsVal);
+        for (ProductTag tag : oldTags) {
+            if (!newTags.contains(tag)) {
+                tag.removeProduct(oldProduct);
+                saveTag(tag);
+            }
+        }
+    
+        for (ProductTag tag : newTags) {
+            savedProduct.addTag(tag);
+            if (!oldTags.contains(tag)) {
+                tag.addProduct(savedProduct);
+                saveTag(tag);
+            }
+        }
+
+        save(savedProduct);
     }
 
     @Transactional

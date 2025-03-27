@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,9 @@ import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ProductSimpleDTO;
+import es.dlj.onlinestore.dto.ProductTagDTO;
+import es.dlj.onlinestore.dto.ProductTagSimpleDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
@@ -60,9 +64,6 @@ class ProductController {
     private UserService userService;
 
     @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
     private UserMapper userMapper;
 
     @ModelAttribute
@@ -74,14 +75,22 @@ class ProductController {
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
             model.addAttribute("isUser", request.isUserInRole("USER"));
-
+            
         } else {
             model.addAttribute("isLogged", false);
         }
     }
 
+    public boolean isOwnerProduct (HttpServletRequest request, ProductDTO productDTO) {
+        try {
+            return userService.getLoggedUser(request).id() == productDTO.owner().id();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @GetMapping("/{id}")
-    public String loadProductDetails(Model model, @PathVariable Long id){
+    public String loadProductDetails(Model model, @PathVariable Long id, HttpServletRequest request) {
         ProductDTO product = productService.getProduct(id);
 
         // Create a list of maps to store image names and stablish if has to be shown as first
@@ -94,6 +103,7 @@ class ProductController {
         model.addAttribute("allImages", images);
         // model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));
+        model.addAttribute("isOwnerProduct", isOwnerProduct(request, product));
         
         return "product_template";
     }
@@ -118,8 +128,9 @@ class ProductController {
     public String addProductToCart(Model model, @PathVariable Long id, HttpServletRequest request){
         UserDTO userDTO = userService.getLoggedUser(request);
         if (userDTO == null) return "redirect:/login";
-
-        userService.addProductToCart(productService.getProduct(id), userDTO);
+        ProductDTO product = productService.getProduct(id);
+        userService.addProductToCart(product, userDTO);
+        model.addAttribute("isOwnerProduct", isOwnerProduct(request, product));
         return "redirect:/cart";
     }
 
@@ -165,9 +176,10 @@ class ProductController {
     }
 
     @GetMapping("/{id}/update")
-    public String editProduct(Model model, @PathVariable Long id) {
+    public String editProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
         ProductDTO product = productService.getProduct(id);
         model.addAttribute("product", product);
+        model.addAttribute("isOwnerProduct", isOwnerProduct(request, product));
         return "product_update_template";
     }
 
@@ -178,7 +190,7 @@ class ProductController {
             @PathVariable Long id,
             @RequestParam List<MultipartFile> imagesVal,
             @RequestParam String tagsVal,
-            @Valid @ModelAttribute Product newProduct,
+            @Valid @ModelAttribute ProductDTO newProduct,
             BindingResult bindingResult,
             HttpServletRequest request
     ) {
@@ -193,58 +205,21 @@ class ProductController {
             return "product_update_template";
         }
 
-        Product oldProduct = productMapper.toDomain(productService.getProduct(id));
-        List<ProductTag> oldTags = new ArrayList<>(oldProduct.getTags());
-
-        // Sets the invariant fields
-        newProduct.setId(id);
-
-        User user = userMapper.toDomain(userService.getLoggedUser(request));
-        if (user == null) return "redirect:/login";
-
-        newProduct.setSeller(user);
-        newProduct.setTotalSells(oldProduct.getTotalSells());
-        newProduct.setReviews(oldProduct.getReviews());
-
+        ProductDTO product = productService.getProduct(id);
         
+        model.addAttribute("isOwnerProduct", isOwnerProduct(request, product));
         
         try {
-            if (imagesVal != null && imagesVal.size() > 1) {
-                imageService.saveImagesInProduct(newProduct, imagesVal);
-            } else {
-                newProduct.clearImages();
-                for (Image image : new ArrayList<>(oldProduct.getImages())) {
-                    oldProduct.removeImage(image);
-                    newProduct.addImage(image);
-                }
-            }
-        } catch (IOException e) {
+            productService.updateProduct(id, newProduct, imagesVal, tagsVal); 
+
+        } catch(NoSuchElementException e) {
             // In case of errors in the images, return to the form with the errors mapped
             model.addAttribute("imageError", "Error uploading images");
             model.addAttribute("tagsVal", tagsVal);
             return "product_update_template";
-        }
-        Product savedProduct = productService.save(newProduct);
-        savedProduct.getTags().clear();
-        List<ProductTag> newTags = productService.transformStringToTags(tagsVal);
-        for (ProductTag tag : oldTags) {
-            if (!newTags.contains(tag)) {
-                tag.removeProduct(oldProduct);
-                productService.saveTag(tag);
-            }
-        }
-    
-        for (ProductTag tag : newTags) {
-            savedProduct.addTag(tag);
-            if (!oldTags.contains(tag)) {
-                tag.addProduct(savedProduct);
-                productService.saveTag(tag);
-            }
-        }
 
-        productService.save(savedProduct);
-        //newProduct.setId(id);
-        // productService.updateProduct(id, newProduct);
+        }
+        
         return "redirect:/product/" + id;
     }
 
@@ -301,8 +276,9 @@ class ProductController {
     }
 
     @GetMapping("/{id}/delete")
-    public String deleteProduct(@PathVariable Long id) {
+    public String deleteProduct(@PathVariable Long id, HttpServletRequest request, Model model) {
         productService.deleteProduct(id);
+        model.addAttribute("isOwnerProduct", isOwnerProduct(request, productService.getProduct(id)));
         return "redirect:/";
     }
     

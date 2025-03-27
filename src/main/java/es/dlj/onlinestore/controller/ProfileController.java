@@ -59,6 +59,7 @@ public class ProfileController {
         }
     }
 
+
     
     @GetMapping
     public String getUserProfile(Model model, HttpServletRequest request) {

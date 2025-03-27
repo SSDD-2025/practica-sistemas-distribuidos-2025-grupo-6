@@ -45,4 +45,5 @@ public record ProductDTO(
     public float getPriceWithSale() {
         return price - getProductSale();
     }
+
 }
