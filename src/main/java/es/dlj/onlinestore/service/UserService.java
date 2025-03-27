@@ -25,6 +25,7 @@ import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.ReviewMapper;
 import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
 import es.dlj.onlinestore.repository.OrderRepository;
@@ -256,6 +257,10 @@ public class UserService {
         Product productDomain = productMapper.toDomain(product);
         user.addProductToCart(productDomain);
         userRepository.save(user);
+    }
+
+    public UserSimpleDTO findByUserSimpleDTOName(String name) {
+        return userMapper.toSimpleDTO(userRepository.findByUsername(name).orElseThrow());
     }
 
 }

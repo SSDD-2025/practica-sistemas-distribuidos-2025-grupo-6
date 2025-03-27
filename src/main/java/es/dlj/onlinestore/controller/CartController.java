@@ -17,6 +17,7 @@ import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.service.OrderService;
@@ -45,7 +46,8 @@ public class CartController {
     public void addAttributes(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            UserDTO user = userService.findByUserDTOName(principal.getName()).get();
+            UserSimpleDTO user = userService.findByUserSimpleDTOName(principal.getName());
+
             model.addAttribute("user", user);
             model.addAttribute("isLogged", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
