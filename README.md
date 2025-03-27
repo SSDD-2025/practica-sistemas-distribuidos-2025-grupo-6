@@ -192,7 +192,7 @@ After installing the applications you will open Docker as well as Visual Studio 
 
 The next step is to enter the next command in Docker's terminal.
 
-`docker run --rm -e MYSQL_ROOT_PASSWORD=Password -e MYSQL_DATABASE=onlinestore -p 3306:3306 -d mysql:8.0`
+`docker run -e MYSQL_ROOT_PASSWORD=Password -e MYSQL_DATABASE=onlinestore -p 3306:3306 -d mysql:8.0`
 
 As a result of running the command you will observe that docker will start downloading. You will have to wait until you see the new container in the Container's section of Docker, its image field should be `mysql:8.0`.
 

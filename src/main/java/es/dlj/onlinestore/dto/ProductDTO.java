@@ -14,12 +14,29 @@ public record ProductDTO(
     int stock,
     float sale,
     List<ImageDTO> images,
-    List<ReviewSimpleDTO> reviews,
+    List<ReviewDTO> reviews,
     UserSimpleDTO seller,
     List<ProductTagSimpleDTO> tags,
     ProductType productType,
-    int totalSells
+    int totalSells,
+    UserSimpleDTO owner
+
 ) {
+    public boolean getInStock(){
+        return stock > 0;
+    }
+
+    public float getRating() {
+        float rating = 0;
+        for (ReviewDTO review : reviews) {
+            rating += review.rating();
+        }
+        return ((float) Math.round(rating / ((float) reviews.size()) * 10f)) / 10f;
+    }
+
+    public int getNumberRatings() {
+        return reviews.size();
+    }
     
     public float getProductSale() {
         return ((float) Math.round(price * sale)) / 100f;

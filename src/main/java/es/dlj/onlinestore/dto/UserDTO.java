@@ -4,10 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.enumeration.PaymentMethod;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 public record UserDTO(
     Long id,
@@ -28,7 +25,7 @@ public record UserDTO(
     List<String> roles,
 
     List<ProductSimpleDTO> productsForSell,
-    List<ReviewSimpleDTO> reviews,
+    List<ReviewDTO> reviews,
     List<OrderSimpleDTO> orders,
     Set<ProductSimpleDTO> cartProducts
 ) {
