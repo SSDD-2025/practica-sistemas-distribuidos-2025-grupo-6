@@ -43,7 +43,7 @@ public class Product {
     private String description;
 
     @Positive(message = "Price must be positive")
-    private Float price;
+    private float price;
 
     @PositiveOrZero(message = "Stock must be positive or zero")
     private int stock;
@@ -87,7 +87,7 @@ public class Product {
         return name;
     }
 
-    public Float getPrice() {
+    public float getPrice() {
         return price;
     }
 
