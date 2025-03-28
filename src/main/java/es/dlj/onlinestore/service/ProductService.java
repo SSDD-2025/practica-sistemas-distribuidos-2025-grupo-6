@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Image;
@@ -20,13 +21,16 @@ import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
+import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.mapper.ProductMapper;
+import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
 import es.dlj.onlinestore.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import es.dlj.onlinestore.repository.ReviewRepository;
 
@@ -56,6 +60,9 @@ public class ProductService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private UserMapper userMapper;
     
     @PostConstruct
     @Transactional
@@ -372,4 +379,43 @@ public class ProductService {
         product.setStock(product.getStock() - i);
         productRepository.save(product);
     }
+
+    public boolean isOwnerProduct (UserDTO userDTO, ProductDTO productDTO) {
+        try {
+            Product product = productMapper.toDomain(productDTO); 
+            User user = userMapper.toDomain(userDTO);
+            return user.getId() == product.getSeller().getId();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public ProductDTO saveProduct(ProductDTO productDTO, List<MultipartFile> imagesVal, String tagsVal, UserDTO userDTO) {
+        Product product = productMapper.toDomain(productDTO);
+        User user = userMapper.toDomain(userDTO);
+        User userFromBD = userRepository.findById(user.getId()).get();
+        product.setSeller(userFromBD);
+        product.setTags(transformStringToTags(tagsVal)); 
+    
+        try {
+            if (imagesVal != null && imagesVal.size() > 1) {
+                imageService.saveImagesInProduct(product, imagesVal);
+            }
+        } catch (IOException e) {
+            throw new NoSuchElementException("Error loading images"); 
+        }
+
+        List<ProductTag> tags = product.getTags();
+        for (ProductTag tag : tags) {
+            tag.addProduct(product);
+        }
+
+        Product savedProduct = save(product);
+        userFromBD.addProductForSale(savedProduct);
+        userService.saveUser(userFromBD);
+        return productMapper.toDTO(savedProduct);
+        
+    }
+
+    
 }
