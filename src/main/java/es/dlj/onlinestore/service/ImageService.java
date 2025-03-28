@@ -25,8 +25,10 @@ import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.mapper.ImageMapper;
+import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
 
@@ -46,6 +48,9 @@ public class ImageService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
 
     @Transactional
     public ImageDTO saveFileImage(MultipartFile rawImage) throws IOException {
