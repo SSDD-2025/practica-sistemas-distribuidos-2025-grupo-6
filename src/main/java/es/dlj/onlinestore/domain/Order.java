@@ -37,7 +37,7 @@ public class Order {
     @ManyToOne
     private User user;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Product> products = new HashSet<>();
 
     private List<String> nonContinuedProducts = new ArrayList<>();

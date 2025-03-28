@@ -139,7 +139,7 @@ public class CartController {
 
         // Create and save the order
         OrderDTO order = new OrderDTO(null, null, userMapper.toSimpleDTO(user), user.cartProducts(), new ArrayList<>(),  user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
-        orderService.save(order);
+        order = orderService.save(order);
         model.addAttribute("order", order);
         
         // Clear the cart after confirming the order

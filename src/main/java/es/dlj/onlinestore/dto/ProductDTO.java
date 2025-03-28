@@ -18,8 +18,7 @@ public record ProductDTO(
     UserSimpleDTO seller,
     List<ProductTagSimpleDTO> tags,
     ProductType productType,
-    int totalSells,
-    UserSimpleDTO owner
+    int totalSells
 
 ) {
     public boolean getInStock(){

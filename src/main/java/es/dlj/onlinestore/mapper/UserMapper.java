@@ -14,31 +14,30 @@ import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
 
-
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", uses = {PasswordEncoder.class, ImageMapper.class})
 public abstract class UserMapper {
 
-    //@Autowired
-    //private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    //@Autowired
-   // private ImageMapper imageMapper;
+    @Autowired
+    private ImageMapper imageMapper;
 
     public abstract UserDTO toDTO(User user);
     public abstract UserSimpleDTO toSimpleDTO(User user);
     public abstract UserSimpleDTO toSimpleDTO(UserDTO userDTO);
 
-    //@Mapping(target = "profilePhoto", expression = "java(imageMapper.toDomain(userFormDTO.getProfilePhoto()))")
+    // @Mapping(target = "profilePhoto", expression = "java(this.imageMapper.toDomain(userSimpleDTO.profilePhoto()))")
     public abstract User toDomain(UserSimpleDTO userSimpleDTO);
 
-    //@Mapping(target = "encodedPassword", expression = "java(passwordEncoder.encode(UserFormDTO.getPassword()))")
-    //@Mapping(target = "profilePhoto", expression = "java(imageMapper.toDomain(userFormDTO.getProfilePhoto()))")
-    //@Mapping(target = "roles", expression = "java(List.of(\"USER\"))")
+    // @Mapping(target = "encodedPassword", expression = "java(this.passwordEncoder.encode(userFormDTO.password()))")
+    // @Mapping(target = "profilePhoto", expression = "java(this.imageMapper.toDomain(userFormDTO.profilePhoto()))")
+    // @Mapping(target = "roles", expression = "java(List.of(\"USER\"))")
     public abstract User toDomain(UserFormDTO userFormDTO);
 
     public abstract UserDTO toDTO(UserFormDTO userFormDTO);
     
-    //@Mapping(target = "profilePhoto", expression = "java(imageMapper.toDomain(userFormDTO.getProfilePhoto()))")
+    // @Mapping(target = "profilePhoto", expression = "java(this.imageMapper.toDomain(userDTO.profilePhoto()))")
     public abstract User toDomain(UserDTO userDTO);
     public abstract Collection<UserDTO> toDTOs(List<User> all);
     
