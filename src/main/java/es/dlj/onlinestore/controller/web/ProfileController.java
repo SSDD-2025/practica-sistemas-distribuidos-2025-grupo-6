@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
@@ -122,7 +123,8 @@ public class ProfileController {
     @GetMapping("/order/{id}")
     public String getOrderView(Model model, @PathVariable Long id) {
         // model.addAttribute("user", userComponent.getUser());
-        model.addAttribute("order", orderService.getReferenceById(id));
+        OrderDTO order = orderService.getReferenceById(id);
+        model.addAttribute("order", order);
         return "order_template";
     }
 

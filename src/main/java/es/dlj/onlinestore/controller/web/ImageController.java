@@ -31,7 +31,8 @@ import es.dlj.onlinestore.service.UserService;
  
     @GetMapping("/{id}")
     public ResponseEntity<Object> getImage(@PathVariable Long id) {
-        return imageService.loadImage(id);
+        ResponseEntity<Object> image = imageService.loadImage(id);
+        return image;
     }
 
     @GetMapping("/product/{id}")
