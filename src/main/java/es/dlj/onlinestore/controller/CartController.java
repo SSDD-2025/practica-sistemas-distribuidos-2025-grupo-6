@@ -66,7 +66,6 @@ public class CartController {
     @PostMapping("/remove/{productId}")
     public String removeProduct(@PathVariable Long productId, HttpServletRequest request) {
         UserDTO user = userService.getLoggedUser(request);
-        if (user == null) return "redirect:/login";
 
         ProductDTO product = productService.findById(productId);
 
@@ -78,7 +77,6 @@ public class CartController {
     @PostMapping("/remove/all")
     public String removeProduct(HttpServletRequest request) {
         UserDTO user = userService.getLoggedUser(request);
-        if (user == null) return "redirect:/login";
         // Remove all the products from the cart
         userService.clearCart(user);
         return "redirect:/cart";
@@ -87,7 +85,6 @@ public class CartController {
     @GetMapping("/checkout")
     public String orderCheckout(Model model, HttpServletRequest request) {
         UserDTO user = userService.getLoggedUser(request);
-        if (user == null) return "redirect:/login";
 
         // Check if the cart is empty
         if (user.cartProducts().isEmpty()) {
@@ -113,7 +110,6 @@ public class CartController {
     @Transactional
     public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber, HttpServletRequest request) {
         UserDTO user = userService.getLoggedUser(request);
-        if (user == null) return "redirect:/login";
 
         // Check if the cart is empty
         if (user.cartProducts().isEmpty()) {
@@ -134,7 +130,7 @@ public class CartController {
 
         // Update the stock of the products in the cart
         for (ProductSimpleDTO product : user.cartProducts()) {
-            productService.updateStock(product.id(), product.stock() - 1);
+            productService.subFromStock(product.id(), product.stock() - 1);
         }
 
         // Create and save the order

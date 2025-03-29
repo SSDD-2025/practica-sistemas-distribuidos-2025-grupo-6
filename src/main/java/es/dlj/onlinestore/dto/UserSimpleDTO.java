@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.enumeration.PaymentMethod;
 
 public record UserSimpleDTO(

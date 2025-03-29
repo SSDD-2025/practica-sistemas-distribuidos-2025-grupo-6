@@ -19,9 +19,11 @@ import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.UserMapper;
@@ -374,7 +376,7 @@ public class ProductService {
         return productTagRepository.save(tag);
     }
 
-    public void updateStock(Long id, int i) {
+    public void subFromStock(Long id, int i) {
         Product product = productRepository.findById(id).get();
         product.setStock(product.getStock() - i);
         productRepository.save(product);
@@ -389,6 +391,43 @@ public class ProductService {
             return false;
         }
     }
+
+    // public List<ProductSimpleDTO> isCheckoutCartValid(List<ProductSimpleDTO> products) {
+
+    //     // Check if the cart is empty
+    //     if (products.isEmpty()) {
+    //         return new ArrayList<>();
+    //     }
+
+    //     // Check if all products are in stock
+    //     List<ProductSimpleDTO> productsOutOfStock = new ArrayList<>();
+    //     for (ProductSimpleDTO product : products) {
+    //         if (product.stock() <= 0) {
+    //             productsOutOfStock.add(product);
+    //         }
+    //     }
+    //     if (!productsOutOfStock.isEmpty()) {
+    //         return productsOutOfStock;
+    //     }
+
+    //     // Update the stock of the products in the cart
+    //     for (ProductSimpleDTO product : products) {
+    //         subFromStock(product.id(), 1);
+    //     }
+
+    //     // Create and save the order
+    //     Order order = new Order();
+
+    //     // order.setUser();
+
+    //     //     null, null, userMapper.toSimpleDTO(user), user.cartProducts(), new ArrayList<>(),  user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
+    //     // order = orderService.save(order);
+    //     // model.addAttribute("order", order);
+        
+    //     // // Clear the cart after confirming the order
+    //     // userService.clearCart(user);
+    //     // userService.addOrderToUser(user, order);
+    // }
 
     public ProductDTO saveProduct(ProductDTO productDTO, List<MultipartFile> imagesVal, String tagsVal, UserDTO userDTO) {
         Product product = productMapper.toDomain(productDTO);
