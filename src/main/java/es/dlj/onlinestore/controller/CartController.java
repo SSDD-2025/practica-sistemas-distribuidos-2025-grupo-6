@@ -102,7 +102,7 @@ public class CartController {
             model.addAttribute("outOfStockProducts", productsOutOfStock);
             return "cart_template";
         }
-
+        
         return "order_checkout_template";
     }
     
@@ -139,7 +139,7 @@ public class CartController {
         model.addAttribute("order", order);
         
         // Clear the cart after confirming the order
-        userService.clearCart(user);
+        user = userService.clearCart(user);
         userService.addOrderToUser(user, order);
 
         return "order_confirmed_template";

@@ -103,10 +103,11 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void clearCart(UserDTO userDTO) {
+    public UserDTO clearCart(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
         user.clearCart();
         userRepository.save(user);
+        return userMapper.toDTO(user);
     }
 
     public void addOrderToUser(UserDTO user, OrderDTO order) {
