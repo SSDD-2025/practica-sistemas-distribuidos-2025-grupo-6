@@ -1,4 +1,4 @@
-package es.dlj.onlinestore.controller;
+package es.dlj.onlinestore.controller.web;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Product;
-import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;

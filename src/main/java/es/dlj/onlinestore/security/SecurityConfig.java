@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class SecurityConfig {
 
     @Autowired
     public RepositoryUserDetailsService userDetailService;
@@ -31,7 +31,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
+    public SecurityFilterChain webFilterChain (HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
         http
         .authorizeHttpRequests(authorize -> authorize

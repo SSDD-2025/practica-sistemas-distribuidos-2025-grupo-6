@@ -1,4 +1,4 @@
-package es.dlj.onlinestore.controller;
+package es.dlj.onlinestore.controller.web;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -67,9 +67,9 @@ class ProductController {
     }
 
     @GetMapping("/{id}")
-    public String loadProductDetails(Model model, @PathVariable Long id, HttpServletRequest request) {
+    public String loadProductDetails(Model model, @PathVariable Long id) {
         ProductDTO product = productService.getProduct(id);
-        UserDTO userDTO = userService.getLoggedUser(request);
+        UserDTO userDTO = userService.getLoggedUser();
 
         // Create a list of maps to store image names and stablish if has to be shown as first
         List<Map<String, Object>> images = new ArrayList<>();
@@ -87,9 +87,8 @@ class ProductController {
     }
 
     @PostMapping("/{id}/add-review")
-    public String submitReview(Model model, @PathVariable Long id, @ModelAttribute ReviewDTO reviewDTO, HttpServletRequest request) {
-        UserDTO userDTO = userService.getLoggedUser(request);
-        if (userDTO == null) return "redirect:/login";
+    public String submitReview(Model model, @PathVariable Long id, @ModelAttribute ReviewDTO reviewDTO) {
+        UserDTO userDTO = userService.getLoggedUser();
 
         ProductDTO productDTO = productService.getProduct(id);
         reviewService.saveReview(productDTO, reviewDTO, userDTO);
@@ -103,9 +102,8 @@ class ProductController {
     }
 
     @PostMapping("/{id}/add-to-cart")
-    public String addProductToCart(Model model, @PathVariable Long id, HttpServletRequest request){
-        UserDTO userDTO = userService.getLoggedUser(request);
-        if (userDTO == null) return "redirect:/login";
+    public String addProductToCart(Model model, @PathVariable Long id){
+        UserDTO userDTO = userService.getLoggedUser();
         ProductDTO product = productService.getProduct(id);
         userService.addProductToCart(product, userDTO);
         model.addAttribute("isOwnerProduct", productService.isOwnerProduct(userDTO, product));
@@ -154,9 +152,9 @@ class ProductController {
     }
 
     @GetMapping("/{id}/update")
-    public String editProduct(Model model, @PathVariable Long id, HttpServletRequest request) {
+    public String editProduct(Model model, @PathVariable Long id) {
         ProductDTO product = productService.getProduct(id);
-        UserDTO userDTO = userService.getLoggedUser(request);
+        UserDTO userDTO = userService.getLoggedUser();
         
         model.addAttribute("product", product);
         model.addAttribute("isOwnerProduct", productService.isOwnerProduct(userDTO, product));
@@ -171,8 +169,7 @@ class ProductController {
             @RequestParam List<MultipartFile> imagesVal,
             @RequestParam String tagsVal,
             @Valid @ModelAttribute ProductDTO newProduct,
-            BindingResult bindingResult,
-            HttpServletRequest request
+            BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
             // In case of errors, return to the form with the errors mapped
@@ -186,7 +183,7 @@ class ProductController {
         }
 
         ProductDTO product = productService.getProduct(id);
-        UserDTO userDTO = userService.getLoggedUser(request);
+        UserDTO userDTO = userService.getLoggedUser();
         
         model.addAttribute("isOwnerProduct", productService.isOwnerProduct(userDTO, product));
         
@@ -215,8 +212,7 @@ class ProductController {
             @RequestParam List<MultipartFile> imagesVal,
             @RequestParam String tagsVal,
             @Valid @ModelAttribute ProductDTO newProductDTO,
-            BindingResult bindingResult,
-            HttpServletRequest request
+            BindingResult bindingResult
     ) {
         /* 
         if (bindingResult.hasErrors()) {
@@ -230,17 +226,16 @@ class ProductController {
             return "product_create_template";
         }*/
 
-        UserDTO userDTO = userService.getLoggedUser(request);
-        if (userDTO == null) return "redirect:/login";
+        UserDTO userDTO = userService.getLoggedUser();
         
         ProductDTO savedProductDTO = productService.saveProduct(newProductDTO, imagesVal, tagsVal, userDTO); 
         return "redirect:/product/" + savedProductDTO.id();
     }
 
     @GetMapping("/{id}/delete")
-    public String deleteProduct(@PathVariable Long id, HttpServletRequest request, Model model) {
+    public String deleteProduct(Model model, @PathVariable Long id) {
         productService.deleteProduct(id);
-        UserDTO userDTO = userService.getLoggedUser(request);
+        UserDTO userDTO = userService.getLoggedUser();
         model.addAttribute("isOwnerProduct", productService.isOwnerProduct(userDTO, productService.getProduct(id)));
         return "redirect:/";
     }

@@ -1,4 +1,4 @@
-package es.dlj.onlinestore.controller;
+package es.dlj.onlinestore.controller.web;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -79,8 +79,7 @@ public class ProfileController {
             Model model, 
             @Valid @ModelAttribute UserDTO newUserDTO, 
             BindingResult bindingResult,
-            @RequestParam(required=false) MultipartFile profilePhotoFile, 
-            HttpServletRequest request
+            @RequestParam(required=false) MultipartFile profilePhotoFile
     ) {
         if (bindingResult.hasErrors()) {
             // In case of errors, return to the form with the errors mapped
@@ -93,8 +92,7 @@ public class ProfileController {
             return "profile_update_template";
         }
 
-        UserDTO userDTO = userService.getLoggedUser(request);
-        if (userDTO == null) return "redirect:/login";
+        UserDTO userDTO = userService.getLoggedUser();
 
         userService.replaceUser(userDTO.id(), newUserDTO);
         //user.replaceUser(userDTO.id(), newUser);
@@ -136,10 +134,8 @@ public class ProfileController {
 
     @DeleteMapping("/deleteaccount") 
     public String deleteAccount(Model model, HttpServletRequest request) { 
-        UserDTO userDTO = userService.getLoggedUser(request);
-        if (userDTO == null) return "redirect:/login";
+        UserDTO userDTO = userService.getLoggedUser();
         userService.deleteUserDTO(userDTO.id());
-
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
         

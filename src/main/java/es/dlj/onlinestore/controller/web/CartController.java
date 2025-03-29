@@ -1,7 +1,8 @@
-package es.dlj.onlinestore.controller;
+package es.dlj.onlinestore.controller.web;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,8 +65,8 @@ public class CartController {
     }
     
     @PostMapping("/remove/{productId}")
-    public String removeProduct(@PathVariable Long productId, HttpServletRequest request) {
-        UserDTO user = userService.getLoggedUser(request);
+    public String removeProduct(@PathVariable Long productId) {
+        UserDTO user = userService.getLoggedUser();
 
         ProductDTO product = productService.findById(productId);
 
@@ -75,16 +76,16 @@ public class CartController {
     }
 
     @PostMapping("/remove/all")
-    public String removeProduct(HttpServletRequest request) {
-        UserDTO user = userService.getLoggedUser(request);
+    public String removeProduct() {
+        UserDTO user = userService.getLoggedUser();
         // Remove all the products from the cart
         userService.clearCart(user);
         return "redirect:/cart";
     }
     
     @GetMapping("/checkout")
-    public String orderCheckout(Model model, HttpServletRequest request) {
-        UserDTO user = userService.getLoggedUser(request);
+    public String orderCheckout(Model model) {
+        UserDTO user = userService.getLoggedUser();
 
         // Check if the cart is empty
         if (user.cartProducts().isEmpty()) {
@@ -108,8 +109,8 @@ public class CartController {
     
     @PostMapping("/confirm-order")
     @Transactional
-    public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber, HttpServletRequest request) {
-        UserDTO user = userService.getLoggedUser(request);
+    public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber) {
+        UserDTO user = userService.getLoggedUser();
 
         // Check if the cart is empty
         if (user.cartProducts().isEmpty()) {
@@ -129,12 +130,12 @@ public class CartController {
         }
 
         // Update the stock of the products in the cart
-        for (ProductSimpleDTO product : user.cartProducts()) {
+        for (ProductSimpleDTO product : user.cartProducts()) { 
             productService.subFromStock(product.id(), product.stock() - 1);
         }
 
         // Create and save the order
-        OrderDTO order = new OrderDTO(null, null, userMapper.toSimpleDTO(user), user.cartProducts(), new ArrayList<>(),  user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
+        OrderDTO order = new OrderDTO(null, null, userMapper.toSimpleDTO(user), new HashSet<>(user.cartProducts()), new ArrayList<>(),  user.getCartTotalPrice(), PaymentMethod.fromString(paymentMethod), address, phoneNumber);
         order = orderService.save(order);
         model.addAttribute("order", order);
         

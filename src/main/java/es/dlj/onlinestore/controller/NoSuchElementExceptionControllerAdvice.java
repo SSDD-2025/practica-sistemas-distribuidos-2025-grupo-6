@@ -1,4 +1,4 @@
-package es.dlj.onlinestore;
+package es.dlj.onlinestore.controller;
 
 import java.util.NoSuchElementException;
 

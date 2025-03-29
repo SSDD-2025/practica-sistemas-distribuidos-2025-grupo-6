@@ -42,7 +42,7 @@ public class Order {
 
     private List<String> nonContinuedProducts = new ArrayList<>();
     
-    private Float totalPrice;
+    private float totalPrice;
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
@@ -53,7 +53,7 @@ public class Order {
     
     public Order() {}
 
-    public Order(Float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
+    public Order(float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
         this.address = address;
@@ -69,8 +69,8 @@ public class Order {
     public Set<Product> getProducts() { return products; }
     public void setProducts(Set<Product> products) { this.products = products; }
 
-    public Float getTotalPrice() { return totalPrice; }
-    public void setTotalPrice(Float totalPrice) { this.totalPrice = totalPrice; }
+    public float getTotalPrice() { return totalPrice; }
+    public void setTotalPrice(float totalPrice) { this.totalPrice = totalPrice; }
 
     public PaymentMethod getPaymentMethod() { return paymentMethod; }
     public void setPaymentMethod(PaymentMethod paymentMethod) { this.paymentMethod = paymentMethod; }

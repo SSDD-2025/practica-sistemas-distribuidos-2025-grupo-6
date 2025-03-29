@@ -1,6 +1,8 @@
 
 package es.dlj.onlinestore.mapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+
 import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.dto.OrderDTO;
 

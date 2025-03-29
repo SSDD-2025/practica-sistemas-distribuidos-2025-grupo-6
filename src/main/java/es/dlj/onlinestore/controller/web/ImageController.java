@@ -1,4 +1,4 @@
-package es.dlj.onlinestore.controller;
+package es.dlj.onlinestore.controller.web;
 
 import java.util.NoSuchElementException;
 
@@ -15,7 +15,6 @@ import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 
  @Controller
  @RequestMapping("/image")
@@ -37,17 +36,19 @@ import jakarta.servlet.http.HttpServletRequest;
 
     @GetMapping("/product/{id}")
     public ResponseEntity<Object> getProductImage(@PathVariable Long id) {
+        ProductDTO product = productService.getProduct(id);
         try {
-            ProductDTO product = productService.getProduct(id);
+            
             return imageService.loadImage(product.images().getFirst().id());
         } catch (NoSuchElementException e) {
+            System.out.println("Product: " + product);
             return imageService.loadDefaultImage();
         }
     }
 
     @GetMapping("/user")
-    public ResponseEntity<Object> getUserImage(HttpServletRequest request) {
-        UserDTO user = userService.getLoggedUser(request);
+    public ResponseEntity<Object> getUserImage() {
+        UserDTO user = userService.getLoggedUser();
         if (user == null) return imageService.loadDefaultImage();
 
         ImageDTO image = user.profilePhoto();

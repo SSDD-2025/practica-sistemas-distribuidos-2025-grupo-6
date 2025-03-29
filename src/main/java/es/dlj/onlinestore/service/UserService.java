@@ -8,6 +8,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +36,6 @@ import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ReviewRepository;
 import es.dlj.onlinestore.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -74,20 +76,10 @@ public class UserService {
 
     @PostConstruct
     public void init() {
-        // Checks if there are any users in the database
-        // if (userRepository.count() > 0) return;
-        //userRepository.save(new User("admin", passwordEncoder.encode("password"), "NameAdmin", "SurnameAdmin", "admin@gmail.com", List.of("ADMIN"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
-        //userRepository.save(new User("user", passwordEncoder.encode("password"), "NameUser", "SurnameUser", "user@gmail.com", List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
-        if (userRepository.findByUsername("admin").isEmpty()) {
-            userRepository.save(new User("admin", passwordEncoder.encode("password"), "NameAdmin", "SurnameAdmin", "admin@gmail.com", 
-                List.of("ADMIN"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
-        }
-        
-        if (userRepository.findByUsername("user").isEmpty()) {
-            userRepository.save(new User("user", passwordEncoder.encode("password"), "NameUser", "SurnameUser", "user@gmail.com", 
-                List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
-        }
-    
+        userRepository.save(new User("admin", passwordEncoder.encode("password"), "NameAdmin", "SurnameAdmin", "admin@gmail.com", 
+            List.of("ADMIN"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
+        userRepository.save(new User("user", passwordEncoder.encode("password"), "NameUser", "SurnameUser", "user@gmail.com", 
+            List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
     }
 
     public void setProfilePhoto(UserDTO userDTO, ImageDTO imageDTO) {
@@ -169,10 +161,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserDTO getLoggedUser(HttpServletRequest request) {
-        Principal principal = request.getUserPrincipal();
-        if (principal == null) return null;
-        return findByUserDTOName(principal.getName()).get();
+    public UserDTO getLoggedUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        // Check if user is authenticated and return the user
+        if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
+            return findByUserDTOName(auth.getName()).get();
+        }
+        return null;
     }
 
     @Transactional
