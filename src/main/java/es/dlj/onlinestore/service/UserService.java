@@ -22,7 +22,6 @@ import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.mapper.ImageMapper;
 import es.dlj.onlinestore.mapper.OrderMapper;
-import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.ReviewMapper;
@@ -62,9 +61,6 @@ public class UserService {
     private UserMapper userMapper;
 
     @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
     private OrderMapper orderMapper;
 
     @Autowired
@@ -88,24 +84,32 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void removeProductFromCart(UserDTO userDTO, ProductDTO product) {
-        User user = userMapper.toDomain(userDTO);
-        user.removeProductFromCart(productMapper.toDomain(product));
+    public void removeProductFromCart(Long productId) {
+        User user = getLoggedUser();
+        Product product = productRepository.findById(productId).orElseThrow();
+        user.removeProductFromCart(product);
         userRepository.save(user);
     }
 
-    public UserDTO clearCart(UserDTO userDTO) {
-        User user = userMapper.toDomain(userDTO);
+    public UserDTO clearCart() {
+        User user = getLoggedUser();
         user.clearCart();
         userRepository.save(user);
         return userMapper.toDTO(user);
     }
 
-    public void addOrderToUser(UserDTO user, OrderDTO order) {
-        User userDomain = userMapper.toDomain(user);
+    public void addOrderDTOToUser(OrderDTO order) {
+        User userDomain = getLoggedUser();
         Order orderDomain = orderMapper.toDomain(order);
         userDomain.addOrder(orderDomain);
         userRepository.save(userDomain);
+    }
+
+    void addOrderToUser(Order order) {
+        System.out.println("Adding order to user: " + order);
+        User user = getLoggedUser();
+        user.addOrder(order);
+        userRepository.save(user);
     }
     
     public UserDTO createUserDTO(UserDTO userDTO) {

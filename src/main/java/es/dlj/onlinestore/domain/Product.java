@@ -8,8 +8,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.validator.constraints.Range;
-
 import es.dlj.onlinestore.enumeration.ProductType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -22,9 +20,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
 
 @Entity
 public class Product {
@@ -36,19 +31,10 @@ public class Product {
     @CreationTimestamp
     private LocalDateTime creationDate;
 
-    @Size(min = 3, max = 100, message = "Product name must be between 3 and 100 characters")
     private String name;
-
-    @Size(min = 3, max = 2000, message = "Description must be between 3 and 2000 characters")	
     private String description;
-
-    @Positive(message = "Price must be positive")
     private float price;
-
-    @PositiveOrZero(message = "Stock must be positive or zero")
     private int stock;
-
-    @Range(min = 0, max = 100, message = "Sale must be between 0 and 100")
     private float sale;
     
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

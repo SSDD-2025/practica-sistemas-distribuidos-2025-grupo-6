@@ -10,7 +10,7 @@ active
     
     <div id="cart-list" class="row">
         <form id="removeForm-all" method="post" action="/cart/remove/all" class="col-5 mb-4 position-absolute top-0 end-0">
-            <button type="submit" class="btn btn-danger" {{^user.cartProducts}}disabled{{/user.cartProducts}}>
+            <button type="submit" class="btn btn-danger" {{^user.cartProducts}} disabled {{/ user.cartProducts}}>
                 <i class="bi bi-trash me-2"></i>Remove All Products
             </button>
         </form>
@@ -64,11 +64,11 @@ active
                         <button type="submit" class="btn btn-primary btn-block" {{^user.cartProducts}}disabled="disabled"{{/user.cartProducts}}>
                             Proceed to Checkout</button>
                     </form>
-                    {{# outOfStockProducts}}
+                    {{# error}}
                     <div class="alert alert-warning mt-3" role="alert">
-                        <small><i class="bi bi-exclamation-triangle me-2"></i> {{name}} is out of stock.</small>
+                        <small><i class="bi bi-exclamation-triangle me-2"></i> {{.}}</small>
                     </div>
-                    {{/ outOfStockProducts}}
+                    {{/ error}}
 
                 </div>
             </div>

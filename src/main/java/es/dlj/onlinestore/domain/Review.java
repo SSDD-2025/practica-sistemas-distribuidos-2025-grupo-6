@@ -23,13 +23,8 @@ public class Review {
     @CreationTimestamp
     private LocalDateTime creationDate;
 
-    @Size(min = 3, max = 100, message = "Description must be between 3 and 100 characters")	
     private String title;
-    
-    @Size(min = 3, max = 500, message = "Description must be between 3 and 500 characters")	
     private String description;
-
-    @Range(min = 0, max = 5, message = "Rating must be between 0 and 5")
     private int rating;
 
     @ManyToOne

@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
@@ -44,7 +45,8 @@ public class ProfileController {
     
     @GetMapping
     public String getUserProfile(Model model, HttpServletRequest request) {
-        // model.addAttribute("user", userComponent.getUser());
+        UserDTO user = userService.getLoggedUserDTO();
+        model.addAttribute("user", user);
         return "profile_template";
     }
      
