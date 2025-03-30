@@ -135,9 +135,11 @@ public class ReviewService {
         Product product = productMapper.toDomain(productService.findById(productDTO.id()));
         Review review = reviewMapper.toDomain(reviewDTO);
         User user = userMapper.toDomain(userDTO);
+        review.setId(null);
 
         review.setProduct(product);
         review.setOwner(user);
+        reviewRepository.save(review);
 
         product.addReview(review);
         user.addReview(review);

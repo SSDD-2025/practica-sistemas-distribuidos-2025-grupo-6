@@ -20,12 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import es.dlj.onlinestore.domain.Image;
-import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.UserDTO;
-import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
