@@ -41,23 +41,6 @@ public class ProfileController {
 
     @Autowired
     private ImageService imageService;
-
-    @ModelAttribute
-    public void addAttributes(Model model, HttpServletRequest request) {
-        Principal principal = request.getUserPrincipal();
-        if (principal != null) {
-            UserDTO user = userService.findByUserDTOName(principal.getName()).get();
-            model.addAttribute("user", user);
-            model.addAttribute("isLogged", true);
-            model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
-            model.addAttribute("isUser", request.isUserInRole("USER"));
-
-        } else {
-            model.addAttribute("isLogged", false);
-        }
-    }
-
-
     
     @GetMapping
     public String getUserProfile(Model model, HttpServletRequest request) {
