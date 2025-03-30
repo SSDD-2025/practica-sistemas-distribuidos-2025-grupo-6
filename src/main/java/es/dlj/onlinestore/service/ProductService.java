@@ -393,11 +393,11 @@ public class ProductService {
         }
     }
 
-    public ProductDTO saveProduct(ProductDTO productDTO, List<MultipartFile> imagesVal, String tagsVal, UserDTO userDTO) {
+    @Transactional
+    public ProductDTO saveProduct(ProductDTO productDTO, List<MultipartFile> imagesVal, String tagsVal) {
         Product product = productMapper.toDomain(productDTO);
-        User user = userMapper.toDomain(userDTO);
-        User userFromBD = userRepository.findById(user.getId()).get();
-        product.setSeller(userFromBD);
+        User user = userService.getLoggedUser();
+        product.setSeller(user);
         product.setTags(transformStringToTags(tagsVal)); 
     
         try {
@@ -414,8 +414,8 @@ public class ProductService {
         }
 
         Product savedProduct = save(product);
-        userFromBD.addProductForSale(savedProduct);
-        userService.save(userFromBD);
+        user.addProductForSale(savedProduct);
+        userService.save(user);
         return productMapper.toDTO(savedProduct);
         
     }

@@ -80,12 +80,12 @@ public class ImageService {
     }
 
     @Transactional
-    public UserDTO saveImageInUser(UserDTO userDTO, MultipartFile rawImage) throws IOException {
+    public void saveImageInUser(MultipartFile rawImage) throws IOException {
         Image savedImage = imageMapper.toDomain(saveFileImage(rawImage));
-        User user = userMapper.toDomain(userDTO);
+        User user = userService.getLoggedUser();
 
         user.setProfilePhoto(savedImage);
-        return userMapper.toDTO(userService.save(user));
+        userService.save(user);
     }
 
     public ResponseEntity<Object> loadImage(Long id) {

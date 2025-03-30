@@ -12,6 +12,5 @@ public interface ReviewMapper {
     ReviewDTO toDTO(Review product);
     Review toDomain(ReviewDTO productDTO);
     List<ReviewDTO> toDTOs(List<Review> all);
-
     
 }

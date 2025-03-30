@@ -86,7 +86,7 @@ public class ProfileController {
                     ImageDTO oldPhotoDTO = userDTO.profilePhoto();
                     ImageDTO imageDTO = imageService.saveFileImage(profilePhotoFile);
 
-                    userService.setProfilePhoto(userDTO, imageDTO);
+                    userService.setUserProfilePhoto(imageDTO);
                     if (oldPhotoDTO != null) {
                         imageService.deleteImage(oldPhotoDTO);
                     }

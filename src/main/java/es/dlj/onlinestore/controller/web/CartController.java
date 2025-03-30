@@ -1,8 +1,5 @@
 package es.dlj.onlinestore.controller.web;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,12 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.OrderSimpleDTO;
-import es.dlj.onlinestore.dto.ProductDTO;
-import es.dlj.onlinestore.dto.ProductSimpleDTO;
-import es.dlj.onlinestore.dto.UserDTO;
-import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.ProductService;
@@ -27,18 +19,12 @@ import jakarta.transaction.Transactional;
 @Controller
 @RequestMapping("/cart")
 public class CartController {
-
-    @Autowired
-    private ProductService productService;
     
     @Autowired
     private OrderService orderService;
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserMapper userMapper;
 
     @GetMapping
     public String showCart(Model model) {
@@ -68,16 +54,13 @@ public class CartController {
     }
     
     @PostMapping("/confirm-order")
-    @Transactional
     public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber) {
         OrderSimpleDTO order = orderService.proceedCheckout(paymentMethod, address, phoneNumber);
         if (order == null) {
             model.addAttribute("error", "Your cart is empty or contains products that are not in stock.");
             return "redirect:/cart";
         }
-
         model.addAttribute("order", order);
-
         return "order_confirmed_template";
     }
 }

@@ -199,10 +199,8 @@ class ProductController {
             model.addAttribute("tagsVal", tagsVal);
             return "product_create_template";
         }*/
-
-        UserDTO userDTO = userService.getLoggedUserDTO();
         
-        ProductDTO savedProductDTO = productService.saveProduct(newProductDTO, imagesVal, tagsVal, userDTO); 
+        ProductDTO savedProductDTO = productService.saveProduct(newProductDTO, imagesVal, tagsVal); 
         return "redirect:/product/" + savedProductDTO.id();
     }
 

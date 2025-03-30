@@ -1,5 +1,6 @@
 package es.dlj.onlinestore.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +27,7 @@ import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.ReviewMapper;
 import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
@@ -77,8 +79,8 @@ public class UserService {
             List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
     }
 
-    public void setProfilePhoto(UserDTO userDTO, ImageDTO imageDTO) {
-        User user = userMapper.toDomain(userDTO);
+    public void setUserProfilePhoto(ImageDTO imageDTO) {
+        User user = getLoggedUser();
         Image image = imageMapper.toDomain(imageDTO);
         user.setProfilePhoto(image);
         userRepository.save(user);
@@ -91,18 +93,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserDTO clearCart() {
+    public void clearCart() {
         User user = getLoggedUser();
         user.clearCart();
         userRepository.save(user);
-        return userMapper.toDTO(user);
-    }
-
-    public void addOrderDTOToUser(OrderDTO order) {
-        User userDomain = getLoggedUser();
-        Order orderDomain = orderMapper.toDomain(order);
-        userDomain.addOrder(orderDomain);
-        userRepository.save(userDomain);
     }
 
     void addOrderToUser(Order order) {
@@ -112,19 +106,24 @@ public class UserService {
         userRepository.save(user);
     }
     
-    public UserDTO createUserDTO(UserDTO userDTO) {
-        User user = userMapper.toDomain(userDTO);
-        if (user.getRoles().isEmpty()) user.setRoles(List.of("USER"));
-        String encodedPassword = passwordEncoder.encode(user.getEncodedPassword());
-        user.setEncodedPassword(encodedPassword);
-        userRepository.save(user); 
-        return userMapper.toDTO(user);
+    public List<String> checkNewUser(UserFormDTO newUser) {
+        if (!newUser.password().equals(newUser.repeatedPassword())) {
+            return List.of("confirmPasswordError", "Passwords do not match");
+        }
+        if (existsUserByUsername(newUser.username())) {
+            return List.of("usernameError", "User already exists, try to login instead");
+        }
+        return null;
     }
 
-    public UserDTO saveDTO(UserDTO userDTO) {
+    public void saveDTO(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
         save(user);
-        return userMapper.toDTO(user);
+    }
+
+    public void saveDTO(UserFormDTO userFromDTO) {
+        User user = userMapper.toDomain(userFromDTO);
+        save(user);
     }
 
     User save(User user) {
@@ -154,15 +153,8 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
     
-    public Optional<UserDTO> findByUserDTOName(String username) {
-        return userRepository.findByUsername(username).map(userMapper::toDTO);
-    }
-
-    public void addReviewToUser(UserDTO userDTO, ReviewDTO reviewDTO) {
-        User user = userMapper.toDomain(userDTO);
-        Review review = reviewMapper.toDomain(reviewDTO);
-        user.addReview(review);
-        userRepository.save(user);
+    public boolean existsUserByUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
 
     public UserDTO getLoggedUserDTO() {

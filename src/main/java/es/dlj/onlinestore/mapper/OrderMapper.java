@@ -11,6 +11,5 @@ public interface OrderMapper {
 
     OrderDTO toDTO(Order order);
     OrderSimpleDTO toSimpleDTO(Order order);
-    Order toDomain(OrderDTO orderDTO);
     
 }

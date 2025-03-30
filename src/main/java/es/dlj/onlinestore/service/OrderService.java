@@ -92,13 +92,6 @@ public class OrderService {
         
     }
 
-    
-    public OrderDTO save(OrderDTO order) {
-        Order orderEntity = orderMapper.toDomain(order);
-        Order savedOrder = save(orderEntity);
-        return orderMapper.toDTO(savedOrder);
-    }
-
     Order save(Order order) {
         return orderRepository.save(order);
     }

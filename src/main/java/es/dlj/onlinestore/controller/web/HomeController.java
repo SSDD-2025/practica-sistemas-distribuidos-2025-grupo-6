@@ -1,7 +1,6 @@
 package es.dlj.onlinestore.controller.web;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
-import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @Controller
@@ -46,6 +43,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHome(Model model) {
+
         // Define a record to hold the information of a section
         record Section(String title, String color, String icon, Collection<ProductSimpleDTO> products) {}
 
@@ -95,7 +93,6 @@ public class HomeController {
 
         // Check for validation errors
         if (bindingResult.hasErrors()) {
-            // In case of errors, return to the form with the errors mapped
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : bindingResult.getFieldErrors()) {
                 errors.put(error.getField(), error.getDefaultMessage());
@@ -105,24 +102,19 @@ public class HomeController {
             return "register_template";
         }
 
-        if (!newUser.password().equals(newUser.repeatedPassword())) {
-            model.addAttribute("confirmPasswordError", "Passwords do not match");
+        // Check if the password and repeated password match
+        List<String> error = userService.checkNewUser(newUser);
+        if (error != null) {
+            model.addAttribute(error.get(0), error.get(1));
             model.addAttribute("user", newUser);
             return "register_template";
         }
 
-        // Check if the user already exists
-        if (userService.findByUserDTOName(newUser.username()).isPresent()) {
-            model.addAttribute("usernameError", "User already exists, try to login instead");
-            model.addAttribute("user", newUser);
-            return "register_template";
-        }
-
-        UserDTO updatedUser = userService.saveDTO(userMapper.toDTO(newUser));
+        userService.saveDTO(newUser);
 
         try {
             if (image != null && !image.isEmpty()) {
-                imageService.saveImageInUser(updatedUser, image);
+                imageService.saveImageInUser(image);
             }
         } catch (IOException e) {
             // In case of errors in the images, return to the form with the errors mapped
@@ -130,9 +122,7 @@ public class HomeController {
             model.addAttribute("user", newUser);
             return "register_template";
         }
-
-        // Save the new user
-        userService.saveDTO(updatedUser);
+        
         return "redirect:/login";
     }
     

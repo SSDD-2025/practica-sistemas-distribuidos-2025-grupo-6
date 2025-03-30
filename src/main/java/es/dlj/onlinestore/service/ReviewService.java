@@ -98,10 +98,10 @@ public class ReviewService {
         }
     }
 
-    public List<ReviewDTO> getUserRatings(UserDTO userDTO) {
-        User user = userMapper.toDomain(userDTO);
-        return reviewMapper.toDTOs(reviewRepository.findByOwner(user));
-    }
+    // public List<ReviewDTO> getUserReviews() {
+    //     User user = userService.getLoggedUser();
+    //     return reviewMapper.toDTOs(reviewRepository.findByOwner(user));
+    // }
 
     @Transactional
     public ReviewDTO delete (Long id) {
