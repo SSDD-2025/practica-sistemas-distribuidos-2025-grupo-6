@@ -1,6 +1,5 @@
 package es.dlj.onlinestore.service;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

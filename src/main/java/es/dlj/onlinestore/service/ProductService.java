@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Image;
@@ -19,11 +18,9 @@ import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
-import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.UserDTO;
-import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.UserMapper;
@@ -32,7 +29,6 @@ import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
 import es.dlj.onlinestore.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import es.dlj.onlinestore.repository.ReviewRepository;
 
@@ -289,16 +285,16 @@ public class ProductService {
         return productRepository.searchProducts(name, minPrice, maxPrice, tags, productTypes);
     }
 
-    public List<Product> getBestSellers() {
-        return productRepository.findTop10ByOrderByTotalSellsDesc();
+    public Collection<ProductSimpleDTO> getBestSellers() {
+        return productMapper.toDTOs(productRepository.findTop10ByOrderByTotalSellsDesc());
     }
 
-    public List<Product> getBestSales() {
-        return productRepository.findTop10ByOrderBySaleDesc();
+    public Collection<ProductSimpleDTO> getBestSales() {
+        return productMapper.toDTOs(productRepository.findTop10ByOrderBySaleDesc());
     }
 
-    public List<Product> getLowStock(int stock) {
-        return productRepository.findByStockLessThan(stock);
+    public Collection<ProductSimpleDTO> getLowStock(int stock) {
+        return productMapper.toDTOs(productRepository.findByStockLessThan(stock));
     }
 
     public Optional<Product> findById(long id){

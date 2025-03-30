@@ -2,6 +2,7 @@ package es.dlj.onlinestore.controller.web;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import es.dlj.onlinestore.domain.Product;
+import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
@@ -61,7 +62,7 @@ public class HomeController {
     @GetMapping("/")
     public String getHome(Model model) {
         // Define a record to hold the information of a section
-        record Section(String title, String color, String icon, List<Product> products) {}
+        record Section(String title, String color, String icon, Collection<ProductSimpleDTO> products) {}
 
         // Define the sections to show at the Home page
         List<Section> sections = List.of(
