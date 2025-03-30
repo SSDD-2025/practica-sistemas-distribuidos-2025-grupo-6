@@ -41,7 +41,9 @@ public class SecurityConfig {
                 "/privacy",
                 "/image/**",
                 "/product/*", 
-                "/register"
+                "/register",
+                "/login", "/login-error",
+                "/error/**"
                 ).permitAll()
             //Private Pages
             .requestMatchers(
@@ -58,6 +60,9 @@ public class SecurityConfig {
             .failureUrl("/login-error")
             .defaultSuccessUrl("/profile", true)
             .permitAll()
+        )
+        .exceptionHandling(exception -> exception
+            .accessDeniedPage("/error/403")
         )
         .logout(logout -> logout
             .logoutUrl("/logout")
