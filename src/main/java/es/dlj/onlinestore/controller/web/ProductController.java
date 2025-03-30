@@ -40,9 +40,6 @@ import jakarta.validation.Valid;
 class ProductController {
 
     @Autowired
-    private ImageService imageService;
-
-    @Autowired
     private ProductService productService;
 
     @Autowired
@@ -69,7 +66,6 @@ class ProductController {
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id) {
         ProductDTO product = productService.getProduct(id);
-        UserDTO userDTO = userService.getLoggedUser();
 
         // Create a list of maps to store image names and stablish if has to be shown as first
         List<Map<String, Object>> images = new ArrayList<>();
@@ -81,17 +77,14 @@ class ProductController {
         model.addAttribute("allImages", images);
         // model.addAttribute("user", userComponent.getUser());
         model.addAttribute("product", productService.getProduct(id));
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(userDTO, product));
+        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
         
         return "product_template";
     }
 
     @PostMapping("/{id}/add-review")
     public String submitReview(Model model, @PathVariable Long id, @ModelAttribute ReviewDTO reviewDTO) {
-        UserDTO userDTO = userService.getLoggedUser();
-
-        ProductDTO productDTO = productService.getProduct(id);
-        reviewService.saveReview(productDTO, reviewDTO, userDTO);
+        reviewService.saveReview(id, reviewDTO);
         return "redirect:/product/" + id; 
     }
 
@@ -103,10 +96,8 @@ class ProductController {
 
     @PostMapping("/{id}/add-to-cart")
     public String addProductToCart(Model model, @PathVariable Long id){
-        UserDTO userDTO = userService.getLoggedUser();
-        ProductDTO product = productService.getProduct(id);
-        userService.addProductToCart(product, userDTO);
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(userDTO, product));
+        userService.addProductToCart(id);
+        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
         return "redirect:/cart";
     }
 
@@ -154,10 +145,9 @@ class ProductController {
     @GetMapping("/{id}/update")
     public String editProduct(Model model, @PathVariable Long id) {
         ProductDTO product = productService.getProduct(id);
-        UserDTO userDTO = userService.getLoggedUser();
         
         model.addAttribute("product", product);
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(userDTO, product));
+        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
         return "product_update_template";
     }
 
@@ -183,9 +173,8 @@ class ProductController {
         }
 
         ProductDTO product = productService.getProduct(id);
-        UserDTO userDTO = userService.getLoggedUser();
         
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(userDTO, product));
+        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
         
         try {
             productService.updateProduct(id, newProduct, imagesVal, tagsVal); 
@@ -226,7 +215,7 @@ class ProductController {
             return "product_create_template";
         }*/
 
-        UserDTO userDTO = userService.getLoggedUser();
+        UserDTO userDTO = userService.getLoggedUserDTO();
         
         ProductDTO savedProductDTO = productService.saveProduct(newProductDTO, imagesVal, tagsVal, userDTO); 
         return "redirect:/product/" + savedProductDTO.id();
@@ -235,8 +224,7 @@ class ProductController {
     @GetMapping("/{id}/delete")
     public String deleteProduct(Model model, @PathVariable Long id) {
         productService.deleteProduct(id);
-        UserDTO userDTO = userService.getLoggedUser();
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(userDTO, productService.getProduct(id)));
+        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
         return "redirect:/";
     }
     

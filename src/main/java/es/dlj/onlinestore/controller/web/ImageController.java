@@ -49,7 +49,7 @@ import es.dlj.onlinestore.service.UserService;
 
     @GetMapping("/user")
     public ResponseEntity<Object> getUserImage() {
-        UserDTO user = userService.getLoggedUser();
+        UserDTO user = userService.getLoggedUserDTO();
         if (user == null) return imageService.loadDefaultImage();
 
         ImageDTO image = user.profilePhoto();

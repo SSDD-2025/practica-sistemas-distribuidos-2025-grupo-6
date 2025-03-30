@@ -133,7 +133,7 @@ public class HomeController {
             return "register_template";
         }
 
-        UserDTO updatedUser = userService.saveUserDTO(userMapper.toDTO(newUser));
+        UserDTO updatedUser = userService.saveDTO(userMapper.toDTO(newUser));
 
         try {
             if (image != null && !image.isEmpty()) {
@@ -147,7 +147,7 @@ public class HomeController {
         }
 
         // Save the new user
-        userService.saveUserDTO(updatedUser);
+        userService.saveDTO(updatedUser);
         return "redirect:/login";
     }
     

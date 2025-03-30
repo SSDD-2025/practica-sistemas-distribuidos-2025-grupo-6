@@ -127,16 +127,16 @@ public class ReviewService {
         User owner = review.getOwner();
         if (owner != null) {
             owner.removeReview(review);
-            userService.saveUser(owner);
+            userService.save(owner);
         }
     }
 
-    public void saveReview(ProductDTO productDTO, ReviewDTO reviewDTO, UserDTO userDTO) {
-        Product product = productMapper.toDomain(productService.findById(productDTO.id()));
+    @Transactional
+    public void saveReview(Long productId, ReviewDTO reviewDTO) {
+        User user = userService.getLoggedUser();
+        Product product = productService.findById(productId);
         Review review = reviewMapper.toDomain(reviewDTO);
-        User user = userMapper.toDomain(userDTO);
         review.setId(null);
-
         review.setProduct(product);
         review.setOwner(user);
         reviewRepository.save(review);
@@ -145,6 +145,6 @@ public class ReviewService {
         user.addReview(review);
 
         productService.save(product);
-        userService.saveUser(user);
+        userService.save(user);
     }
 }

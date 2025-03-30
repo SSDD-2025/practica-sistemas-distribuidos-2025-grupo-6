@@ -162,8 +162,12 @@ public class ProductService {
         }
     }
 
-    public ProductDTO findById(Long id) {
-        return productMapper.toDTO(productRepository.findById(id).orElseThrow());
+    public ProductDTO findByIdDTO(Long id) {
+        return productMapper.toDTO(findById(id));
+    }
+
+    Product findById(Long id) {
+        return productRepository.findById(id).orElseThrow();
     }
 
     @Transactional
@@ -356,7 +360,7 @@ public class ProductService {
             User owner = review.getOwner();
             if (owner != null) {
                 owner.removeReview(review);
-                userService.saveUser(owner);
+                userService.save(owner);
             }
             review.setProduct(null);
             product.getReviews().remove(review);
@@ -378,10 +382,12 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public boolean isOwnerProduct (UserDTO userDTO, ProductDTO productDTO) {
+    public boolean isOwnerProduct(Long productId) {
         try {
-            Product product = productMapper.toDomain(productDTO); 
-            User user = userMapper.toDomain(userDTO);
+            User user = userService.getLoggedUser();
+            if (user == null) return false;
+            if (user.getRoles().contains("ADMIN")) return true;
+            Product product = findById(productId); 
             return user.getId() == product.getSeller().getId();
         } catch (Exception e) {
             return false;
@@ -447,7 +453,7 @@ public class ProductService {
 
         Product savedProduct = save(product);
         userFromBD.addProductForSale(savedProduct);
-        userService.saveUser(userFromBD);
+        userService.save(userFromBD);
         return productMapper.toDTO(savedProduct);
         
     }

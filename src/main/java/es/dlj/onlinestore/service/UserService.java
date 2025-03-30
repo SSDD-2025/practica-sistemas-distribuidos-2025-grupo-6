@@ -117,13 +117,13 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
-    public UserDTO saveUserDTO(UserDTO userDTO) {
+    public UserDTO saveDTO(UserDTO userDTO) {
         User user = userMapper.toDomain(userDTO);
-        saveUser(user);
+        save(user);
         return userMapper.toDTO(user);
     }
 
-    User saveUser(User user) {
+    User save(User user) {
         return userRepository.save(user);
     }
 
@@ -161,11 +161,14 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserDTO getLoggedUser() {
+    public UserDTO getLoggedUserDTO() {
+        return userMapper.toDTO(getLoggedUser());
+    }
+
+    User getLoggedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        // Check if user is authenticated and return the user
         if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
-            return findByUserDTOName(auth.getName()).get();
+            return userRepository.findByUsername(auth.getName()).get();
         }
         return null;
     }
@@ -247,10 +250,10 @@ public class UserService {
         user.getRoles().clear();
     }
 
-    public void addProductToCart(ProductDTO product, UserDTO userDTO) {
-        User user = userMapper.toDomain(userDTO);
-        Product productDomain = productMapper.toDomain(product);
-        user.addProductToCart(productDomain);
+    public void addProductToCart(Long ProductId) {
+        User user = getLoggedUser();
+        Product product = productRepository.findById(ProductId).orElseThrow();
+        user.addProductToCart(product);
         userRepository.save(user);
     }
 

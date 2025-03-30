@@ -66,9 +66,9 @@ public class CartController {
     
     @PostMapping("/remove/{productId}")
     public String removeProduct(@PathVariable Long productId) {
-        UserDTO user = userService.getLoggedUser();
+        UserDTO user = userService.getLoggedUserDTO();
 
-        ProductDTO product = productService.findById(productId);
+        ProductDTO product = productService.findByIdDTO(productId);
 
         userService.removeProductFromCart(user, product);
 
@@ -77,7 +77,7 @@ public class CartController {
 
     @PostMapping("/remove/all")
     public String removeProduct() {
-        UserDTO user = userService.getLoggedUser();
+        UserDTO user = userService.getLoggedUserDTO();
         // Remove all the products from the cart
         userService.clearCart(user);
         return "redirect:/cart";
@@ -85,7 +85,7 @@ public class CartController {
     
     @GetMapping("/checkout")
     public String orderCheckout(Model model) {
-        UserDTO user = userService.getLoggedUser();
+        UserDTO user = userService.getLoggedUserDTO();
 
         // Check if the cart is empty
         if (user.cartProducts().isEmpty()) {
@@ -110,7 +110,7 @@ public class CartController {
     @PostMapping("/confirm-order")
     @Transactional
     public String orderConfirmed(Model model, @RequestParam String paymentMethod, @RequestParam String address, @RequestParam String phoneNumber) {
-        UserDTO user = userService.getLoggedUser();
+        UserDTO user = userService.getLoggedUserDTO();
 
         // Check if the cart is empty
         if (user.cartProducts().isEmpty()) {

@@ -85,7 +85,7 @@ public class ImageService {
         User user = userMapper.toDomain(userDTO);
 
         user.setProfilePhoto(savedImage);
-        return userMapper.toDTO(userService.saveUser(user));
+        return userMapper.toDTO(userService.save(user));
     }
 
     public ResponseEntity<Object> loadImage(Long id) {

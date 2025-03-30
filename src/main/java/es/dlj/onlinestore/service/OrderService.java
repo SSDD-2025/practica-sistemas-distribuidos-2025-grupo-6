@@ -47,7 +47,7 @@ public class OrderService {
         User user = order.getUser();
         if (user != null) {
             user.removeOrder(order);
-            userService.saveUser(user);
+            userService.save(user);
         }
     }
 

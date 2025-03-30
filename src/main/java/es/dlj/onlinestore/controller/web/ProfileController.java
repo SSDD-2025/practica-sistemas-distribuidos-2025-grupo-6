@@ -90,7 +90,7 @@ public class ProfileController {
             return "profile_update_template";
         }
 
-        UserDTO userDTO = userService.getLoggedUser();
+        UserDTO userDTO = userService.getLoggedUserDTO();
 
         userService.replaceUser(userDTO.id(), newUserDTO);
         //user.replaceUser(userDTO.id(), newUser);
@@ -113,7 +113,7 @@ public class ProfileController {
                 return "profile_update_template";
             }
         }
-        userService.saveUserDTO(userDTO);
+        userService.saveDTO(userDTO);
         return "redirect:/profile";
     }
 
@@ -133,7 +133,7 @@ public class ProfileController {
 
     @DeleteMapping("/deleteaccount") 
     public String deleteAccount(Model model, HttpServletRequest request) { 
-        UserDTO userDTO = userService.getLoggedUser();
+        UserDTO userDTO = userService.getLoggedUserDTO();
         userService.deleteUserDTO(userDTO.id());
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
