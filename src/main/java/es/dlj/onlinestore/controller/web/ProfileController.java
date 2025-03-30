@@ -1,7 +1,6 @@
 package es.dlj.onlinestore.controller.web;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.UserDTO;
-import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
@@ -45,18 +43,19 @@ public class ProfileController {
     
     @GetMapping
     public String getUserProfile(Model model, HttpServletRequest request) {
-        UserDTO user = userService.getLoggedUserDTO();
-        model.addAttribute("user", user);
+        // Load the user information extended
+        model.addAttribute("user", userService.getLoggedUserDTO());
         return "profile_template";
     }
      
 
     @GetMapping("/update")
     public String getEditProfile(Model model) {
-        // model.addAttribute("user", userComponent.getUser());
         return "profile_update_template";
     }
 
+
+    // TODO: Fix
     @PostMapping("/update")
     public String saveProfileChanges(
             Model model, 
@@ -104,9 +103,7 @@ public class ProfileController {
 
     @GetMapping("/order/{id}")
     public String getOrderView(Model model, @PathVariable Long id) {
-        // model.addAttribute("user", userComponent.getUser());
-        OrderDTO order = orderService.getReferenceById(id);
-        model.addAttribute("order", order);
+        model.addAttribute("order", orderService.getReferenceById(id));
         return "order_template";
     }
 
@@ -122,7 +119,6 @@ public class ProfileController {
         userService.deleteUserDTO(userDTO.id());
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
-        
         return "redirect:/";
     }
 }

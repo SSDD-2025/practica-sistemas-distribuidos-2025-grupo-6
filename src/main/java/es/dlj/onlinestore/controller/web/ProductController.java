@@ -1,6 +1,5 @@
 package es.dlj.onlinestore.controller.web;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,17 +23,13 @@ import org.springframework.web.multipart.MultipartFile;
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
-import es.dlj.onlinestore.dto.UserDTO;
-import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.enumeration.ProductType;
-import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-
+// TODO: Check refactorizations
 @Controller
 @RequestMapping("/product")
 class ProductController {

@@ -25,13 +25,12 @@ import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
-import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.mapper.ImageMapper;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
 
 
-
+// TODO: Check unused functions (All Services check this)
 @Service
 public class ImageService {
     
