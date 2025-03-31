@@ -18,8 +18,10 @@ import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
+import es.dlj.onlinestore.dto.ProductTagDTO;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.mapper.ProductMapper;
+import es.dlj.onlinestore.mapper.ProductTagMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
@@ -58,6 +60,9 @@ public class ProductService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private ProductTagMapper productTagMapper;
     
     @PostConstruct
     @Transactional
@@ -113,26 +118,26 @@ public class ProductService {
 
         // Preload tags
         List<List<ProductTag>> productTagsList = new ArrayList<>();
-        productTagsList.add(transformStringToTags("electronics, laptop"));
-        productTagsList.add(transformStringToTags("smartphone, apple"));
-        productTagsList.add(transformStringToTags("smartphone, android"));
-        productTagsList.add(transformStringToTags("laptop, hp"));
-        productTagsList.add(transformStringToTags("laptop, apple"));
-        productTagsList.add(transformStringToTags("gaming, console"));
-        productTagsList.add(transformStringToTags("gaming, console"));
-        productTagsList.add(transformStringToTags("tablet, apple"));
-        productTagsList.add(transformStringToTags("tablet, reader"));
-        productTagsList.add(transformStringToTags("audio, headphones"));
-        productTagsList.add(transformStringToTags("audio, headphones"));
-        productTagsList.add(transformStringToTags("tv, lg"));
-        productTagsList.add(transformStringToTags("tv, samsung"));
-        productTagsList.add(transformStringToTags("camera, nikon"));
-        productTagsList.add(transformStringToTags("camera, canon"));
-        productTagsList.add(transformStringToTags("camera, gopro"));
-        productTagsList.add(transformStringToTags("tablet, microsoft"));
-        productTagsList.add(transformStringToTags("monitor, dell"));
-        productTagsList.add(transformStringToTags("watch, apple"));
-        productTagsList.add(transformStringToTags("watch, samsung"));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("electronics, laptop")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("smartphone, apple")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("smartphone, android")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("laptop, hp")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("laptop, apple")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("gaming, console")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("gaming, console")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("tablet, apple")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("tablet, reader")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("audio, headphones")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("audio, headphones")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("tv, lg")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("tv, samsung")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("camera, nikon")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("camera, canon")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("camera, gopro")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("tablet, microsoft")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("monitor, dell")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("watch, apple")));
+        productTagsList.add(productTagMapper.toDomains(transformStringToTags("watch, samsung")));
 
         // Preload products, tags and images
         User user = userService.findById(1L);
@@ -191,7 +196,7 @@ public class ProductService {
         List<ProductTag> oldTags = product.getTags();        
         Product savedProduct = save(product);
         savedProduct.getTags().clear();
-        List<ProductTag> newTags = transformStringToTags(tagsVal);
+        List<ProductTag> newTags = productTagMapper.toDomains(transformStringToTags(tagsVal));
         for (ProductTag tag : oldTags) {
             if (!newTags.contains(tag)) {
                 tag.removeProduct(product);
@@ -210,9 +215,8 @@ public class ProductService {
         save(savedProduct);
     }
 
-    // TODO: Product Tag as DTO
     @Transactional
-    public List<ProductTag> transformStringToTags(String tagsAsString){
+    public List<ProductTagDTO> transformStringToTags(String tagsAsString){
         List<ProductTag> tagList = new ArrayList<>();
         for (String tag: tagsAsString.split(",")){
             tag = tag.trim();
@@ -226,7 +230,7 @@ public class ProductService {
             }
             tagList.add(productTag);
         }
-        return tagList;
+        return productTagMapper.toDTOs(tagList);
     }
 
     public List<Map<String, Object>> getAllTags() {
@@ -324,24 +328,27 @@ public class ProductService {
         Product product = productMapper.toDomain(productDTO);
         User user = userService.getLoggedUser();
         product.setSeller(user);
-        product.setTags(transformStringToTags(tagsVal)); 
+        product.setTags(productTagMapper.toDomains(transformStringToTags(tagsVal))); 
+
+        Product savedProduct = save(product);
     
         try {
             if (imagesVal != null && imagesVal.size() > 1) {
-                imageService.saveImagesInProduct(product, imagesVal);
+                imageService.saveImagesInProduct(savedProduct, imagesVal);
             }
         } catch (IOException e) {
             throw new NoSuchElementException("Error loading images"); 
         }
 
-        List<ProductTag> tags = product.getTags();
+        List<ProductTag> tags = savedProduct.getTags();
         for (ProductTag tag : tags) {
             tag.addProduct(product);
         }
 
-        Product savedProduct = save(product);
+        
         user.addProductForSale(savedProduct);
         userService.save(user);
+        savedProduct = save(product);
         return productMapper.toDTO(savedProduct);
     }
 

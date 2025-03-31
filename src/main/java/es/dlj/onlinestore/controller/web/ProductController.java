@@ -173,6 +173,7 @@ class ProductController {
             for (FieldError error : bindingResult.getFieldErrors()) {
                 errors.put(error.getField(), error.getDefaultMessage());
             }
+            model.addAttribute("productTypes", ProductType.getMapped());
             model.addAttribute("errors", errors);
             model.addAttribute("tagsVal", tagsVal);
             return "product_create_template";

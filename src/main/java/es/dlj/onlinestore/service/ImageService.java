@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -65,6 +66,7 @@ public class ImageService {
 
     @Transactional
     public void saveImagesInProduct(Product product, List<MultipartFile> rawImages) throws IOException {
+        if (product.getImages() == null) product.setImages(new ArrayList<Image>());
         product.clearImages();
         for (MultipartFile rawImage : rawImages){
             Image savedImage = imageMapper.toDomain(saveFileImage(rawImage));
