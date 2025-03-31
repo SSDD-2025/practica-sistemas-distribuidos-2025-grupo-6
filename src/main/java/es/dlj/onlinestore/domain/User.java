@@ -84,18 +84,6 @@ public class User {
         this.phone = phone;
     }
 
-    public void updateWith(User user) {
-        this.username = user.username != null ? user.username : this.username;
-        this.encodedPassword = user.encodedPassword != null ? user.encodedPassword : this.encodedPassword;
-        this.name = user.name != null ? user.name : this.name;
-        this.surname = user.surname != null ? user.surname : this.surname;
-        this.email = user.email != null ? user.email : this.email;
-        this.address = user.address != null ? user.address : this.address;
-        this.city = user.city != null ? user.city : this.city;
-        this.postalCode = user.postalCode != null ? user.postalCode : this.postalCode;
-        this.phone = user.phone != null ? user.phone : this.phone;
-    }
-
     public Long getId() {
         return id;
     }

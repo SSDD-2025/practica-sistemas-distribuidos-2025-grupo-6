@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Order;
@@ -104,13 +105,19 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // TODO: Fix not a good form of doing it
-    public UserDTO replaceUser (Long id, UserDTO userDTO) {
+    public UserDTO update (Long id, UserDTO userDTO) {
         if (userRepository.existsById(id)) {
-            User updateUser = userMapper.toDomain(userDTO);
-            updateUser.setId(id);
-            userRepository.save(updateUser);
-            return userMapper.toDTO(updateUser);
+            User user = userRepository.findById(id).orElseThrow();
+            if (userDTO.username() != null) user.setUsername(userDTO.username());
+            if (userDTO.name() != null) user.setName(userDTO.name());
+            if (userDTO.surname() != null) user.setSurname(userDTO.surname());
+            if (userDTO.email() != null) user.setEmail(userDTO.email());
+            if (userDTO.address() != null) user.setAddress(userDTO.address());
+            if (userDTO.city() != null) user.setCity(userDTO.city());
+            if (userDTO.postalCode() != null) user.setPostalCode(userDTO.postalCode());
+            if (userDTO.phone() != null) user.setPhone(userDTO.phone());
+            user = userRepository.save(user);
+            return userMapper.toDTO(user);
         } else {
             throw new NoSuchElementException(); 
         }

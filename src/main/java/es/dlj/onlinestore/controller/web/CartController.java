@@ -28,9 +28,9 @@ public class CartController {
         return "cart_template";
     }
     
-    @PostMapping("/remove/{productId}")
-    public String removeProduct(@PathVariable Long productId) {
-        userService.removeProductFromCart(productId);
+    @PostMapping("/remove/{id}")
+    public String removeProduct(@PathVariable Long id) {
+        userService.removeProductFromCart(id);
         return "redirect:/cart";
     }
 

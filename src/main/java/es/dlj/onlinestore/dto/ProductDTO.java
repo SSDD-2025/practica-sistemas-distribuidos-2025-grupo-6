@@ -1,10 +1,11 @@
 package es.dlj.onlinestore.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.enumeration.ProductType;
 
 public record ProductDTO(
@@ -53,4 +54,15 @@ public record ProductDTO(
            .collect(Collectors.joining(", "));
     }
 
+    public List<Map<String, Object>> getAllImages() {
+        List<Map<String, Object>> imagesMapped = new ArrayList<>();
+        for (int i = 0; i < this.images.size(); i++) {
+            imagesMapped.add(Map.of("name", this.images.get(i).id(), "selected", (i == 0)));
+        }
+        return imagesMapped;
+    }
+
+    public List<Map<String, Object>> getProductTypes() {
+        return ProductType.getMapped(productType);
+    }
 }

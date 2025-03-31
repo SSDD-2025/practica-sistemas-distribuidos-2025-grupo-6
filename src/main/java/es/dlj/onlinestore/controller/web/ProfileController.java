@@ -53,8 +53,6 @@ public class ProfileController {
         return "profile_update_template";
     }
 
-
-    // TODO: Fix replace User
     @PostMapping("/update")
     public String saveProfileChanges(
             Model model, 
@@ -74,7 +72,7 @@ public class ProfileController {
 
         UserDTO userDTO = userService.getLoggedUserDTO();
 
-        userService.replaceUser(userDTO.id(), newUserDTO);
+        userService.update(userDTO.id(), newUserDTO);
         
         if (profilePhotoFile != null) {
             try {

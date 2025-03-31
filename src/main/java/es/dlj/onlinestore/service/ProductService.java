@@ -165,33 +165,36 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow();
     }
 
-    // TODO: Fix
     @Transactional
     public void updateProduct(Long id, ProductDTO newProductDTO, List<MultipartFile> imagesVal, String tagsVal) {
-        Product newProduct = productMapper.toDomain(newProductDTO);
-        Product oldProduct = productMapper.toDomain(findDTOById(id));
-        oldProduct.setName(newProduct.getName());
-        oldProduct.setPrice(newProduct.getPrice());
-        oldProduct.setDescription(newProduct.getDescription());
-        oldProduct.setProductType(newProduct.getProductType());
-        oldProduct.setStock(newProduct.getStock());
-        oldProduct.setSale(newProduct.getSale());
+        Product product = findById(id);
+        product.setName(newProductDTO.name());
+        product.setPrice(newProductDTO.price());
+        product.setDescription(newProductDTO.description());
+        product.setProductType(newProductDTO.productType());
+        product.setStock(newProductDTO.stock());
+        product.setSale(newProductDTO.sale());
 
         if (imagesVal != null && imagesVal.size() > 1) {
             try {
-                imageService.saveImagesInProduct(newProduct, imagesVal);
+                if (product.getImages() != null) {
+                    for (Image image : product.getImages()) {
+                        imageService.delete(image);
+                    }
+                }
+                imageService.saveImagesInProduct(product, imagesVal);
             } catch (IOException e) {
                 throw new NoSuchElementException("Error loading images"); 
             }
         }   
 
-        List<ProductTag> oldTags = oldProduct.getTags();        
-        Product savedProduct = save(oldProduct);
+        List<ProductTag> oldTags = product.getTags();        
+        Product savedProduct = save(product);
         savedProduct.getTags().clear();
         List<ProductTag> newTags = transformStringToTags(tagsVal);
         for (ProductTag tag : oldTags) {
             if (!newTags.contains(tag)) {
-                tag.removeProduct(oldProduct);
+                tag.removeProduct(product);
                 saveTag(tag);
             }
         }
