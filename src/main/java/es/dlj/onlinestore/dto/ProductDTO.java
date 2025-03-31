@@ -21,7 +21,7 @@ public record ProductDTO(
     UserSimpleDTO seller,
     List<ProductTagSimpleDTO> tags,
     ProductType productType,
-    int totalSells
+    Integer totalSells
 
 ) {
     public boolean getInStock(){
@@ -62,7 +62,7 @@ public record ProductDTO(
         return imagesMapped;
     }
 
-    public List<Map<String, Object>> getProductTypes() {
+    public List<Map<String, Object>> getProductTypesMapped() {
         return ProductType.getMapped(productType);
     }
 }

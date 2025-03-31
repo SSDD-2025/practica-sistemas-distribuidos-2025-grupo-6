@@ -109,13 +109,11 @@ class ProductController {
 
     @GetMapping("/{id}/update")
     public String editProduct(Model model, @PathVariable Long id) {
-        if (productService.isProductOwner(id)) {
-            model.addAttribute("product", productService.findDTOById(id));
-            return "product_update_template";
-        } else {
-            return "redirect:/product/" + id;
-        }
-        
+        // Check if the user is the owner of the product or administrator
+        if (!productService.isProductOwner(id)) return "redirect:/product/" + id;
+
+        model.addAttribute("product", productService.findDTOById(id));
+        return "product_update_template";
     }
 
     @PostMapping ("/{id}/update")
