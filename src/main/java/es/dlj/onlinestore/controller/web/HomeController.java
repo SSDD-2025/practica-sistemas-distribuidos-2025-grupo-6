@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
-import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
-import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
@@ -37,9 +35,6 @@ public class HomeController {
 
     @Autowired
     private ImageService imageService;
-
-    @Autowired
-    private UserMapper userMapper;
 
     @GetMapping("/")
     public String getHome(Model model) {
@@ -103,7 +98,7 @@ public class HomeController {
         }
 
         // Check if the password and repeated password match
-        List<String> error = userService.checkNewUser(newUser);
+        List<String> error = userService.checkNewUserError(newUser);
         if (error != null) {
             model.addAttribute(error.get(0), error.get(1));
             model.addAttribute("user", newUser);

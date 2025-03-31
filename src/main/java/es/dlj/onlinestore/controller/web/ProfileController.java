@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.dto.ImageDTO;
-import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
@@ -55,7 +54,7 @@ public class ProfileController {
     }
 
 
-    // TODO: Fix
+    // TODO: Fix replace User
     @PostMapping("/update")
     public String saveProfileChanges(
             Model model, 
@@ -70,30 +69,22 @@ public class ProfileController {
                 errors.put(error.getField(), error.getDefaultMessage());
             }
             model.addAttribute("errors", errors);
-            // model.addAttribute("user", userComponent.getUser());
             return "profile_update_template";
         }
 
         UserDTO userDTO = userService.getLoggedUserDTO();
 
         userService.replaceUser(userDTO.id(), newUserDTO);
-        //user.replaceUser(userDTO.id(), newUser);
         
         if (profilePhotoFile != null) {
             try {
                 if (!profilePhotoFile.isEmpty()) {
                     ImageDTO oldPhotoDTO = userDTO.profilePhoto();
-                    ImageDTO imageDTO = imageService.saveFileImage(profilePhotoFile);
-
-                    userService.setUserProfilePhoto(imageDTO);
-                    if (oldPhotoDTO != null) {
-                        imageService.deleteImage(oldPhotoDTO);
-                    }
+                    imageService.saveImageInUser(profilePhotoFile);
+                    if (oldPhotoDTO != null) imageService.deleteImage(oldPhotoDTO);
                 }
             } catch (IOException e) {
-                // In case of errors in the images, return to the form with the errors mapped
                 model.addAttribute("imageError", "Error uploading image");
-                // model.addAttribute("user", userComponent.getUser());
                 return "profile_update_template";
             }
         }
@@ -103,7 +94,7 @@ public class ProfileController {
 
     @GetMapping("/order/{id}")
     public String getOrderView(Model model, @PathVariable Long id) {
-        model.addAttribute("order", orderService.getReferenceById(id));
+        model.addAttribute("order", orderService.findDTOById(id));
         return "order_template";
     }
 
@@ -116,7 +107,7 @@ public class ProfileController {
     @DeleteMapping("/deleteaccount") 
     public String deleteAccount(Model model, HttpServletRequest request) { 
         UserDTO userDTO = userService.getLoggedUserDTO();
-        userService.deleteUserDTO(userDTO.id());
+        userService.deleteDTOById(userDTO.id());
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
         return "redirect:/";

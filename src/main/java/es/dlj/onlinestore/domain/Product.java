@@ -3,10 +3,7 @@ package es.dlj.onlinestore.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
 import org.hibernate.annotations.CreationTimestamp;
 import es.dlj.onlinestore.enumeration.ProductType;
 import jakarta.persistence.CascadeType;
@@ -65,188 +62,57 @@ public class Product {
         this.sale = sale;
     }
 
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
-    public String getName() {
-        return name;
-    }
+    public LocalDateTime getCreationDate() { return creationDate; }
+    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
 
-    public float getPrice() {
-        return price;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public int getStock() {
-        return stock;
-    }
+    public float getPrice() { return price; }
+    public void setPrice(float price) { this.price = price; }
 
-    public ProductType getProductType() {
-        return productType;
-    }
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
 
-    public int getTotalSells() {
-        return totalSells;
-    }
+    public float getSale() { return sale; }
+    public void setSale(float sale) { this.sale = sale; }
 
-    public float getSale() {
-        return sale;
-    }
+    public List<Image> getImages() { return this.images; }
+    public void setImages(List<Image> images) { this.images = images; }
+    public void addImage(Image image) { this.images.add(image); }
+    public void clearImages() { this.images.clear(); }
+    
+    public ProductType getProductType() { return productType; }
+    public void setProductType(ProductType productType) { this.productType = productType; }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    public int getTotalSells() { return totalSells; }
+    public void setTotalSells(int totalSells) { this.totalSells = totalSells; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public List<ProductTag> getTags() { return tags; }
+    public void setTags(List<ProductTag> tags) { this.tags = tags; }
+    public void addTag(ProductTag tag) { this.tags.add(tag); }
 
-    public void setPrice(float price) {
-        this.price = price;
-    }
+    public User getSeller() { return seller; }
+    public void setSeller(User seller) { this.seller = seller; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public List<Review> getReviews() { return reviews; }
+    public void setReviews(List<Review> reviews) { this.reviews = reviews; }
+    public void addReview(Review review) { this.reviews.add(review); }
+    public void removeReview(Review review) { this.reviews.remove(review); }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    public void setProductType(ProductType productType) {
-        this.productType = productType;
-    }
-
-    public void setTotalSells(int totalSells) {
-        this.totalSells = totalSells;
-    }
-
-    public void setSale(float sale) {
-        this.sale = sale;
-    }
-
-    public List<ProductTag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<ProductTag> tags) {
-        this.tags = tags;
-    }
-
-    public void addImage(Image image){
-        this.images.add(image);
-    }
-
-    public List<Image> getImages(){
-        return this.images;
-    }
-
-    public void addTag(ProductTag tag){
-        this.tags.add(tag);
-    }
-
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public User getSeller() {
-        return seller;
-    }
-
-    public void setSeller(User seller) {
-        this.seller = seller;
-    }
-
-    public void setImages(List<Image> images) {
-        this.images = images;
-    }
-
-    public void clearImages() {
-        this.images.clear();
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public void addReview(Review review) {
-        this.reviews.add(review);
-    }
-
-    public boolean sellOneUnit() {
-        if (stock > 0) {
-            stock--;
-            totalSells++;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isInStock() {
-        return stock > 0;
-    }
-
-    public float getRating() {
-        float rating = 0;
-        for (Review review : reviews) {
-            rating += review.getRating();
-        }
-        return ((float) Math.round(rating / ((float) reviews.size()) * 10f)) / 10f;
-    }
-
-    public int getNumberRatings() {
-        return reviews.size();
-    }
-
-    public List<Map<String, Object>> getProductTypesMapped() {
-        return ProductType.getMapped(productType);
-    }
-
-    public boolean isOnSale() {
-        return sale > 0;
-    }
-
-    public int getTagsCount() {
-        return tags.size();
+    public void sellOneUnit() {
+        stock--;
+        totalSells++;
     }
 
     public float getPriceWithSale() {
-        return price - getProductSale();
-    }
-
-    public float getProductSale() {
-        return ((float) Math.round(price * sale)) / 100f;
-    }
-
-    public String getAllTagsInString() {
-        return tags.stream()
-           .map(ProductTag::getName)
-           .collect(Collectors.joining(", "));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(id, product.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+        return price - ((float) Math.round(price * sale)) / 100f;
     }
 
     @Override
@@ -266,11 +132,16 @@ public class Product {
                 '}';
     }
 
-    public void removeReview(Review review) {
-        this.reviews.remove(review);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
     }
 
-    public void removeImage(Image image) {
-        this.images.remove(image);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

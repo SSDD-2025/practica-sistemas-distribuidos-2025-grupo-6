@@ -30,33 +30,16 @@ public class ProductTag {
         this.name = name;
     }
 
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void addProduct(Product product){
-        this.products.add(product);
-    }
-
-    public void removeProduct(Product product){
-        this.products.remove(product);
-    }
+    public List<Product> getProducts() { return products; }
+    public void setProducts(List<Product> products) { this.products = products; }
+    public void addProduct(Product product) { this.products.add(product); }
+    public void removeProduct(Product product) { this.products.remove(product); }
 
     @Override
     public String toString() {
@@ -64,10 +47,6 @@ public class ProductTag {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 
     @Override

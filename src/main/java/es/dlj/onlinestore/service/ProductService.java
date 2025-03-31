@@ -3,13 +3,9 @@ package es.dlj.onlinestore.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,15 +16,10 @@ import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
-import es.dlj.onlinestore.dto.OrderDTO;
-import es.dlj.onlinestore.dto.OrderSimpleDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
-import es.dlj.onlinestore.dto.UserDTO;
-import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.mapper.ProductMapper;
-import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
 import es.dlj.onlinestore.repository.ProductRepository;
 import es.dlj.onlinestore.repository.ProductTagRepository;
@@ -44,12 +35,6 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ImageService imageService;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -61,17 +46,22 @@ public class ProductService {
     @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
-    private ProductMapper productMapper;
+
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
+
+    @Autowired
+    private ImageService imageService;
+
+
+
+    @Autowired
+    private ProductMapper productMapper;
     
     @PostConstruct
     @Transactional
     public void init() {
-        // Checks if there are products already in the database
-        // if (productRepository.count() > 0) return;
 
         // Preload products
         List<Product> productList = List.of(
@@ -145,7 +135,7 @@ public class ProductService {
         productTagsList.add(transformStringToTags("watch, samsung"));
 
         // Preload products, tags and images
-        User user = userService.findUserById(1L);
+        User user = userService.findById(1L);
 
         for (int i = 0; i < productList.size(); i++) {
 
@@ -167,7 +157,7 @@ public class ProductService {
         }
     }
 
-    public ProductDTO findByIdDTO(Long id) {
+    public ProductDTO findDTOById(Long id) {
         return productMapper.toDTO(findById(id));
     }
 
@@ -175,10 +165,11 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow();
     }
 
+    // TODO: Fix
     @Transactional
     public void updateProduct(Long id, ProductDTO newProductDTO, List<MultipartFile> imagesVal, String tagsVal) {
         Product newProduct = productMapper.toDomain(newProductDTO);
-        Product oldProduct = productMapper.toDomain(getProduct(id));
+        Product oldProduct = productMapper.toDomain(findDTOById(id));
         oldProduct.setName(newProduct.getName());
         oldProduct.setPrice(newProduct.getPrice());
         oldProduct.setDescription(newProduct.getDescription());
@@ -186,7 +177,6 @@ public class ProductService {
         oldProduct.setStock(newProduct.getStock());
         oldProduct.setSale(newProduct.getSale());
 
-        
         if (imagesVal != null && imagesVal.size() > 1) {
             try {
                 imageService.saveImagesInProduct(newProduct, imagesVal);
@@ -217,6 +207,7 @@ public class ProductService {
         save(savedProduct);
     }
 
+    // TODO: Product Tag as DTO
     @Transactional
     public List<ProductTag> transformStringToTags(String tagsAsString){
         List<ProductTag> tagList = new ArrayList<>();
@@ -241,7 +232,6 @@ public class ProductService {
         for (ProductTag tag : productTagRepository.findAll()) {
             tags.add(Map.of("name", tag.getName(), "count", tag.getProducts().size()));
         }
-
         // Sort by count descending
         tags.sort((a, b) -> - ((Integer) a.get("count")).compareTo((Integer) b.get("count")));
         return tags;
@@ -262,27 +252,27 @@ public class ProductService {
         return getAllProductTypesAndCount(null);
     }
 
-    public Collection<ProductSimpleDTO> getAllProductsDTO() {
+    public Collection<ProductSimpleDTO> findAllDTOs() {
         return productMapper.toDTOs(productRepository.findAll());
     }
 
-    Collection<Product> getAllProducts() {
+    Collection<Product> findAll() {
         return productRepository.findAll();
     }
 
-    public List<Product> getProductsByProductType(ProductType type) {
-        return productRepository.findByProductType(type);
+    public Collection<ProductSimpleDTO> findAllDTOsByProductType(ProductType type) {
+        return productMapper.toDTOs(productRepository.findByProductType(type));
     }
 
-    public Collection<ProductSimpleDTO> findByNameContaining(String name) {
+    public Collection<ProductSimpleDTO> findAllDTOsByNameContaining(String name) {
         return productMapper.toDTOs(productRepository.findByNameContaining(name));
     }
 
-    public ProductDTO getProduct(long id) {
+    public ProductDTO findDTOById(long id) {
         return productMapper.toDTO(productRepository.findById(id).orElseThrow());
     }
 
-    public List<Product> searchProducts(String name, Integer minPrice, Integer maxPrice, List<String> tags, List<String> productTypeStrings) {
+    public Collection<ProductSimpleDTO> findAllDTOsBy(String name, Integer minPrice, Integer maxPrice, List<String> tags, List<String> productTypeStrings) {
         // Transform productTypeStrings to ProductType
         List<ProductType> productTypes = null;
         if (productTypeStrings != null) {
@@ -291,7 +281,7 @@ public class ProductService {
                 productTypes.add(ProductType.valueOf(type));
             }
         }
-        return productRepository.searchProducts(name, minPrice, maxPrice, tags, productTypes);
+        return productMapper.toDTOs(productRepository.searchProducts(name, minPrice, maxPrice, tags, productTypes));
     }
 
     public Collection<ProductSimpleDTO> getBestSellers() {
@@ -306,82 +296,15 @@ public class ProductService {
         return productMapper.toDTOs(productRepository.findByStockLessThan(stock));
     }
 
-    public Optional<Product> findById(long id){
-        return productRepository.findById(id);
-    }
-
-    @Transactional
-    public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id).orElse(null);
-        if (product == null) return;
-        deepDeleteImages(product);
-        deepDeleteReviews(product);
-        deepDeleteTags(product);
-        deepDeleteSeller(product);
-        deepDeleteOrders(product);
-        productRepository.delete(product);
-    }
-
-    @Transactional
-    private void deepDeleteImages(Product product) {
-        List<Image> images = new ArrayList<>(product.getImages());
-        for (Image image : images) {
-            imageService.delete(image);
-        }
-        product.clearImages();
-    }
-
-    @Transactional
-    private void deepDeleteSeller(Product product) {
-        User seller = product.getSeller();
-        if (seller != null) {
-            seller.removeProductFromSale(product);
-            userRepository.save(seller);
-        }
-    }
-
-    @Transactional
-    private void deepDeleteOrders(Product product) {
-        List<Order> orders = orderRepository.findByProductsContaining(product);
-        for (Order order : orders) {
-            order.removeProduct(product);
-            orderRepository.save(order);
-        }
-    }
-
-    @Transactional
-    private void deepDeleteTags(Product product) {
-        List<ProductTag> tags = product.getTags();
-        for (ProductTag tag : tags) {
-            tag.getProducts().remove(product);
-            productTagRepository.save(tag);
-        }
-    }
-
-    @Transactional
-    private void deepDeleteReviews(Product product) {
-        List<Review> reviews = new ArrayList<>(product.getReviews());
-        for (Review review : reviews) {
-            User owner = review.getOwner();
-            if (owner != null) {
-                owner.removeReview(review);
-                userService.save(owner);
-            }
-            review.setProduct(null);
-            product.getReviews().remove(review);
-            reviewRepository.delete(review);
-        }
-    }
-
-    public Product save(Product product) {
+    Product save(Product product) {
         return productRepository.save(product);
     }
 
-    public ProductTag saveTag(ProductTag tag) {
+    ProductTag saveTag(ProductTag tag) {
         return productTagRepository.save(tag);
     }
 
-    public boolean isOwnerProduct(Long productId) {
+    public boolean isProductOwner(Long productId) {
         try {
             User user = userService.getLoggedUser();
             if (user == null) return false;
@@ -417,7 +340,69 @@ public class ProductService {
         user.addProductForSale(savedProduct);
         userService.save(user);
         return productMapper.toDTO(savedProduct);
-        
+    }
+
+    @Transactional
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product == null) return;
+        deepDeleteImages(product);
+        deepDeleteReviews(product);
+        deepDeleteTags(product);
+        deepDeleteSeller(product);
+        deepDeleteOrders(product);
+        productRepository.delete(product);
+    }
+
+    @Transactional
+    private void deepDeleteImages(Product product) {
+        List<Image> images = new ArrayList<>(product.getImages());
+        for (Image image : images) {
+            imageService.delete(image);
+        }
+        product.clearImages();
+    }
+
+    @Transactional
+    private void deepDeleteSeller(Product product) {
+        User seller = product.getSeller();
+        if (seller != null) {
+            seller.removeProductFromSales(product);
+            userRepository.save(seller);
+        }
+    }
+
+    @Transactional
+    private void deepDeleteOrders(Product product) {
+        List<Order> orders = orderRepository.findByProductsContaining(product);
+        for (Order order : orders) {
+            order.removeProduct(product);
+            orderRepository.save(order);
+        }
+    }
+
+    @Transactional
+    private void deepDeleteTags(Product product) {
+        List<ProductTag> tags = product.getTags();
+        for (ProductTag tag : tags) {
+            tag.getProducts().remove(product);
+            productTagRepository.save(tag);
+        }
+    }
+
+    @Transactional
+    private void deepDeleteReviews(Product product) {
+        List<Review> reviews = new ArrayList<>(product.getReviews());
+        for (Review review : reviews) {
+            User owner = review.getOwner();
+            if (owner != null) {
+                owner.removeReview(review);
+                userService.save(owner);
+            }
+            review.setProduct(null);
+            product.getReviews().remove(review);
+            reviewRepository.delete(review);
+        }
     }
 
     

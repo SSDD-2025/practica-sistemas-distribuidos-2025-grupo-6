@@ -53,13 +53,6 @@ public class Order {
     
     public Order() {}
 
-    public Order(float totalPrice, PaymentMethod paymentMethod, String address, String phoneNumber) {
-        this.totalPrice = totalPrice;
-        this.paymentMethod = paymentMethod;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-    }
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -68,6 +61,9 @@ public class Order {
 
     public Set<Product> getProducts() { return products; }
     public void setProducts(Set<Product> products) { this.products = products; }
+
+    public List<String> getNonContinuedProducts() { return nonContinuedProducts; }
+    public void setNonContinuedProducts(List<String> nonContinuedProducts) { this.nonContinuedProducts = nonContinuedProducts; }
 
     public float getTotalPrice() { return totalPrice; }
     public void setTotalPrice(float totalPrice) { this.totalPrice = totalPrice; }
@@ -126,13 +122,5 @@ public class Order {
     @Override
     public int hashCode() {
         return id.hashCode();
-    }
-
-    public List<String> getNonContinuedProducts() {
-        return nonContinuedProducts;
-    }
-
-    public void setNonContinuedProducts(List<String> nonContinuedProducts) {
-        this.nonContinuedProducts = nonContinuedProducts;
     }
 }

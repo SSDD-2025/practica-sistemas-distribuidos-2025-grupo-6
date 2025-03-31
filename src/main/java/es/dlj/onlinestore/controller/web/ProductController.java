@@ -45,7 +45,7 @@ class ProductController {
 
     @GetMapping("/{id}")
     public String loadProductDetails(Model model, @PathVariable Long id) {
-        ProductDTO product = productService.getProduct(id);
+        ProductDTO product = productService.findDTOById(id);
 
         // Create a list of maps to store image names and stablish if has to be shown as first
         List<Map<String, Object>> images = new ArrayList<>();
@@ -56,15 +56,15 @@ class ProductController {
 
         model.addAttribute("allImages", images);
         // model.addAttribute("user", userComponent.getUser());
-        model.addAttribute("product", productService.getProduct(id));
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
+        model.addAttribute("product", productService.findDTOById(id));
+        model.addAttribute("isOwnerProduct", productService.isProductOwner(id));
         
         return "product_template";
     }
 
     @PostMapping("/{id}/add-review")
     public String submitReview(Model model, @PathVariable Long id, @ModelAttribute ReviewDTO reviewDTO) {
-        reviewService.saveReview(id, reviewDTO);
+        reviewService.save(id, reviewDTO);
         return "redirect:/product/" + id; 
     }
 
@@ -77,7 +77,7 @@ class ProductController {
     @PostMapping("/{id}/add-to-cart")
     public String addProductToCart(Model model, @PathVariable Long id){
         userService.addProductToCart(id);
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
+        model.addAttribute("isOwnerProduct", productService.isProductOwner(id));
         return "redirect:/cart";
     }
 
@@ -86,16 +86,16 @@ class ProductController {
         if (name != null) {
             // If it comes from home page loads query for name search
             model.addAttribute("name", name);
-            model.addAttribute("productList", productService.findByNameContaining(name));
+            model.addAttribute("productList", productService.findAllDTOsByNameContaining(name));
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         } else if (productType != null) {
             // If it comes from nav bar for product type search
             ProductType productTypeObj = ProductType.valueOf(productType);
-            model.addAttribute("productList", productService.getProductsByProductType(productTypeObj));
+            model.addAttribute("productList", productService.findAllDTOsByProductType(productTypeObj));
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount(productTypeObj));
         } else {
             // Otherwise loads all products
-            model.addAttribute("productList", productService.getAllProductsDTO());
+            model.addAttribute("productList", productService.findAllDTOs());
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         }
 
@@ -115,7 +115,7 @@ class ProductController {
             @RequestParam(required=false) List<String> productType
     ) {
         // Add attributes to the model
-        model.addAttribute("productList", productService.searchProducts(name, minPrice, maxPrice, tags, productType));
+        model.addAttribute("productList", productService.findAllDTOsBy(name, minPrice, maxPrice, tags, productType));
         model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         model.addAttribute("tags", productService.getAllTags());
 
@@ -124,10 +124,10 @@ class ProductController {
 
     @GetMapping("/{id}/update")
     public String editProduct(Model model, @PathVariable Long id) {
-        ProductDTO product = productService.getProduct(id);
+        ProductDTO product = productService.findDTOById(id);
         
         model.addAttribute("product", product);
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
+        model.addAttribute("isOwnerProduct", productService.isProductOwner(id));
         return "product_update_template";
     }
 
@@ -151,10 +151,8 @@ class ProductController {
             model.addAttribute("tagsVal", tagsVal);
             return "product_update_template";
         }
-
-        ProductDTO product = productService.getProduct(id);
         
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
+        model.addAttribute("isOwnerProduct", productService.isProductOwner(id));
         
         try {
             productService.updateProduct(id, newProduct, imagesVal, tagsVal); 
@@ -202,7 +200,7 @@ class ProductController {
     @GetMapping("/{id}/delete")
     public String deleteProduct(Model model, @PathVariable Long id) {
         productService.deleteProduct(id);
-        model.addAttribute("isOwnerProduct", productService.isOwnerProduct(id));
+        model.addAttribute("isOwnerProduct", productService.isProductOwner(id));
         return "redirect:/";
     }
     

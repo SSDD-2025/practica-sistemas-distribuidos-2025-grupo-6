@@ -1,12 +1,8 @@
 package es.dlj.onlinestore.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,13 +15,6 @@ import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
-import es.dlj.onlinestore.dto.ImageDTO;
-import es.dlj.onlinestore.dto.OrderDTO;
-import es.dlj.onlinestore.mapper.ImageMapper;
-import es.dlj.onlinestore.mapper.OrderMapper;
-import es.dlj.onlinestore.dto.ReviewDTO;
-import es.dlj.onlinestore.mapper.ProductMapper;
-import es.dlj.onlinestore.mapper.ReviewMapper;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
@@ -45,9 +34,6 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
@@ -59,17 +45,16 @@ public class UserService {
     @Autowired
     private ImageRepository imageRepository;
 
+
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private OrderMapper orderMapper;
-
-    @Autowired
-    private ReviewMapper reviewMapper;
-
-    @Autowired
-    private ImageMapper imageMapper;
 
     @PostConstruct
     public void init() {
@@ -79,17 +64,9 @@ public class UserService {
             List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
     }
 
-    public void setUserProfilePhoto(ImageDTO imageDTO) {
-        User user = getLoggedUser();
-        Image image = imageMapper.toDomain(imageDTO);
-        user.setProfilePhoto(image);
-        userRepository.save(user);
-    }
-
     public void removeProductFromCart(Long productId) {
         User user = getLoggedUser();
-        Product product = productRepository.findById(productId).orElseThrow();
-        user.removeProductFromCart(product);
+        user.removeProductFromCartById(productId);
         userRepository.save(user);
     }
 
@@ -100,13 +77,12 @@ public class UserService {
     }
 
     void addOrderToUser(Order order) {
-        System.out.println("Adding order to user: " + order);
         User user = getLoggedUser();
         user.addOrder(order);
         userRepository.save(user);
     }
     
-    public List<String> checkNewUser(UserFormDTO newUser) {
+    public List<String> checkNewUserError(UserFormDTO newUser) {
         if (!newUser.password().equals(newUser.repeatedPassword())) {
             return List.of("confirmPasswordError", "Passwords do not match");
         }
@@ -117,20 +93,18 @@ public class UserService {
     }
 
     public void saveDTO(UserDTO userDTO) {
-        User user = userMapper.toDomain(userDTO);
-        save(user);
+        save(userMapper.toDomain(userDTO));
     }
 
     public void saveDTO(UserFormDTO userFromDTO) {
-        User user = userMapper.toDomain(userFromDTO);
-        save(user);
+        save(userMapper.toDomain(userFromDTO));
     }
 
     User save(User user) {
         return userRepository.save(user);
     }
 
-    // TODO: Fix
+    // TODO: Fix not a good form of doing it
     public UserDTO replaceUser (Long id, UserDTO userDTO) {
         if (userRepository.existsById(id)) {
             User updateUser = userMapper.toDomain(userDTO);
@@ -140,18 +114,14 @@ public class UserService {
         } else {
             throw new NoSuchElementException(); 
         }
-    }
-
-    public Collection<UserDTO> getUsers() {
-        return userMapper.toDTOs(userRepository.findAll());
     } 
 
-    public UserDTO findUserDTOById(Long id) {
-        return userMapper.toDTO(userRepository.findById(id).orElse(null));
+    public UserSimpleDTO findSimpleDTOByName(String name) {
+        return userMapper.toSimpleDTO(userRepository.findByUsername(name).orElseThrow());
     }
 
-    User findUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    User findById(Long id) {
+        return userRepository.findById(id).orElseThrow();
     }
     
     public boolean existsUserByUsername(String username) {
@@ -170,14 +140,22 @@ public class UserService {
         return null;
     }
 
+    public void addProductToCart(Long ProductId) {
+        User user = getLoggedUser();
+        Product product = productRepository.findById(ProductId).orElseThrow();
+        user.addProductToCart(product);
+        userRepository.save(user);
+    }
+
+    
+
     @Transactional
-    public UserDTO deleteUserDTO(Long id) {
-        User user = deleteUser(id);
-        return userMapper.toDTO(user);
+    public UserDTO deleteDTOById(Long id) {
+        return userMapper.toDTO(deleteById(id));
     }
 
     @Transactional
-    public User deleteUser(Long id) {
+    private User deleteById(Long id) {
         User user = userRepository.findById(id).orElse(null);
         deepDeleteProducts(user);
         deepDeleteReviews(user);
@@ -245,17 +223,6 @@ public class UserService {
     @Transactional 
     private void deepDeleteRoles(User user) {
         user.getRoles().clear();
-    }
-
-    public void addProductToCart(Long ProductId) {
-        User user = getLoggedUser();
-        Product product = productRepository.findById(ProductId).orElseThrow();
-        user.addProductToCart(product);
-        userRepository.save(user);
-    }
-
-    public UserSimpleDTO findByUserSimpleDTOName(String name) {
-        return userMapper.toSimpleDTO(userRepository.findByUsername(name).orElseThrow());
     }
 
 }

@@ -19,7 +19,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class OrderService {
 
-    private final ProductService productService;
+    @Autowired
+    private ProductService productService;
 
     @Autowired
     private OrderRepository orderRepository;
@@ -30,53 +31,38 @@ public class OrderService {
     @Autowired
     private OrderMapper orderMapper;
 
-    OrderService(ProductService productService) {
-        this.productService = productService;
-    }
-
-    public OrderDTO getReferenceById(Long id) {
+    public OrderDTO findDTOById(Long id) {
         return orderMapper.toDTO(orderRepository.getReferenceById(id));
     }
 
     public boolean isCheckoutCartValid() {
-
         User user = userService.getLoggedUser();
         Set<Product> cartProducts = user.getCartProducts();
-
         // Check if the cart is empty
-        if (cartProducts.isEmpty()) {
-            return false;
-        }
-
+        if (cartProducts.isEmpty()) return false;
         // Check if all products are in stock
         for (Product product : cartProducts) {
-            if (product.getStock() <= 0) {
-                return false;
-            }
+            if (product.getStock() <= 0) return false;
         }
-
         return true;
     }
 
     @Transactional
     public OrderSimpleDTO proceedCheckout(String paymentMethod, String address, String phoneNumber) {
 
-        if (!isCheckoutCartValid()) {
-            return null;
-        }
+        if (!isCheckoutCartValid()) return null;
 
         User user = userService.getLoggedUser();
         Set<Product> cartProducts = user.getCartProducts();
 
         // Update the stock of the products in the cart
         for (Product product : cartProducts) { 
-            product.setStock(product.getStock() - 1);
+            product.sellOneUnit();
             productService.save(product);
         }
 
         // Create and save the order
         Order order = new Order();
-        // order.setId(null);
         order.setUser(user);
         order.setProducts(new HashSet<>(cartProducts));
         order.setTotalPrice(user.getCartTotalPrice());
@@ -89,7 +75,6 @@ public class OrderService {
         userService.addOrderToUser(order);
 
         return orderMapper.toSimpleDTO(order);
-        
     }
 
     Order save(Order order) {

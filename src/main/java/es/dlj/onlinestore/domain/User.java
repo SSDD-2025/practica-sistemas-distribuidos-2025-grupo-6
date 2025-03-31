@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -39,12 +38,8 @@ public class User {
     @CreationTimestamp
     private LocalDateTime creationDate;
 
-    
     private String username;
-
-    
     private String encodedPassword;
-
     private String name;
     private String surname;
     private String email;
@@ -74,8 +69,7 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<String>();
 
-    public User() {
-    }
+    public User() {}
 
     public User(String username, String password, String name, String surname, String email, List<String> role, String address, String city, String postalCode, String phone) {
         this.username = username;
@@ -231,7 +225,9 @@ public class User {
         cartProducts.add(product);
     }
 
-    public void removeProductFromCart(Product product){
+    public void removeProductFromCartById(long productId){
+        Product product = cartProducts.stream().filter(p -> productId == p.getId()).findFirst().orElse(null);
+        if (product == null) return;
         cartProducts.remove(product);
     }
 
@@ -267,27 +263,6 @@ public class User {
         return (float) cartProducts.stream().mapToDouble(Product::getPriceWithSale).sum();
     }
 
-    public List<Map<String, Object>> getPaymentMethodsMapped() {
-        List<Map<String, Object>> paymentMethods = new ArrayList<>();
-        for (PaymentMethod pMethod : PaymentMethod.values()) {
-            paymentMethods.add(Map.of("name", pMethod.toString(), "selected", (paymentMethod != null && paymentMethod.equals(pMethod))));
-        }
-        return paymentMethods;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User otherUser = (User) o;
-        return Objects.equals(id, otherUser.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
     public List<Product> getProductsForSell(){
         return this.productsForSell;
     }
@@ -302,25 +277,6 @@ public class User {
 
     public void removeOrder(Order order) {
         this.orders.remove(order);
-    }
-    
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", creationDate=" + creationDate +
-                ", username='" + username + '\'' +
-                ", password='" + encodedPassword + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                ", city='" + city + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                ", phone='" + phone + '\'' +
-                ", paymentMethod=" + paymentMethod +
-                ", role=" + roles +
-                '}';    
     }
 
     public String getCreationDateFormatted() {
@@ -340,7 +296,39 @@ public class User {
         this.profilePhoto = profilePhoto;
     }
 
-    public void removeProductFromSale(Product product) {
+    public void removeProductFromSales(Product product) {
         this.productsForSell.remove(product);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", creationDate=" + creationDate +
+                ", username='" + username + '\'' +
+                ", password='" + encodedPassword + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", phone='" + phone + '\'' +
+                ", paymentMethod=" + paymentMethod +
+                ", role=" + roles +
+                '}';    
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User otherUser = (User) o;
+        return Objects.equals(id, otherUser.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

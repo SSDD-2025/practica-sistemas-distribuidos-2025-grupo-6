@@ -10,11 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.dlj.onlinestore.dto.OrderSimpleDTO;
-import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.service.OrderService;
-import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
-import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/cart")

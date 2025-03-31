@@ -2,20 +2,14 @@ package es.dlj.onlinestore.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
-import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
-import es.dlj.onlinestore.dto.UserDTO;
-import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.ReviewMapper;
-import es.dlj.onlinestore.mapper.UserMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import es.dlj.onlinestore.repository.ReviewRepository;
@@ -26,12 +20,6 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    @Autowired
-    private ReviewMapper reviewMapper;
-
-    @Autowired
-    private ProductMapper productMapper;
-
 
     @Autowired
     private UserService userService;
@@ -39,18 +27,17 @@ public class ReviewService {
     @Autowired
     private ProductService productService;
 
+
     @Autowired
-    private UserMapper userMapper;
+    private ReviewMapper reviewMapper;
 
     @PostConstruct
     @Transactional
     public void init() {
-        // Checks if there are any reviews in the database
-        // if (reviewRepository.count() > 0) return;
             
-        User user = userService.findUserById(1L);
+        User user = userService.findById(1L);
 
-        List<Product> products = new ArrayList<>(productService.getAllProducts()); 
+        List<Product> products = new ArrayList<>(productService.findAll()); 
 
         List<Review> reviews = new ArrayList<>();
         reviews.add(reviewRepository.save(new Review("Excellent laptop", "The Dell XPS 15 is incredibly fast and efficient. Highly recommended.", 5)));
@@ -81,40 +68,24 @@ public class ReviewService {
         }
     }
 
-    public ReviewDTO createReview(ReviewDTO reviewDTO) {
-        Review review = reviewMapper.toDomain(reviewDTO);
-        reviewRepository.save(review); 
-        return reviewMapper.toDTO(review);
-    }
-
-    public ReviewDTO replaceReview (Long id, ReviewDTO reviewDTO) {
-        if (reviewRepository.existsById(id)) {
-            Review updateReview = reviewMapper.toDomain(reviewDTO);
-            updateReview.setId(id);
-            reviewRepository.save(updateReview);
-            return reviewMapper.toDTO(updateReview);
-        } else {
-            throw new NoSuchElementException(); 
-        }
-    }
-
-    // public List<ReviewDTO> getUserReviews() {
-    //     User user = userService.getLoggedUser();
-    //     return reviewMapper.toDTOs(reviewRepository.findByOwner(user));
+    // public ReviewDTO createReview(ReviewDTO reviewDTO) {
+    //     Review review = reviewMapper.toDomain(reviewDTO);
+    //     reviewRepository.save(review); 
+    //     return reviewMapper.toDTO(review);
     // }
 
     @Transactional
     public ReviewDTO delete (Long id) {
         Review review = reviewRepository.findById(id).orElseThrow();
-        deepDeleteOwner(review);
-        deepDeleteProduct(review);
+        deepDeleteFromOwner(review);
+        deepDeleteFromProduct(review);
         reviewRepository.delete(review);
         reviewRepository.flush();
         return reviewMapper.toDTO(review);
     }
 
     @Transactional
-    private void deepDeleteProduct(Review review) {
+    private void deepDeleteFromProduct(Review review) {
         Product product = review.getProduct();
         if (product != null) {
             product.removeReview(review);
@@ -123,7 +94,7 @@ public class ReviewService {
     }
 
     @Transactional
-    private void deepDeleteOwner(Review review) {
+    private void deepDeleteFromOwner(Review review) {
         User owner = review.getOwner();
         if (owner != null) {
             owner.removeReview(review);
@@ -132,7 +103,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void saveReview(Long productId, ReviewDTO reviewDTO) {
+    public void save(Long productId, ReviewDTO reviewDTO) {
         User user = userService.getLoggedUser();
         Product product = productService.findById(productId);
         Review review = reviewMapper.toDomain(reviewDTO);

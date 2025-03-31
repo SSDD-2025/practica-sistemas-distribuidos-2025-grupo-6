@@ -4,14 +4,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.validator.constraints.Range;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Size;
 
 @Entity
 public class Review {
@@ -41,70 +38,43 @@ public class Review {
         this.rating = rating;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String tittle) { this.title = tittle; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public int getRating() {
-        return rating;
-    }
+    public int getRating() { return rating; }
+    public void setRating(int rating) { this.rating = rating; }
     
-    public User getOwner() {
-        return owner;
-    }
+    public User getOwner() { return owner; }
+    public void setOwner(User owner) { this.owner = owner; } 
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setTitle(String tittle) {
-        this.title = tittle;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    } 
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
     
-    @Override
-    public String toString() {
-        return "UserRating{" + "id=" + id + ", tittle=" + title + ", description=" + description + ", rating=" + rating + ", creationDate=" + creationDate + ", owner=" + owner + '}';
-    }
+    public LocalDateTime getCreationDate() { return creationDate; }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
+    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
 
     public String getCreationDateFormatted() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'of' MMMM, yyyy 'at' HH:mm", Locale.ENGLISH);
         return creationDate.format(formatter);
+    }
+
+    @Override
+    public String toString() {
+        return "UserRating{" + 
+            "id=" + id + 
+            ", tittle=" + title + 
+            ", description=" + description + 
+            ", rating=" + rating + 
+            ", creationDate=" + creationDate + 
+            ", owner=" + owner + 
+            '}';
     }
     
     @Override

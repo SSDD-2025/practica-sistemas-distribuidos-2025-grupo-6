@@ -28,8 +28,4 @@ public record UserDTO(
     List<ReviewDTO> reviews,
     List<OrderSimpleDTO> orders,
     Set<ProductSimpleDTO> cartProducts
-) {
-    public float getCartTotalPrice() {
-        return (float) cartProducts.stream().mapToDouble(ProductSimpleDTO::getPriceWithSale).sum();
-    }
-}
+) {}

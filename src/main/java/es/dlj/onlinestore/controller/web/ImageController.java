@@ -37,7 +37,7 @@ import es.dlj.onlinestore.service.UserService;
     public ResponseEntity<Object> getProductImage(@PathVariable Long id) {
         try {
             return imageService.loadImage(
-                productService.getProduct(id).images().getFirst().id());
+                productService.findDTOById(id).images().getFirst().id());
         } catch (NoSuchElementException e) {
             return imageService.loadDefaultImage();
         }

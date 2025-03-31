@@ -2,7 +2,9 @@ package es.dlj.onlinestore.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.enumeration.ProductType;
 
 public record ProductDTO(
@@ -43,6 +45,12 @@ public record ProductDTO(
 
     public float getPriceWithSale() {
         return price - getProductSale();
+    }
+
+    public String getAllTagsInString() {
+        return tags.stream()
+           .map(ProductTagSimpleDTO::name)
+           .collect(Collectors.joining(", "));
     }
 
 }

@@ -26,11 +26,8 @@ import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.mapper.ImageMapper;
-import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
 
-
-// TODO: Check unused functions (All Services check this)
 @Service
 public class ImageService {
     
@@ -42,9 +39,6 @@ public class ImageService {
 
     @Autowired
     private ImageMapper imageMapper;
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Transactional
     public ImageDTO saveFileImage(MultipartFile rawImage) throws IOException {
@@ -107,6 +101,10 @@ public class ImageService {
         imageRepository.delete(profilePhoto);
     }
 
+    public ResponseEntity<Object> loadDefaultImage() {
+        return loadImageFromPath("static/images/default.png", "image/png");
+    }
+
     public ResponseEntity<Object> loadImageFromPath(String path, String contentType) {
         try {
             Resource defaultImage = new ClassPathResource(path);
@@ -115,10 +113,6 @@ public class ImageService {
         } catch (IOException e) {
             return ResponseEntity.notFound().build();
         }
-    }
-
-    public ResponseEntity<Object> loadDefaultImage() {
-        return loadImageFromPath("static/images/default.png", "image/png");
     }
 
     @Transactional
