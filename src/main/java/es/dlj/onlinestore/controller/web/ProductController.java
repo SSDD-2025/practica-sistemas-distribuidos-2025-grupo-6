@@ -127,8 +127,14 @@ class ProductController {
         ProductDTO product = productService.findDTOById(id);
         
         model.addAttribute("product", product);
-        model.addAttribute("isOwnerProduct", productService.isProductOwner(id));
-        return "product_update_template";
+
+        model.addAttribute("productTypesMapped", ProductType.getMapped(product.productType()));
+        if(productService.isProductOwner(id)) {
+            return "product_update_template";
+        }
+        else{
+            return "redirect:/product/" + id;
+        }
     }
 
     @PostMapping ("/{id}/update")
@@ -141,6 +147,7 @@ class ProductController {
             @Valid @ModelAttribute ProductDTO newProduct,
             BindingResult bindingResult
     ) {
+        
         if (bindingResult.hasErrors()) {
             // In case of errors, return to the form with the errors mapped
             Map<String, String> errors = new HashMap<>();
@@ -153,17 +160,17 @@ class ProductController {
         }
         
         model.addAttribute("isOwnerProduct", productService.isProductOwner(id));
-        
-        try {
-            productService.updateProduct(id, newProduct, imagesVal, tagsVal); 
+        if (productService.isProductOwner(id)){
+            try {
+                productService.updateProduct(id, newProduct, imagesVal, tagsVal); 
 
-        } catch(NoSuchElementException e) {
-            // In case of errors in the images, return to the form with the errors mapped
-            model.addAttribute("imageError", "Error uploading images");
-            model.addAttribute("tagsVal", tagsVal);
-            return "product_update_template";
+            } catch(NoSuchElementException e) {
+                // In case of errors in the images, return to the form with the errors mapped
+                model.addAttribute("imageError", "Error uploading images");
+                model.addAttribute("tagsVal", tagsVal);
+                return "product_update_template";
+            }
         }
-
         return "redirect:/product/" + id;
     }
 
@@ -199,7 +206,9 @@ class ProductController {
 
     @GetMapping("/{id}/delete")
     public String deleteProduct(Model model, @PathVariable Long id) {
-        productService.deleteProduct(id);
+        if (productService.isProductOwner(id)){
+            productService.deleteProduct(id);
+        }
         model.addAttribute("isOwnerProduct", productService.isProductOwner(id));
         return "redirect:/";
     }
