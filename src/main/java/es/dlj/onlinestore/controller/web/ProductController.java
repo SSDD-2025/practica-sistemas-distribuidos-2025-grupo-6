@@ -186,7 +186,9 @@ class ProductController {
 
     @GetMapping("/{id}/delete")
     public String deleteProduct(Model model, @PathVariable Long id) {
-        productService.deleteProduct(id);
+        if (productService.isProductOwner(id)){
+            productService.deleteProduct(id);
+        }
         return "redirect:/";
     }
     
