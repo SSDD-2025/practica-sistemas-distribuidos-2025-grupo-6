@@ -51,7 +51,7 @@ public class ImageService {
     }
 
     @Transactional
-    public Image saveFileImageFromPath(String filePath) throws IOException {
+    Image saveFileImageFromPath(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) {
             throw new FileNotFoundException("File doesn't exists: " + filePath);
@@ -65,8 +65,7 @@ public class ImageService {
     }
 
     @Transactional
-    public void saveImagesInProduct(Product product, List<MultipartFile> rawImages) throws IOException {
-        if (product.getImages() == null) product.setImages(new ArrayList<Image>());
+    void saveImagesInProduct(Product product, List<MultipartFile> rawImages) throws IOException {
         product.clearImages();
         for (MultipartFile rawImage : rawImages){
             Image savedImage = imageMapper.toDomain(saveFileImage(rawImage));
@@ -95,14 +94,6 @@ public class ImageService {
         }
     }
 
-    public void deleteImage(ImageDTO profilePhoto) {
-        imageRepository.delete(imageMapper.toDomain(profilePhoto));
-    }
-
-    void deleteImage(Image profilePhoto) {
-        imageRepository.delete(profilePhoto);
-    }
-
     public ResponseEntity<Object> loadDefaultImage() {
         return loadImageFromPath("static/images/default.png", "image/png");
     }
@@ -115,6 +106,11 @@ public class ImageService {
         } catch (IOException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public void delete(ImageDTO image) {
+        Image imageToDelete = imageRepository.findById(image.id()).orElseThrow(() -> new NoSuchElementException("Image not found"));
+        delete(imageToDelete);
     }
 
     @Transactional

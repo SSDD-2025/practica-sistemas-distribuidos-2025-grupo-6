@@ -79,7 +79,7 @@ public class ProfileController {
                 if (!profilePhotoFile.isEmpty()) {
                     ImageDTO oldPhotoDTO = userDTO.profilePhoto();
                     imageService.saveImageInUser(profilePhotoFile);
-                    if (oldPhotoDTO != null) imageService.deleteImage(oldPhotoDTO);
+                    if (oldPhotoDTO != null) imageService.delete(oldPhotoDTO);
                 }
             } catch (IOException e) {
                 model.addAttribute("imageError", "Error uploading image");

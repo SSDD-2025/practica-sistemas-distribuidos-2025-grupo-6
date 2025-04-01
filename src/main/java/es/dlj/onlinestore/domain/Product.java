@@ -86,7 +86,13 @@ public class Product {
     public List<Image> getImages() { return this.images; }
     public void setImages(List<Image> images) { this.images = images; }
     public void addImage(Image image) { this.images.add(image); }
-    public void clearImages() { this.images.clear(); }
+    public void clearImages() { 
+        if (this.images == null) {
+            this.images = new ArrayList<>();
+        } else {
+            this.images.clear(); 
+        }
+    }
     
     public ProductType getProductType() { return productType; }
     public void setProductType(ProductType productType) { this.productType = productType; }
