@@ -1,7 +1,5 @@
 package es.dlj.onlinestore.controller.rest;
 
-import java.util.NoSuchElementException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.service.ImageService;
-import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.UserService;
 
 @RestController
@@ -23,9 +20,6 @@ public class ImageRestController {
     private ImageService imageService;
 
     @Autowired
-    private ProductService productService;
-
-    @Autowired
     private UserService userService;
 
     @GetMapping("/{id}")
@@ -33,15 +27,7 @@ public class ImageRestController {
         return imageService.loadImage(id);
     }
 
-    @GetMapping("/product/{id}")
-    public ResponseEntity<Object> getProductImage(@PathVariable Long id){
-        try{
-            return imageService.loadImage(productService.findDTOById(id).images().getFirst().id());
-        }
-        catch(NoSuchElementException e){
-            return imageService.loadDefaultImage();
-        }
-    }
+    
 
     @GetMapping("/user")
     public ResponseEntity<Object> getUserImage(){

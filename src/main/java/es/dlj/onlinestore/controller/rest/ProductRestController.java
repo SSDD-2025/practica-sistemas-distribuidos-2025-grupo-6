@@ -2,6 +2,7 @@ package es.dlj.onlinestore.controller.rest;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
+import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
@@ -28,6 +30,9 @@ public class ProductRestController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping("/")
     public ResponseEntity<Collection<ProductSimpleDTO>> getAllProducts(
@@ -90,5 +95,15 @@ public class ProductRestController {
     public ResponseEntity<Void> addProductToCart(@PathVariable Long id) {
         userService.addProductToCart(id);
         return ResponseEntity.status(201).build(); // Created
+    }
+
+    @GetMapping("/image")
+    public ResponseEntity<Object> getProductImage(@PathVariable Long id){
+        try{
+            return imageService.loadImage(productService.findDTOById(id).images().getFirst().id());
+        }
+        catch(NoSuchElementException e){
+            return imageService.loadDefaultImage();
+        }
     }
 }
