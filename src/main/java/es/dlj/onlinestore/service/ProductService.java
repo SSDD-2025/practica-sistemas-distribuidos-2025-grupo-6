@@ -244,6 +244,10 @@ public class ProductService {
         return tags;
     }
 
+    public List<ProductTagDTO> getAllTagsDTO() {
+        return productTagMapper.toDTOs(productTagRepository.findAll());
+    }
+
     public List<Map<String, Object>> getAllProductTypesAndCount(ProductType selected) {
         // Get all product types and the number of products that have that type
         List<Map<String, Object>> productTypesList = new ArrayList<>();
@@ -309,6 +313,11 @@ public class ProductService {
 
     ProductTag saveTag(ProductTag tag) {
         return productTagRepository.save(tag);
+    }
+
+    public ProductTagDTO saveTagDTO(ProductTagDTO tagDTP){
+        ProductTag tag = productTagMapper.toDomain(tagDTP);
+        return productTagMapper.toDTO(saveTag(tag));
     }
 
     public boolean isProductOwner(Long productId) {
@@ -424,6 +433,8 @@ public class ProductService {
             reviewRepository.delete(review);
         }
     }
+
+
 
     
 }

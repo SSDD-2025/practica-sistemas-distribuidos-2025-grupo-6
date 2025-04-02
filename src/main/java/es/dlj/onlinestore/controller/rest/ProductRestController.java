@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
+import es.dlj.onlinestore.dto.ProductTagDTO;
+import es.dlj.onlinestore.dto.ProductTagSimpleDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.ProductService;
@@ -106,4 +108,23 @@ public class ProductRestController {
             return imageService.loadDefaultImage();
         }
     }
+
+    @GetMapping("/tags")
+    public ResponseEntity<Collection<ProductTagDTO>> getAllTags() {
+        Collection<ProductTagDTO> tags = productService.getAllTagsDTO();
+        return ResponseEntity.ok(tags);
+    }
+    
+    @GetMapping("/{productId}/tags")
+    public ResponseEntity<Collection<ProductTagSimpleDTO>> getProductTag(@PathVariable Long id) {
+        Collection<ProductTagSimpleDTO> tags = productService.findDTOById(id).tags();
+        return ResponseEntity.ok(tags);        
+    }
+
+    @PostMapping("/tags")
+    public ResponseEntity<ProductTagDTO> createTag(@PathVariable Long id, @Valid @RequestBody ProductTagDTO newTagDTO) {
+        ProductTagDTO savedTagDTO = productService.saveTagDTO(newTagDTO);
+        return ResponseEntity.status(201).body(savedTagDTO);
+    }
+
 }
