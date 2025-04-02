@@ -332,6 +332,16 @@ public class ProductService {
         }
     }
 
+    public Collection<ProductTagDTO> findAllTagsDTOs() {
+        return productTagMapper.toDTOs(productTagRepository.findAll());
+    }
+
+    public ProductTagDTO saveTagDTO(ProductTagDTO productTagDTO) {
+        ProductTag productTag = productTagMapper.toDomain(productTagDTO);
+        productTag = productTagRepository.save(productTag);
+        return productTagMapper.toDTO(productTag);
+    }
+
     @Transactional
     public ProductDTO saveProduct(ProductDTO productDTO, List<MultipartFile> imagesVal, String tagsVal) {
         Product product = productMapper.toDomain(productDTO);
