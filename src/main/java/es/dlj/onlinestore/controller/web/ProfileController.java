@@ -58,7 +58,8 @@ public class ProfileController {
             Model model, 
             @Valid @ModelAttribute UserDTO newUserDTO, 
             BindingResult bindingResult,
-            @RequestParam(required=false) MultipartFile profilePhotoFile
+            @RequestParam(required=false) MultipartFile profilePhotoFile,
+            HttpServletRequest request
     ) {
         if (bindingResult.hasErrors()) {
             // In case of errors, return to the form with the errors mapped
@@ -71,6 +72,8 @@ public class ProfileController {
         }
 
         UserDTO userDTO = userService.getLoggedUserDTO();
+
+        boolean isUsernameChanged = !userDTO.username().equals(newUserDTO.username());
 
         userDTO = userService.update(userDTO.id(), newUserDTO);
         
@@ -86,7 +89,13 @@ public class ProfileController {
                 return "profile_update_template";
             }
         }
-        // userService.saveDTO(userDTO);
+
+        if (isUsernameChanged) {
+            // If the username has changed, invalidate the session and clear the security context
+            request.getSession().invalidate();
+            SecurityContextHolder.clearContext();
+            return "redirect:/login";
+        }
         return "redirect:/profile";
     }
 
