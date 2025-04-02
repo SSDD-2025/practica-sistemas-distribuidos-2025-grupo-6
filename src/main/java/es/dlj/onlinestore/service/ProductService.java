@@ -180,7 +180,7 @@ public class ProductService {
         product.setStock(newProductDTO.stock());
         product.setSale(newProductDTO.sale());
 
-        if (imagesVal != null && imagesVal.size() > 1) {
+        if (imagesVal != null && imagesVal.size() >= 1) {
             try {
                 if (product.getImages() != null) {
                     for (Image image : product.getImages()) {
