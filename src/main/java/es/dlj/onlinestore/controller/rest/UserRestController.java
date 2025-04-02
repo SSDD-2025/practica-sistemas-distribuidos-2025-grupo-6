@@ -14,46 +14,56 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-
+import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.OrderSimpleDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
+import es.dlj.onlinestore.dto.UserDTO;
+import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
 
 @RestController
-@RequestMapping("/api/cart")
-public class CartRestController {
+@RequestMapping("/api/profile")
+public class UserRestController {
 
     @Autowired
     private UserService userService;
 
     @Autowired OrderService orderService;
+    @Autowired
+    private ImageService imageService;
 
-    @GetMapping
+    @GetMapping("/image")
+    public ResponseEntity<Object> getUserImage(){
+        UserDTO user = userService.getLoggedUserDTO();
+        if (user == null) return imageService.loadDefaultImage();
+        ImageDTO image = user.profilePhoto();
+        if (image == null) return imageService.loadDefaultImage();
+        return imageService.loadImage(image.id());
+    }
+
+    @GetMapping("/cart")
     public Collection<ProductSimpleDTO> showCart(){
         return userService.getLoggedUserDTO().cartProducts();
     }
 
-    @DeleteMapping("/product/{id}")
+    @DeleteMapping("/cart/product/{id}")
     public void removeProduct(@PathVariable Long id){
         userService.removeProductFromCart(id);
         //TODO: return statement;
     }
 
-    @DeleteMapping("/all")
+    @DeleteMapping("/cart/all")
     public void clearCart(){
         userService.clearCart();
         //TODO: return statement;
     }
 
-    @PostMapping("/order")
+    @PostMapping("/cart/order")
     public ResponseEntity<OrderSimpleDTO> createOrder(@RequestBody String paymentMethod, String address, String phoneNumber, UriComponentsBuilder  uriBuilder){
         OrderSimpleDTO order = orderService.proceedCheckout(paymentMethod, address, phoneNumber);
         if (order == null) return ResponseEntity.noContent().build();
         URI location =  uriBuilder.path("/api/profile/order/{id}").buildAndExpand(order.id()).toUri();
         return ResponseEntity.created(location).body(order);
     }
-
-
-    
 }
