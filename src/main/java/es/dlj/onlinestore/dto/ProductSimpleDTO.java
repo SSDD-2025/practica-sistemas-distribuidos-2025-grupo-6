@@ -28,6 +28,23 @@ public record ProductSimpleDTO(
     int totalSells,
     ProductType productType
 ) {
+
+    public String getPriceString() {
+        return String.format("%.2f", price);
+    }
+
+    public String getSaleString() {
+        return String.format("%.2f", sale);
+    }
+
+    public String getProductSaleString() {
+        return String.format("%.2f", getProductSale());
+    }
+
+    public String getPriceWithSaleString() {
+        return String.format("%.2f", getPriceWithSale());
+    }
+
     public float getProductSale() {
         return ((float) Math.round(price * sale)) / 100f;
     }

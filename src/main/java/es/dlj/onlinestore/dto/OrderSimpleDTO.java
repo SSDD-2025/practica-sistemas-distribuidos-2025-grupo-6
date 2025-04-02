@@ -10,6 +10,11 @@ public record OrderSimpleDTO(
     String address,
     String phoneNumber
 ) {
+
+    public String getTotalPriceString() {
+        return String.format("%.2f", totalPrice);
+    }
+    
     public String getCreationDateFormattedSimpler() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-mm-yyyy");
         return creationDate.format(formatter);
