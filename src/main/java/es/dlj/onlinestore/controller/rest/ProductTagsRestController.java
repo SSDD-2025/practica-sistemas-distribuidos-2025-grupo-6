@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
-
+/*
 @RestController
 @RequestMapping("/api/tags")
 public class ProductTagsRestController {
@@ -45,16 +45,6 @@ public class ProductTagsRestController {
         Collection<ProductTagDTO> productTags = productService.findAllTagsDTOs();
         return ResponseEntity.ok(productTags);
     }
-
-    // @PostMapping("/")
-	// public ResponseEntity<BookDTO> createBook(@RequestBody BookDTO bookDTO) {
-
-	// 	bookDTO = bookService.createBook(bookDTO);
-
-	// 	URI location = fromCurrentRequest().path("/{id}").buildAndExpand(bookDTO.id()).toUri();
-
-	// 	return ResponseEntity.created(location).body(bookDTO);
-	// }
 
     @PostMapping("/")
     public ResponseEntity<ProductTagDTO> postProductTag(@RequestBody ProductTagDTO productTagDTO) {
@@ -126,3 +116,4 @@ public class ProductTagsRestController {
         }
     }
 }
+*/

@@ -118,4 +118,15 @@ public class ReviewService {
         productService.save(product);
         userService.save(user);
     }
+
+
+    public List<ReviewDTO> findAllByProductId(Long productId) {
+        List<Review> reviews = reviewRepository.findAllByProductId(productId);
+        return reviewMapper.toDTOs(reviews);
+    }
+
+    public ReviewDTO findById(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow();
+        return reviewMapper.toDTO(review);
+    }
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,8 +83,26 @@ public class ProductRestController {
         return ResponseEntity.status(403).build();
     }
 
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<Collection<ReviewDTO>> getReviews(@PathVariable Long id) {
+        Collection<ReviewDTO> reviews = reviewService.findAllByProductId(id);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/{id}/reviews/{reviewId}")
+    public ResponseEntity<ReviewDTO> getReview(@PathVariable Long id, @PathVariable Long reviewId) {
+        try {
+            ReviewDTO review = reviewService.findById(reviewId);
+            return ResponseEntity.ok(review);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping("/{id}/reviews/")
-    public ResponseEntity<Void> addReview(@PathVariable Long id, @Valid @RequestBody ReviewDTO reviewDTO) {
+    public ResponseEntity<Void> addReview(
+            @PathVariable Long id, 
+            @Valid @RequestBody ReviewDTO reviewDTO) {
         reviewService.save(id, reviewDTO);
         return ResponseEntity.status(201).build();
     }
@@ -102,7 +119,7 @@ public class ProductRestController {
         return ResponseEntity.status(201).build(); // Created
     }
 
-    @GetMapping("/{id}/image")
+    @GetMapping("/{id}/images")
     public ResponseEntity<Collection<ImageDTO>> getImagesProduct(@RequestParam Long id) {
         try {
             Collection<ImageDTO> images = productService.findDTOById(id).images();
@@ -121,8 +138,8 @@ public class ProductRestController {
         }
     }
 
-    @GetMapping("/{id}/images")
-    public ResponseEntity<Object> getProductImage(@PathVariable Long id){
+    @GetMapping("/{id}/firstimage")
+    public ResponseEntity<Object> getProductFirstImage(@PathVariable Long id){
         try{
             return imageService.loadImage(productService.findDTOById(id).images().getFirst().id());
         }
@@ -131,20 +148,17 @@ public class ProductRestController {
         }
     }
 
-    /* 
     @PostMapping("/{id}/images")
-    public ResponseEntity<Void> addImages (@RequestBody Long id, @RequestParam List<MultipartFile> imagesVal) {
+    public ResponseEntity<Void> addImage (@RequestBody Long id, @RequestParam List<MultipartFile> imagesVal) throws IOException {
         try {
-            ProductDTO product = productService.findDTOById(id);
-            if (product == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            for (MultipartFile image : imagesVal) {
+                imageService.saveFileImage(image);
             }
-            productService.saveImagesInProductDTO(product, imagesVal);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(201).build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
         }
-    } */
+    } 
 
     @PutMapping("/images/{idImage}")
     public ResponseEntity<ImageDTO> updateImage(
@@ -181,5 +195,6 @@ public class ProductRestController {
         ProductTagDTO savedTagDTO = productService.saveTagDTO(newTagDTO);
         return ResponseEntity.status(201).body(savedTagDTO);
     }
+        
 
 }

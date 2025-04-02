@@ -315,8 +315,8 @@ public class ProductService {
         return productTagRepository.save(tag);
     }
 
-    public ProductTagDTO saveTagDTO(ProductTagDTO tagDTP){
-        ProductTag tag = productTagMapper.toDomain(tagDTP);
+    public ProductTagDTO saveTagDTO(ProductTagDTO tagDTO){
+        ProductTag tag = productTagMapper.toDomain(tagDTO);
         return productTagMapper.toDTO(saveTag(tag));
     }
 
@@ -334,12 +334,6 @@ public class ProductService {
 
     public Collection<ProductTagDTO> findAllTagsDTOs() {
         return productTagMapper.toDTOs(productTagRepository.findAll());
-    }
-
-    public ProductTagDTO saveTagDTO(ProductTagDTO productTagDTO) {
-        ProductTag productTag = productTagMapper.toDomain(productTagDTO);
-        productTag = productTagRepository.save(productTag);
-        return productTagMapper.toDTO(productTag);
     }
 
     @Transactional
