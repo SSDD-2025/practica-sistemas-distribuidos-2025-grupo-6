@@ -70,8 +70,12 @@ public class ProductRestController {
             @RequestParam List<MultipartFile> imagesVal,
             @RequestParam String tagsVal,
             @Valid @RequestBody ProductDTO updatedProductDTO) {
+        if (!productService.isProductOwner(id)) { 
         productService.updateProduct(id, updatedProductDTO, imagesVal, tagsVal);
         return ResponseEntity.ok(updatedProductDTO);
+        } else {
+            return ResponseEntity.status(403).build(); 
+        }
     }
 
     @DeleteMapping("/{id}")

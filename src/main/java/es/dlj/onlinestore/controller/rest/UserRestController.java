@@ -16,11 +16,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.OrderSimpleDTO;
+import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
+import org.springframework.web.bind.annotation.PutMapping;
+
+
 
 @RestController
 @RequestMapping("/api/profile")
@@ -29,9 +33,48 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
-    @Autowired OrderService orderService;
+    @Autowired 
+    OrderService orderService;
+
     @Autowired
     private ImageService imageService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById (@PathVariable Long id){
+        UserDTO user = userService.findDTOById(id);
+        if (user == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<Collection<UserDTO>> getAllUsers(){
+        Collection<UserDTO> users = userService.findAllDTOsBy();
+        if (users == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(users);    
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<UserDTO> createUser (@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
+        userService.saveDTO(userDTO);
+        UserDTO user = userService.findDTOById(userDTO.id());
+        if (user == null) return ResponseEntity.notFound().build();
+        URI location = uriBuilder.path("/api/profile/{id}").buildAndExpand(user.id()).toUri();
+        return ResponseEntity.created(location).body(user);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateUser (@PathVariable Long id, @RequestBody UserDTO newUserDTO) {
+        if (userService.findDTOById(id) == null) return ResponseEntity.notFound().build();
+        UserDTO user = userService.update(id, newUserDTO);
+        return ResponseEntity.ok(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser (@PathVariable Long id) {
+        if (userService.findDTOById(id) == null) return ResponseEntity.notFound().build();
+        userService.deleteDTOById(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @GetMapping("/image")
     public ResponseEntity<Object> getUserImage(){
@@ -66,4 +109,42 @@ public class UserRestController {
         URI location =  uriBuilder.path("/api/profile/order/{id}").buildAndExpand(order.id()).toUri();
         return ResponseEntity.created(location).body(order);
     }
+
+    @GetMapping("/{id}/products")
+    public ResponseEntity<Collection<ProductSimpleDTO>> getProducts(@PathVariable Long id) {
+        Collection<ProductSimpleDTO> products = userService.findDTOById(id).cartProducts();
+        if (products == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}/products/{productId}")
+    public ResponseEntity<ProductSimpleDTO> getProduct(@PathVariable Long id, @PathVariable Long productId) {
+        ProductSimpleDTO product = userService.findDTOById(id).cartProducts().stream()
+                .filter(p -> p.id().equals(productId))
+                .findFirst()
+                .orElse(null);
+        if (product == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(product);
+    }
+
+    @PostMapping("/{id}/products/")
+    public ResponseEntity<ProductDTO> addProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+        userService.addProductToCart(productDTO.id());
+        return ResponseEntity.status(201).body(productDTO);
+    }
+
+    @DeleteMapping("/{id}/products/{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @PathVariable Long productId) {
+        userService.removeProductFromCart(productId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /* 
+    @PutMapping("/{id}/products/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @PathVariable Long productId, @RequestBody ProductDTO productDTO) { 
+    }*/
+
+    
+
+    
 }

@@ -1,6 +1,7 @@
 package es.dlj.onlinestore.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,12 @@ import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
+import es.dlj.onlinestore.enumeration.ProductType;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
 import es.dlj.onlinestore.repository.OrderRepository;
@@ -130,6 +134,10 @@ public class UserService {
     User findById(Long id) {
         return userRepository.findById(id).orElseThrow();
     }
+
+    public UserDTO findDTOById(Long id) {
+        return userMapper.toDTO(findById(id));
+    }
     
     public boolean existsUserByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
@@ -153,8 +161,6 @@ public class UserService {
         user.addProductToCart(product);
         userRepository.save(user);
     }
-
-    
 
     @Transactional
     public UserDTO deleteDTOById(Long id) {
@@ -231,5 +237,16 @@ public class UserService {
     private void deepDeleteRoles(User user) {
         user.getRoles().clear();
     }
+
+    public Collection<UserDTO> findAllDTOsBy() {
+        Collection<UserDTO> users = new ArrayList<>();
+        for (User u : userRepository.findAll()) {
+            users.add(userMapper.toDTO(u));
+        }
+        return users;
+    }
+    
+
+
 
 }
