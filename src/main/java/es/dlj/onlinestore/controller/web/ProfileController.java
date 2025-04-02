@@ -72,7 +72,7 @@ public class ProfileController {
 
         UserDTO userDTO = userService.getLoggedUserDTO();
 
-        userService.update(userDTO.id(), newUserDTO);
+        userDTO = userService.update(userDTO.id(), newUserDTO);
         
         if (profilePhotoFile != null) {
             try {
@@ -86,7 +86,7 @@ public class ProfileController {
                 return "profile_update_template";
             }
         }
-        userService.saveDTO(userDTO);
+        // userService.saveDTO(userDTO);
         return "redirect:/profile";
     }
 
@@ -96,13 +96,13 @@ public class ProfileController {
         return "order_template";
     }
 
-    @DeleteMapping("/order/{id}/delete")
+    @PostMapping("/order/{id}/delete")
     public String deleteOrder(@PathVariable Long id) {
         orderService.delete(id);
         return "redirect:/profile";
     }
 
-    @DeleteMapping("/deleteaccount") 
+    @PostMapping("/deleteaccount") 
     public String deleteAccount(Model model, HttpServletRequest request) { 
         UserDTO userDTO = userService.getLoggedUserDTO();
         userService.deleteDTOById(userDTO.id());

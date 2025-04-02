@@ -1,9 +1,9 @@
 package es.dlj.onlinestore.enumeration;
 
 public enum PaymentMethod {
-    CREDIT_CARD ("Credit Card"),
-    PAYPAL ("PayPal"),
-    BANK_TRANSFER ("Bank Transfer");
+    CREDIT_CARD ("CREDIT_CARD"),
+    PAYPAL ("PAYPAL"),
+    BANK_TRANSFER ("BANK_TRANSFER");
 
     private final String name;
 

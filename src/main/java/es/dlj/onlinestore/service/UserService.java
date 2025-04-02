@@ -115,6 +115,7 @@ public class UserService {
             if (userDTO.city() != null) user.setCity(userDTO.city());
             if (userDTO.postalCode() != null) user.setPostalCode(userDTO.postalCode());
             if (userDTO.phone() != null) user.setPhone(userDTO.phone());
+            if (userDTO.paymentMethod() != null) user.setPaymentMethod(userDTO.paymentMethod().toString());
             user = userRepository.save(user);
             return userMapper.toDTO(user);
         } else {
