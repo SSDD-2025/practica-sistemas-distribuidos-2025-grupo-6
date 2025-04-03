@@ -26,10 +26,12 @@ import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.mapper.ImageMapper;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
+import jakarta.validation.Valid;
 
 @Service
 public class ImageService {
@@ -121,5 +123,19 @@ public class ImageService {
     @Transactional
     void delete(Image image) {
         imageRepository.delete(image);
+    }
+
+    public ImageDTO findById(Long imageId) {
+        return imageRepository.findById(Long.valueOf(imageId))
+                .map(imageMapper::toDTO)
+                .orElseThrow(() -> new NoSuchElementException("Image not found"));
+    }
+
+    public ImageDTO updateImage(Long idImage,  MultipartFile newImage) throws IOException {
+        Image image = imageRepository.findById(idImage).orElseThrow(() -> new NoSuchElementException("Image not found"));
+        image.setContentType(newImage.getContentType());
+        byte[] imageData = newImage.getBytes();
+        image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
+        return imageMapper.toDTO(imageRepository.save(image));
     }
 }

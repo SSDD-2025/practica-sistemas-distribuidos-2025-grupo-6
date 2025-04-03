@@ -24,6 +24,8 @@ import org.springframework.web.util.UriBuilder;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.OrderSimpleDTO;
+import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
@@ -31,6 +33,9 @@ import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
+import org.springframework.web.bind.annotation.PutMapping;
+
+
 
 @RestController
 @RequestMapping("/api/profile")
@@ -39,7 +44,9 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
-    @Autowired OrderService orderService;
+    @Autowired 
+    OrderService orderService;
+
     @Autowired
     private ImageService imageService;
 
@@ -172,5 +179,30 @@ public class UserRestController {
     @PostMapping("/cart/product/{id}")
     public ResponseEntity<?> addProductToCart(@PathVariable Long id){
         
+    }
+
+    @GetMapping("/{id}/products")
+    public ResponseEntity<Collection<ProductSimpleDTO>> getProducts(@PathVariable Long id) {
+        Collection<ProductSimpleDTO> products = userService.findDTOById(id).cartProducts();
+        if (products == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}/products/{productId}")
+    public ResponseEntity<ProductSimpleDTO> getProduct(@PathVariable Long id, @PathVariable Long productId) {
+        ProductSimpleDTO product = userService.findDTOById(id).cartProducts().stream()
+                .filter(p -> p.id().equals(productId))
+                .findFirst()
+                .orElse(null);
+        if (product == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(product);
+    }
+
+    @PostMapping("/cart/order")
+    public ResponseEntity<OrderSimpleDTO> createOrder(@RequestBody String paymentMethod, String address, String phoneNumber, UriComponentsBuilder  uriBuilder){
+        OrderSimpleDTO order = orderService.proceedCheckout(paymentMethod, address, phoneNumber);
+        if (order == null) return ResponseEntity.noContent().build();
+        URI location =  uriBuilder.path("/api/profile/order/{id}").buildAndExpand(order.id()).toUri();
+        return ResponseEntity.created(location).body(order);
     }
 }

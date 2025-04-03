@@ -180,7 +180,7 @@ public class ProductService {
         product.setStock(newProductDTO.stock());
         product.setSale(newProductDTO.sale());
 
-        if (imagesVal != null && imagesVal.size() > 1) {
+        if (imagesVal != null && imagesVal.size() >= 1) {
             try {
                 if (product.getImages() != null) {
                     for (Image image : product.getImages()) {
@@ -315,8 +315,8 @@ public class ProductService {
         return productTagRepository.save(tag);
     }
 
-    public ProductTagDTO saveTagDTO(ProductTagDTO tagDTP){
-        ProductTag tag = productTagMapper.toDomain(tagDTP);
+    public ProductTagDTO saveTagDTO(ProductTagDTO tagDTO){
+        ProductTag tag = productTagMapper.toDomain(tagDTO);
         return productTagMapper.toDTO(saveTag(tag));
     }
 
@@ -330,6 +330,10 @@ public class ProductService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Collection<ProductTagDTO> findAllTagsDTOs() {
+        return productTagMapper.toDTOs(productTagRepository.findAll());
     }
 
     @Transactional

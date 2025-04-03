@@ -28,7 +28,6 @@
 			</div>
 		</div>
 		<div class="card-body col-5 d-flex flex-column">
-			{{#isAdmin}}
 			{{#isOwnerProduct}}
 			<div class="row g-2 align-items-center mb-3">
 				<div class="col">
@@ -47,7 +46,6 @@
 				</div>
 			</div>
 			{{/isOwnerProduct}}
-			{{/isAdmin}}
 			<h5 class="card-title text-dark fw-bold mb-3 fs-3">{{name}}</h5>
 			<h6 class="card-subtitle mb-3 text-muted fs-5">{{productType}}</h6>
 
@@ -140,7 +138,6 @@
 				<i class="bi bi-heart-fill text-danger me-2"></i> Rating: <span
 					class="ms-1 fw-semibold">{{rating}}/5</span>
 			</small>
-			{{#isAdmin}}
 			{{#isOwnerProduct}}
 			<form id="deleteReview-{{id}}" action="/product/{{product.id}}/review/{{id}}/delete" method="post">
 				<button class="btn btn-danger btn-sm mt-2" type="button" 
@@ -149,7 +146,6 @@
 				</button>
 			</form>
 			{{/isOwnerProduct}}
-			{{/isAdmin}}
 		</div>
 		{{/reviews}}
 		{{^reviews}}
