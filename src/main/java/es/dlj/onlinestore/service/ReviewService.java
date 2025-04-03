@@ -13,6 +13,9 @@ import es.dlj.onlinestore.mapper.ReviewMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import es.dlj.onlinestore.repository.ReviewRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page; 
+
 
 @Service
 public class ReviewService {
@@ -119,6 +122,15 @@ public class ReviewService {
         userService.save(user);
     }
 
+    public Page<ReviewDTO> findAllByProductIdPag(Long productId, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findAllByProductId(productId, pageable);
+        return reviews.map(reviewMapper::toDTO);
+    }
+
+    public Page<ReviewDTO> findAllReviewsByUserIdPag (Long userId, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findAllByOwnerId(userId, pageable);
+        return reviews.map(reviewMapper::toDTO);
+    }
 
     public List<ReviewDTO> findAllByProductId(Long productId) {
         List<Review> reviews = reviewRepository.findAllByProductId(productId);
