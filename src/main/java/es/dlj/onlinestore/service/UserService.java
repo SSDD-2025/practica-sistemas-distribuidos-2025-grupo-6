@@ -92,12 +92,13 @@ public class UserService {
         return null;
     }
 
-    public void saveDTO(UserDTO userDTO) {
-        save(userMapper.toDomain(userDTO));
+    public UserDTO saveDTO(UserDTO userDTO) {
+        return userMapper.toDTO(save(userMapper.toDomain(userDTO)));
     }
 
-    public void saveDTO(UserFormDTO userFromDTO) {
-        save(userMapper.toDomain(userFromDTO));
+    public UserDTO saveDTO(UserFormDTO userFromDTO) {
+        return userMapper.toDTO(save(userMapper.toDomain(userFromDTO)));
+        
     }
 
     User save(User user) {

@@ -26,7 +26,9 @@ import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.mapper.ImageMapper;
+import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
 
 @Service
@@ -40,6 +42,9 @@ public class ImageService {
 
     @Autowired
     private ImageMapper imageMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Transactional
     public ImageDTO saveFileImage(MultipartFile rawImage) throws IOException {
@@ -74,12 +79,12 @@ public class ImageService {
     }
 
     @Transactional
-    public void saveImageInUser(MultipartFile rawImage) throws IOException {
+    public UserDTO saveImageInUser(MultipartFile rawImage) throws IOException {
         Image savedImage = imageMapper.toDomain(saveFileImage(rawImage));
         User user = userService.getLoggedUser();
 
         user.setProfilePhoto(savedImage);
-        userService.save(user);
+        return userMapper.toDTO(userService.save(user));
     }
 
     public ResponseEntity<Object> loadImage(Long id) {

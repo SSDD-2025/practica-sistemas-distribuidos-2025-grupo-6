@@ -11,7 +11,6 @@ import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 
 import es.dlj.onlinestore.enumeration.PaymentMethod;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
