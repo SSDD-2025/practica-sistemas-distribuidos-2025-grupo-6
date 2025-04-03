@@ -68,6 +68,11 @@ public class UserService {
             List.of("USER"), "Calle Tulipan, 1", "Mostoles", "28931", "+34123456789"));
     }
 
+    public Collection<UserSimpleDTO> getAllUsers(){
+        if (!getLoggedUser().getRoles().contains("ADMIN")) return new ArrayList<>();
+        return userMapper.toSimpleDTOs(userRepository.findAll());
+    }
+
     public void removeProductFromCart(Long productId) {
         User user = getLoggedUser();
         user.removeProductFromCartById(productId);

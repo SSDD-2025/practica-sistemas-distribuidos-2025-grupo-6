@@ -37,6 +37,6 @@ public abstract class UserMapper {
     
     @Mapping(target = "profilePhoto", expression = "java(this.imageMapper.toDomain(userDTO.profilePhoto()))")
     public abstract User toDomain(UserDTO userDTO);
-    public abstract Collection<UserDTO> toDTOs(List<User> all);
+    public abstract Collection<UserSimpleDTO> toSimpleDTOs(List<User> all);
     
 }

@@ -2,15 +2,20 @@ package es.dlj.onlinestore.controller.rest;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,24 +26,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
+import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.OrderSimpleDTO;
-import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
+import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.UserService;
-import org.springframework.web.bind.annotation.PutMapping;
+import jakarta.validation.Valid;
 
 
 
 @RestController
-@RequestMapping("/api/profile")
+@RequestMapping("/api/users")
 public class UserRestController {
 
     @Autowired
@@ -50,13 +58,36 @@ public class UserRestController {
     @Autowired
     private ImageService imageService;
 
+    private boolean isActionAllowed(Long id){
+        UserDTO userDTO = userService.getLoggedUserDTO();
+        return userDTO.roles().contains("ADMIN") || userDTO.id() == id;   
+    }
+
     @GetMapping("/")
-    public UserDTO getUser(){
-        return userService.getLoggedUserDTO();
+    public ResponseEntity<Collection<UserSimpleDTO>> getUsers(){
+        Collection<UserSimpleDTO> users = userService.getAllUsers();
+        if (!users.isEmpty()) {
+            return ResponseEntity.ok(users);
+        } else {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
+        if (isActionAllowed(id)) {
+            return ResponseEntity.ok(userService.findDTOById(id));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
     @PostMapping("/")
-    public ResponseEntity<Object> registerUser(@RequestBody UserFormDTO user, @RequestBody (required = false) MultipartFile image, BindingResult bindingResult, UriBuilder uriBuilder){
+    public ResponseEntity<Object> registerUser(
+            @Validated @RequestBody UserFormDTO user,
+            BindingResult bindingResult,
+            @RequestBody (required = false) MultipartFile image
+    ){
         if (bindingResult.hasErrors()){
              Map<String, String> errors = new HashMap<>();
             for (FieldError error : bindingResult.getFieldErrors()) {
@@ -69,16 +100,23 @@ public class UserRestController {
             try {
                 userDTO = imageService.saveImageInUser(image);
             } catch (IOException e) {
-                return ResponseEntity.internalServerError().build();
+                return ResponseEntity.internalServerError().body("Error while saving the profile image.");
             }
         }
-        URI location =  fromCurrentRequest().build().toUri();
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(userDTO.id()).toUri();
 
         return ResponseEntity.created(location).body(userDTO);
     }
 
-    @PutMapping("/")
-    public ResponseEntity<?> updateUser(@RequestBody UserDTO newUserDTO, @RequestBody(required=false) MultipartFile profilePhotoFile, BindingResult bindingResult){
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateUser(
+            @Valid @RequestBody UserDTO newUserDTO,
+            BindingResult bindingResult,
+            @PathVariable Long id,
+            @RequestBody(required=false) MultipartFile profilePhotoFile
+    ){
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
         if (bindingResult.hasErrors()){
             Map<String, String> errors = new HashMap<>();
            for (FieldError error : bindingResult.getFieldErrors()) {
@@ -86,9 +124,10 @@ public class UserRestController {
            }
            return ResponseEntity.badRequest().body(errors);
        }
-       UserDTO userDTO = userService.getLoggedUserDTO();
 
-       boolean isUsernameChanged = !userDTO.username().equals(newUserDTO.username());
+        UserDTO userDTO = userService.findDTOById(id);
+
+       //TODO: boolean isUsernameChanged = !userDTO.username().equals(newUserDTO.username());
 
         userDTO = userService.update(userDTO.id(), newUserDTO);
         
@@ -106,68 +145,98 @@ public class UserRestController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @DeleteMapping("/")
-    public ResponseEntity<?> deleteUser(){
-        UserDTO userDTO = userService.getLoggedUserDTO();
-        if (userDTO == null) return ResponseEntity.badRequest().body("Login first in order to delete the account.");
-        userService.deleteDTOById(userDTO.id());
-        return ResponseEntity.ok("User" + userDTO.username() + "deleted successfuly.");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(
+            @PathVariable Long id
+    ){
+
+        if (!isActionAllowed(id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        try{
+            UserDTO userDTO = userService.findDTOById(id);
+            userService.deleteDTOById(userDTO.id());
+            return ResponseEntity.ok("User" + userDTO.username() + "deleted successfuly.");
+        } catch (Error e) {
+            return ResponseEntity.badRequest().body("Login first in order to delete the account.");
+        }
     }
 
-    @GetMapping("/products")
-    public List<ProductSimpleDTO> getSellingProducts(){
-        UserDTO userDTO = userService.getLoggedUserDTO();
-        return userDTO.productsForSell();
+    @GetMapping("/{id}/products")
+    public ResponseEntity<Set<ProductSimpleDTO>> getSellingProducts(
+        @PathVariable Long id
+    ){
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        UserDTO userDTO = userService.findDTOById(id);
+        return ResponseEntity.ok(userDTO.cartProducts());
     }
 
-    /** @PostMapping("/products") el añadir un producto a los productos vendidos por el usuario
-     * debería de implementarse cuando se crea un producto en ProductRestController **/
-    
-    // @PutMapping("/products") lo mismo cuando se edita un producto
-
-    @GetMapping("/reviews")
-    public List<ReviewDTO> getReviews(){
-        UserDTO userDTO = userService.getLoggedUserDTO();
-        return userDTO.reviews();
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<List<ReviewDTO>> getReviews(
+        @PathVariable Long id
+    ){
+        if (isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        UserDTO userDTO = userService.findDTOById(id);
+        return ResponseEntity.ok(userDTO.reviews());
     }
 
-    @GetMapping("/image")
-    public ImageDTO getProfileImage(){
-        UserDTO userDTO = userService.getLoggedUserDTO();
-        return userDTO.profilePhoto();
+    @GetMapping("/{id}/image")
+    public ResponseEntity<ImageDTO> getProfileImage(
+        @PathVariable Long id
+    ){
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        UserDTO userDTO = userService.findDTOById(id);
+        return ResponseEntity.ok(userDTO.profilePhoto());
     }
 
-    @PostMapping("/image")
-    public ImageDTO addProfileImage(@RequestBody MultipartFile imageFile){
+    @PostMapping("/{id}/image")
+    public ResponseEntity<ImageDTO> addProfileImage(
+            @RequestBody MultipartFile imageFile,
+            @PathVariable Long id
+        ){
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.getLoggedUserDTO();
         try {
             userDTO = imageService.saveImageInUser(imageFile);
+            return ResponseEntity.ok(userDTO.profilePhoto());
+
         } catch (IOException e) {
             
             e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
         }
-        return userDTO.profilePhoto();
     }
 
-    @PutMapping("/image")
-    public ImageDTO updateProfileImage (@RequestBody MultipartFile imageFile){
-        UserDTO userDTO = userService.getLoggedUserDTO();
+    @PutMapping("/id/image")
+    public ResponseEntity<ImageDTO> updateProfileImage (
+            @RequestBody MultipartFile imageFile,
+            @PathVariable Long id
+    ){
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        UserDTO userDTO = userService.findDTOById(id);
         ImageDTO oldPhotoDTO = userDTO.profilePhoto();
         try {
             userDTO = imageService.saveImageInUser(imageFile);
             if (oldPhotoDTO != null) imageService.delete(oldPhotoDTO);
+            return ResponseEntity.ok(userDTO.profilePhoto());
         } catch (IOException e) {
             
             e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
         }
-        return userDTO.profilePhoto();
+        
     }
 
-    @DeleteMapping("/image")
-    public void deleteProfileImage(){
+    @DeleteMapping("/{id}/image")
+    public ResponseEntity<?> deleteProfileImage(
+        @PathVariable Long id
+    ){
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.getLoggedUserDTO();
         ImageDTO oldPhotoDTO = userDTO.profilePhoto();
         if (oldPhotoDTO != null) imageService.delete(oldPhotoDTO);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/cart")
@@ -204,5 +273,14 @@ public class UserRestController {
         if (order == null) return ResponseEntity.noContent().build();
         URI location =  uriBuilder.path("/api/profile/order/{id}").buildAndExpand(order.id()).toUri();
         return ResponseEntity.created(location).body(order);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> loginUser (
+        @RequestBody String username, 
+        @RequestBody String password
+    ){
+        //TODO: userService.
+        return null;
     }
 }
