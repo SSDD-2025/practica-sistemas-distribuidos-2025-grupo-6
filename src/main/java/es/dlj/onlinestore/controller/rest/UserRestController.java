@@ -209,7 +209,7 @@ public class UserRestController {
         }
     }
 
-    @PutMapping("/id/image")
+    @PutMapping("/{id}/image")
     public ResponseEntity<ImageDTO> updateProfileImage (
             @RequestBody MultipartFile imageFile,
             @PathVariable Long id
@@ -289,20 +289,6 @@ public class UserRestController {
         return ResponseEntity.ok(orders);
     }
 
-    @PostMapping("/{id}/order/")
-    public ResponseEntity<OrderSimpleDTO> createOrder(
-            @PathVariable Long id,
-            @RequestBody String paymentMethod,
-            @RequestBody String address,
-            @RequestBody String phoneNumber
-    ){
-        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        OrderSimpleDTO order = orderService.proceedCheckout(paymentMethod, address, phoneNumber);
-        if (order == null) return ResponseEntity.noContent().build();
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("{orderId}").buildAndExpand(id, order.id()).toUri();
-        return ResponseEntity.created(location).body(order);
-    }
-
     @GetMapping("/{id}/orders/{orderId}")
     public ResponseEntity<OrderDTO> getOrder(
             @PathVariable Long id,
@@ -317,6 +303,20 @@ public class UserRestController {
             if (order.id() == orderId) return ResponseEntity.ok(orderDTO);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    @PostMapping("/{id}/order/")
+    public ResponseEntity<OrderSimpleDTO> createOrder(
+            @PathVariable Long id,
+            @RequestBody String paymentMethod,
+            @RequestBody String address,
+            @RequestBody String phoneNumber
+    ){
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        OrderSimpleDTO order = orderService.proceedCheckout(paymentMethod, address, phoneNumber);
+        if (order == null) return ResponseEntity.noContent().build();
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("{orderId}").buildAndExpand(id, order.id()).toUri();
+        return ResponseEntity.created(location).body(order);
     }
 
     @DeleteMapping("/{id}/orders/{orderId}")
