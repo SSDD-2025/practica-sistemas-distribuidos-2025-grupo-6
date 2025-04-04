@@ -445,7 +445,8 @@ public class ProductService {
         }
     }
 
-
-
-    
+    public Page<ProductDTO> getAllProductsByUserId(Long id, Pageable pageable) {
+        Page<Product> products = productRepository.findAllBySellerId(id, pageable);
+        return products.map(productMapper::toDTO);
+    }  
 }

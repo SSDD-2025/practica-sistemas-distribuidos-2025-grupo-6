@@ -42,4 +42,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         + "AND (:productTypes IS NULL OR p.productType IN :productTypes) ")
     List<Product> searchProducts(String name, Integer minPrice, Integer maxPrice, List<String> tags, List<ProductType> productTypes);
 
+    Page<Product> findAllBySellerId(Long id, Pageable pageable);
+
 }
