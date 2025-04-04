@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.Pageable;
+
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.enumeration.ProductType;
 
@@ -13,7 +16,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByProductType(ProductType type);
 
+    Page<Product> findByProductType(ProductType type, Pageable pageable);
+
     List<Product> findByNameContaining(String name);
+
+    Page<Product> findByNameContaining(String name, Pageable pageable);
     
     Long countByProductType(ProductType type);
 

@@ -1,5 +1,6 @@
 package es.dlj.onlinestore.controller.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Page; 
 
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
@@ -69,25 +73,45 @@ class ProductController {
     public String getSearch(
             Model model, 
             @RequestParam(required=false) String name, 
-            @RequestParam(required=false) String productType
+            @RequestParam(required=false) String productType,
+            @PageableDefault(size = 8, page = 0) Pageable pageable
     ) {
+        Page<ProductDTO> productPage; 
         if (name != null) {
             // If it comes from home page loads query for name search
             model.addAttribute("name", name);
-            model.addAttribute("productList", productService.findAllDTOsByNameContaining(name));
+            productPage = productService.findAllDTOsByNameContaining(name, pageable);  
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         } else if (productType != null) {
             // If it comes from nav bar for product type search
             ProductType productTypeObj = ProductType.valueOf(productType);
-            model.addAttribute("productList", productService.findAllDTOsByProductType(productTypeObj));
+            productPage = productService.findAllDTOsByProductType(productTypeObj, pageable); 
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount(productTypeObj));
         } else {
             // Otherwise loads all products
-            model.addAttribute("productList", productService.findAllDTOs());
+            productPage = productService.findAllDTOs(pageable);
             model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         }
 
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("prevPage", productPage.getNumber() > 0 ? productPage.getNumber() - 1 : 0);
+        model.addAttribute("nextPage", productPage.getNumber() < productPage.getTotalPages() - 1 ? productPage.getNumber() + 1 : productPage.getNumber());
+        model.addAttribute("hasMultiplePages", productPage.getTotalPages() > 1);
+
+        List<Map<String, Object>> pages = new ArrayList<>();
+        for (int i = 0; i < productPage.getTotalPages(); i++) {
+            Map<String, Object> pag = new HashMap<>();
+            pag.put("number", i);
+            pag.put("display", i + 1);
+            pag.put("current", i == productPage.getNumber());
+            pages.add(pag);
+        }
+        model.addAttribute("pages", pages);
+
         model.addAttribute("tags", productService.getAllTags());
+        model.addAttribute("currentName", name);
+        model.addAttribute("currentProductType", productType);
+        model.addAttribute("currentSize", pageable.getPageSize());
 
 		return "search_template";
     }
