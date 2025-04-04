@@ -9,6 +9,8 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.Pageable;
 
 import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Order;
@@ -267,6 +269,11 @@ public class ProductService {
         return productMapper.toDTOs(productRepository.findAll());
     }
 
+    public Page<ProductDTO> findAllDTOs(Pageable pageable) {
+        Page<Product> products = productRepository.findAll(pageable);
+        return products.map(productMapper::toDTO);
+    }
+
     Collection<Product> findAll() {
         return productRepository.findAll();
     }
@@ -275,8 +282,18 @@ public class ProductService {
         return productMapper.toDTOs(productRepository.findByProductType(type));
     }
 
+    public Page<ProductDTO> findAllDTOsByProductType(ProductType type, Pageable pageable) {
+        Page<Product> products = productRepository.findByProductType(type, pageable);
+        return products.map(productMapper::toDTO);
+    }
+
     public Collection<ProductSimpleDTO> findAllDTOsByNameContaining(String name) {
         return productMapper.toDTOs(productRepository.findByNameContaining(name));
+    }
+
+    public Page<ProductDTO> findAllDTOsByNameContaining(String name, Pageable pageable) {
+        Page<Product> products = productRepository.findByNameContaining(name, pageable);
+        return products.map(productMapper::toDTO);
     }
 
     public ProductDTO findDTOById(long id) {
@@ -428,7 +445,8 @@ public class ProductService {
         }
     }
 
-
-
-    
+    public Page<ProductDTO> getAllProductsByUserId(Long id, Pageable pageable) {
+        Page<Product> products = productRepository.findAllBySellerId(id, pageable);
+        return products.map(productMapper::toDTO);
+    }  
 }

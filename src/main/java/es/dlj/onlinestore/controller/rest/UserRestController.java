@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -37,6 +38,7 @@ import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
+import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.validation.Valid;
 
@@ -55,7 +57,10 @@ public class UserRestController {
     @Autowired
     private ImageService imageService;
 
-    private boolean isUserAllowed(Long id){
+    @Autowired
+    private ReviewService reviewService;
+
+    private boolean isActionAllowed(Long id){
         UserDTO userDTO = userService.getLoggedUserDTO();
         return userDTO.roles().contains("ADMIN") || userDTO.id() == id;   
     }
@@ -72,7 +77,7 @@ public class UserRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
-        if (isUserAllowed(id)) {
+        if (isActionAllowed(id)) {
             return ResponseEntity.ok(userService.findDTOById(id));
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -112,7 +117,7 @@ public class UserRestController {
             @PathVariable Long id,
             @RequestBody(required=false) MultipartFile profilePhotoFile
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         if (bindingResult.hasErrors()){
             Map<String, String> errors = new HashMap<>();
@@ -147,7 +152,7 @@ public class UserRestController {
             @PathVariable Long id
     ){
 
-        if (!isUserAllowed(id)) {
+        if (!isActionAllowed(id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
@@ -160,29 +165,28 @@ public class UserRestController {
         }
     }
 
-    @GetMapping("/{id}/products")
+    @GetMapping("/{id}/sellproducts")
     public ResponseEntity<Set<ProductSimpleDTO>> getSellingProducts(
         @PathVariable Long id
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.findDTOById(id);
         return ResponseEntity.ok(userDTO.cartProducts());
     }
 
     @GetMapping("/{id}/reviews")
-    public ResponseEntity<List<ReviewDTO>> getReviews(
-        @PathVariable Long id
-    ){
-        if (isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        UserDTO userDTO = userService.findDTOById(id);
-        return ResponseEntity.ok(userDTO.reviews());
+    public ResponseEntity<Page<ReviewDTO>> getReviews(@PathVariable Long id, Pageable pageable) {
+        if (isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        Page<ReviewDTO> reviewsPage = reviewService.findAllReviewsByUserIdPag(id,pageable);
+        if (reviewsPage.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(reviewsPage);
     }
 
     @GetMapping("/{id}/image")
     public ResponseEntity<ImageDTO> getProfileImage(
         @PathVariable Long id
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.findDTOById(id);
         return ResponseEntity.ok(userDTO.profilePhoto());
     }
@@ -192,7 +196,7 @@ public class UserRestController {
             @RequestBody MultipartFile imageFile,
             @PathVariable Long id
         ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.findDTOById(id);
         try {
             userDTO = imageService.saveImageInUser(imageFile);
@@ -210,7 +214,7 @@ public class UserRestController {
             @RequestBody MultipartFile imageFile,
             @PathVariable Long id
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.findDTOById(id);
         ImageDTO oldPhotoDTO = userDTO.profilePhoto();
         try {
@@ -229,7 +233,7 @@ public class UserRestController {
     public ResponseEntity<?> deleteProfileImage(
         @PathVariable Long id
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.findDTOById(id);
         ImageDTO oldPhotoDTO = userDTO.profilePhoto();
         if (oldPhotoDTO != null) imageService.delete(oldPhotoDTO);
@@ -240,7 +244,7 @@ public class UserRestController {
     public ResponseEntity<Collection<ProductSimpleDTO>> getCart(
             @PathVariable Long id
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.findDTOById(id);
         return ResponseEntity.ok(userDTO.cartProducts());
     }
@@ -249,7 +253,7 @@ public class UserRestController {
     public ResponseEntity<Object> clearCart(
             @PathVariable Long id
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         userService.clearCart();
         return ResponseEntity.ok().build();
     }
@@ -259,7 +263,7 @@ public class UserRestController {
             @PathVariable Long id,
             @PathVariable Long productId
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         userService.addProductToCart(productId);
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/users/{id}/cart").buildAndExpand(id).toUri();
         return ResponseEntity.created(location).build();
@@ -270,7 +274,7 @@ public class UserRestController {
             @PathVariable Long id,
             @PathVariable Long productId
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         userService.removeProductFromCart(productId);
         return ResponseEntity.ok().build();
     }
@@ -279,7 +283,7 @@ public class UserRestController {
     public ResponseEntity<Collection<OrderSimpleDTO>> getOrders(
             @PathVariable Long id
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         List<OrderSimpleDTO> orders = userService.findDTOById(id).orders();
         if (orders.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(orders);
@@ -292,7 +296,7 @@ public class UserRestController {
             @RequestBody String address,
             @RequestBody String phoneNumber
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         OrderSimpleDTO order = orderService.proceedCheckout(paymentMethod, address, phoneNumber);
         if (order == null) return ResponseEntity.noContent().build();
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("{orderId}").buildAndExpand(id, order.id()).toUri();
@@ -304,7 +308,7 @@ public class UserRestController {
             @PathVariable Long id,
             @PathVariable Long orderId
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         List<OrderSimpleDTO> orders = userService.findDTOById(id).orders();
         if (orders.isEmpty()) return ResponseEntity.noContent().build();
         OrderDTO orderDTO = orderService.findDTOById(orderId);
@@ -320,7 +324,7 @@ public class UserRestController {
             @PathVariable Long id,
             @PathVariable Long orderId
     ){
-        if (!isUserAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         List<OrderSimpleDTO> orders = userService.findDTOById(id).orders();
         if (orders.isEmpty()) return ResponseEntity.noContent().build();
         if (userService.getLoggedUserDTO().roles().contains("ADMIN")){

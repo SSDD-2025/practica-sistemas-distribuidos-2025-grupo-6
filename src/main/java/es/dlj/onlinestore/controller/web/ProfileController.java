@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +18,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.OrderDTO;
+import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
+import es.dlj.onlinestore.service.ProductService;
+import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -38,11 +48,52 @@ public class ProfileController {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
+    private ProductService productService;
     
     @GetMapping
-    public String getUserProfile(Model model, HttpServletRequest request) {
-        // Load the user information extended
-        model.addAttribute("user", userService.getLoggedUserDTO());
+    public String getUserProfile(
+            Model model, 
+            HttpServletRequest request,
+            @RequestParam(name = "orderPage", defaultValue = "0") int orderPageNum,
+            @RequestParam(name = "reviewPage", defaultValue = "0") int reviewPageNum,
+            @RequestParam(name = "productPage", defaultValue = "0") int productPageNum,
+            @RequestParam(name = "orderSize", defaultValue = "4") int orderSize,
+            @RequestParam(name = "reviewSize", defaultValue = "4") int reviewSize,
+            @RequestParam(name = "productSize", defaultValue = "8") int productSize){ 
+            
+        UserDTO userDTO = userService.getLoggedUserDTO();
+        model.addAttribute("user", userDTO);
+
+        Pageable orderPageable = PageRequest.of(orderPageNum, orderSize);
+        Pageable reviewPageable = PageRequest.of(reviewPageNum, reviewSize);
+        Pageable productPageable = PageRequest.of(productPageNum, productSize);
+
+        Page<OrderDTO> orderPage = orderService.getAllOrdersByUserId(userDTO.id(), orderPageable);
+        model.addAttribute("orderPage", orderPage); 
+        model.addAttribute("nextPageOrder", orderPage.getNumber() + 1);
+        model.addAttribute("previousPageOrder", orderPage.getNumber() - 1);
+        model.addAttribute("hasNextOrder", !orderPage.isLast());  
+        model.addAttribute("hasPreviousOrder", !orderPage.isFirst());   
+        
+        Page<ReviewDTO> reviewPage = reviewService.getAllReviewsByUserId(userDTO.id(), reviewPageable);
+        model.addAttribute("reviewPage", reviewPage);
+        model.addAttribute("nextPageReview", reviewPage.getNumber() + 1);
+        model.addAttribute("previousPageReview", reviewPage.getNumber() - 1);
+        model.addAttribute("hasNextReview", !reviewPage.isLast());
+        model.addAttribute("hasPreviousReview", !reviewPage.isFirst());
+
+        Page<ProductDTO> productPage = productService.getAllProductsByUserId(userDTO.id(), productPageable);
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("nextPageProduct", productPage.getNumber() + 1);
+        model.addAttribute("previousPageProduct", productPage.getNumber() - 1);
+        model.addAttribute("hasNextProduct", !productPage.isLast());
+        model.addAttribute("hasPreviousProduct", !productPage.isFirst());
+        
         return "profile_template";
     }
      

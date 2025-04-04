@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
@@ -15,6 +17,7 @@ import es.dlj.onlinestore.enumeration.PaymentMethod;
 import es.dlj.onlinestore.mapper.OrderMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
 import jakarta.transaction.Transactional;
+
 
 @Service
 public class OrderService {
@@ -102,5 +105,15 @@ public class OrderService {
     @Transactional
     private void deepDeleteProducts(Order order) {
         order.getProducts().clear();
+    }
+
+    public Page<OrderSimpleDTO> getOrdersByUserId(Long id, Pageable pageable) {
+        Page<Order> orders = orderRepository.findByUserId(id, pageable);
+        return orders.map(orderMapper::toSimpleDTO);
+    }
+
+    public Page<OrderDTO> getAllOrdersByUserId(Long id, Pageable pageable) {
+        Page<Order> orders = orderRepository.findByUserId(id, pageable);
+        return orders.map(orderMapper::toDTO);
     }
 }

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.data.domain.Page; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/products")
@@ -87,10 +89,18 @@ public class ProductRestController {
         return ResponseEntity.status(403).build();
     }
 
+    /*
     @GetMapping("/{id}/reviews")
     public ResponseEntity<Collection<ReviewDTO>> getReviews(@PathVariable Long id) {
         Collection<ReviewDTO> reviews = reviewService.findAllByProductId(id);
         return ResponseEntity.ok(reviews);
+    } */
+
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<Page<ReviewDTO>> getReviews(@PathVariable Long id, Pageable pageable) {
+                        
+        Page<ReviewDTO> reviewsPage = reviewService.findAllByProductIdPag(id, pageable);
+        return ResponseEntity.ok(reviewsPage);
     }
 
     @GetMapping("/{id}/reviews/{reviewId}")

@@ -22,20 +22,44 @@ active
 </div>
 
 <div class="row m-4">
-	<div class="">
-		<div class="row" id="productList">
-			{{#productList}}
-			<div class="col-3 p-3">
+    <div class="">
+        <div class="row" id="productList">
+            {{#productPage.content}}
+            <div class="col-3 p-3">
+                {{> product_preview_template}}
+            </div>
+            {{/productPage.content}}
+            {{^productPage.content}}
+            <p>No results found.</p>
+            {{/productPage.content}}
+        </div>
 
-				{{> product_preview_template}}
+        {{#hasMultiplePages}}
+		<nav class="mt-4">
+			<ul class="pagination">
+				<li class="page-item {{#productPage.first}}disabled{{/productPage.first}}">
+					<a class="page-link" 
+					href="/product/search?page={{prevPage}}"> Previous
+					</a>
+				</li>
 
-			</div>
-			{{/productList}}
-			{{^productList}}
-			<p>No results found.</p>
-			{{/productList}}
-		</div>
-	</div>
+				{{#pages}}
+				<li class="page-item {{#current}}active{{/current}}">
+					<a class="page-link" 
+					href="/product/search?page={{number}}">{{display}}
+					</a>
+				</li>
+				{{/pages}}
+
+				<li class="page-item {{#productPage.last}}disabled{{/productPage.last}}">
+					<a class="page-link" 
+					href="/product/search?page={{nextPage}}"> Next
+					</a>
+				</li>
+			</ul>
+		</nav>
+		{{/hasMultiplePages}}
+    </div>
 </div>
 
 {{/ content}}

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
+import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
@@ -30,6 +32,8 @@ import es.dlj.onlinestore.repository.ReviewRepository;
 import es.dlj.onlinestore.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class UserService {
@@ -49,12 +53,8 @@ public class UserService {
     @Autowired
     private ImageRepository imageRepository;
 
-
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-
 
     @Autowired
     private UserMapper userMapper;
@@ -251,8 +251,4 @@ public class UserService {
         }
         return users;
     }
-    
-
-
-
 }
