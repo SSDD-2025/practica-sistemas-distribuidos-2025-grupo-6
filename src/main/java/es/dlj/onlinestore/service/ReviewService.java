@@ -141,4 +141,9 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow();
         return reviewMapper.toDTO(review);
     }
+
+    public Page<ReviewDTO> getAllReviewsByUserId(Long id, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findAllByOwnerId(id, pageable);
+        return reviews.map(reviewMapper::toDTO);
+    }
 }

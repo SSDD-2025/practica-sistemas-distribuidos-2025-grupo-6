@@ -111,4 +111,9 @@ public class OrderService {
         Page<Order> orders = orderRepository.findByUserId(id, pageable);
         return orders.map(orderMapper::toSimpleDTO);
     }
+
+    public Page<OrderDTO> getAllOrdersByUserId(Long id, Pageable pageable) {
+        Page<Order> orders = orderRepository.findByUserId(id, pageable);
+        return orders.map(orderMapper::toDTO);
+    }
 }

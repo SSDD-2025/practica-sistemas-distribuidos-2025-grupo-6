@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +18,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.Pageable;
 
+import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.dto.ImageDTO;
+import es.dlj.onlinestore.dto.OrderDTO;
+import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
+import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -38,11 +45,36 @@ public class ProfileController {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private ReviewService reviewService;
     
     @GetMapping
-    public String getUserProfile(Model model, HttpServletRequest request) {
-        // Load the user information extended
-        model.addAttribute("user", userService.getLoggedUserDTO());
+    public String getUserProfile(
+            Model model, 
+            HttpServletRequest request, 
+            @PageableDefault(size = 4, page = 0) Pageable pageable) {
+
+        UserDTO userDTO = userService.getLoggedUserDTO();
+        model.addAttribute("user", userDTO);
+
+        Page<OrderDTO> orderPage = orderService.getAllOrdersByUserId(userDTO.id(), pageable);
+        model.addAttribute("orderPage", orderPage); 
+        model.addAttribute("nextPageOrder", orderPage.getNumber() + 1);
+        model.addAttribute("previousPageOrder", orderPage.getNumber() - 1);
+        //model.addAttribute("pageSizeOrder", orderPage.getSize());
+        model.addAttribute("hasNextOrder", !orderPage.isLast());  
+        model.addAttribute("hasPreviousOrder", !orderPage.isFirst());   
+        
+        Page<ReviewDTO> reviewPage = reviewService.getAllReviewsByUserId(userDTO.id(), pageable);
+        model.addAttribute("reviewPage", reviewPage);
+        model.addAttribute("nextPageReview", reviewPage.getNumber() + 1);
+        model.addAttribute("previousPageReview", reviewPage.getNumber() - 1);
+        //model.addAttribute("pageSizeReview", reviewPage.getSize());
+        model.addAttribute("hasNextReview", !reviewPage.isLast());
+        model.addAttribute("hasPreviousReview", !reviewPage.isFirst());
+
+
         return "profile_template";
     }
      
