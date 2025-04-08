@@ -159,7 +159,7 @@ public class ProductService {
                 }
             } catch (IOException e) {}
 
-            if (i < 5) productList.get(i).setSeller(user);
+            if (i < 10) productList.get(i).setSeller(user);
             productRepository.save(productList.get(i));
         }
     }
