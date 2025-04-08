@@ -106,20 +106,21 @@ public class ReviewService {
     }
 
     @Transactional
-    public void save(Long productId, ReviewDTO reviewDTO) {
+    public ReviewDTO save(Long productId, ReviewDTO reviewDTO) {
         User user = userService.getLoggedUser();
         Product product = productService.findById(productId);
         Review review = reviewMapper.toDomain(reviewDTO);
         review.setId(null);
         review.setProduct(product);
         review.setOwner(user);
-        reviewRepository.save(review);
+        review = reviewRepository.save(review);
 
         product.addReview(review);
         user.addReview(review);
 
         productService.save(product);
         userService.save(user);
+        return reviewMapper.toDTO(review);
     }
 
     public Page<ReviewDTO> findAllByProductIdPag(Long productId, Pageable pageable) {
