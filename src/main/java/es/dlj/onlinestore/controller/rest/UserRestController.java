@@ -72,6 +72,8 @@ public class UserRestController {
 
     @GetMapping("/")
     public ResponseEntity<Collection<UserSimpleDTO>> getUsers(){
+        UserDTO userDTO = userService.getLoggedUserDTO();
+        if (!userDTO.roles().contains("ADMIN")) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         Collection<UserSimpleDTO> users = userService.getAllUsers();
         if (!users.isEmpty()) {
             return ResponseEntity.ok(users);
@@ -171,12 +173,12 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}/sellproducts")
-    public ResponseEntity<Set<ProductSimpleDTO>> getSellingProducts(
+    public ResponseEntity<List<ProductSimpleDTO>> getSellingProducts(
         @PathVariable Long id
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.findDTOById(id);
-        return ResponseEntity.ok(userDTO.cartProducts());
+        return ResponseEntity.ok(userDTO.productsForSell());
     }
 
     @GetMapping("/{id}/reviews")
