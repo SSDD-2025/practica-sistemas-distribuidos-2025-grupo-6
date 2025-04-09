@@ -346,19 +346,4 @@ public class UserRestController {
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<UserDTO> loginUser (
-        @RequestBody String username, 
-        @RequestBody String password
-    ){
-        //TODO: userService.
-        return null;
-    }
-
-    @GetMapping("/logout")
-    public ResponseEntity<Object> logout(){
-        //TODO: userService.
-        return null;
-    }
 }

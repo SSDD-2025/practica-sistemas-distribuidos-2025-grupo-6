@@ -120,6 +120,16 @@ public class SecurityConfig {
         http.authenticationProvider(authenticationProvider());
         http
         .authorizeHttpRequests(authorize -> authorize
+            //Public pages
+            .requestMatchers(
+                    "/", "/css/**", "/js/**",
+                    "/privacy",
+                    "/image/**",
+                    "/product/*", 
+                    "/register",
+                    "/login", "/login-error",
+                    "/error/**"
+                ).permitAll()
             //Private Pages
             .requestMatchers(
                 "/profile", "/profile/**", "/profile/deleteaccount",
@@ -128,17 +138,7 @@ public class SecurityConfig {
                 ).authenticated()
             .requestMatchers(
                 "/product/new"
-                ).hasAnyRole("ADMIN")
-            //Public pages
-            .requestMatchers(
-                "/", "/css/**", "/js/**",
-                "/privacy",
-                "/image/**",
-                "/product/*", 
-                "/register",
-                "/login", "/login-error",
-                "/error/**"
-                ).permitAll()
+                ).hasAnyRole("ADMIN")            
         )
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
