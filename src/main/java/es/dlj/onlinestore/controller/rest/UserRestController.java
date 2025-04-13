@@ -104,6 +104,11 @@ public class UserRestController {
             }
             return ResponseEntity.badRequest().body(errors);
         }
+
+        // Check if the password and repeated password match
+        List<String> error = userService.checkNewUserError(user);
+        if (error != null) return ResponseEntity.badRequest().body(error);
+
         UserDTO userDTO = userService.saveDTO(user);
         if (image!= null && !image.isEmpty()){
             try {
