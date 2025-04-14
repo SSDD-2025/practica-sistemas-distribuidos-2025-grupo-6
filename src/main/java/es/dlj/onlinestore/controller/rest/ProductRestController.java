@@ -165,6 +165,7 @@ public class ProductRestController {
         return ResponseEntity.created(location).body(userDTO.cartProducts()); // Created
     }
 
+    @GetMapping("/{id}/images/")
     //TODO: cargar las imagenes como en la presentacion
     @GetMapping("/{id}/images")
     public ResponseEntity<Collection<ImageDTO>> getImagesProduct(@RequestParam Long id) {
@@ -176,7 +177,7 @@ public class ProductRestController {
         }
     }
 
-    @GetMapping("/{id}/image/{imageId}")
+    @GetMapping("/{id}/images/{imageId}")
     public ResponseEntity<Object> getImage(@PathVariable Long id, @PathVariable Long imageId) {
         try {
             ImageDTO imageDTO = imageService.findById(imageId);
@@ -212,6 +213,7 @@ public class ProductRestController {
     } 
  
 
+    //TODO: mal construida
     @PutMapping("{id}/images/{idImage}")
     public ResponseEntity<Object> updateImage(
             @PathVariable Long id,
@@ -254,6 +256,8 @@ public class ProductRestController {
         return ResponseEntity.ok(tags);        
     }
 
+
+    // TODO: Esto debemos permitirlo??
     @PostMapping("/tags")
     public ResponseEntity<ProductTagDTO> createTag(@PathVariable Long id, @Valid @RequestBody ProductTagDTO newTagDTO) {
         ProductTagDTO savedTagDTO = productService.saveTagDTO(newTagDTO);

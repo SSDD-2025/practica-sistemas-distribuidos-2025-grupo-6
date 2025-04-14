@@ -102,6 +102,11 @@ public class UserRestController {
             }
             return ResponseEntity.badRequest().body(errors);
         }
+
+        // Check if the password and repeated password match
+        List<String> error = userService.checkNewUserError(user);
+        if (error != null) return ResponseEntity.badRequest().body(error);
+
         UserDTO userDTO = userService.saveDTO(user);
         if (image!= null && !image.isEmpty()){
             try {
@@ -287,7 +292,7 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/orders")
+    @GetMapping("/{id}/orders/")
     public ResponseEntity<Collection<OrderSimpleDTO>> getOrders(
             @PathVariable Long id
     ){
@@ -313,7 +318,7 @@ public class UserRestController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    @PostMapping("/{id}/order/")
+    @PostMapping("/{id}/orders/")
     public ResponseEntity<OrderSimpleDTO> createOrder(
             @PathVariable Long id,
             @RequestBody String paymentMethod,
