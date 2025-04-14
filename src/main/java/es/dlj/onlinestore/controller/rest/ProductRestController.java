@@ -166,9 +166,7 @@ public class ProductRestController {
     }
 
     @GetMapping("/{id}/images/")
-    //TODO: cargar las imagenes como en la presentacion
-    @GetMapping("/{id}/images")
-    public ResponseEntity<Collection<ImageDTO>> getImagesProduct(@RequestParam Long id) {
+    public ResponseEntity<Collection<ImageDTO>> getImagesProduct(@PathVariable Long id) {
         try {
             Collection<ImageDTO> images = productService.findDTOById(id).images();
             return ResponseEntity.ok(images);
@@ -250,7 +248,7 @@ public class ProductRestController {
         return ResponseEntity.ok(tags);
     }
     
-    @GetMapping("/{productId}/tags")
+    @GetMapping("/{id}/tags")
     public ResponseEntity<Collection<ProductTagSimpleDTO>> getProductTag(@PathVariable Long id) {
         Collection<ProductTagSimpleDTO> tags = productService.findDTOById(id).tags();
         return ResponseEntity.ok(tags);        
