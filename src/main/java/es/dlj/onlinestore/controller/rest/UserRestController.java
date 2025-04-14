@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -47,8 +42,6 @@ import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.validation.Valid;
 
-
-
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
@@ -64,6 +57,9 @@ public class UserRestController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private ProductService productService;
 
     private boolean isActionAllowed(Long id){
         UserDTO userDTO = userService.getLoggedUserDTO();
@@ -173,12 +169,10 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}/sellproducts")
-    public ResponseEntity<List<ProductSimpleDTO>> getSellingProducts(
-        @PathVariable Long id
-    ){
+    public ResponseEntity<Page<ProductDTO>> getSellingProducts(@PathVariable Long id, Pageable pageable){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        UserDTO userDTO = userService.findDTOById(id);
-        return ResponseEntity.ok(userDTO.productsForSell());
+        Page<ProductDTO> products = productService.getAllProductsByUserId(id, pageable);
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}/reviews")
@@ -287,11 +281,9 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}/orders")
-    public ResponseEntity<Collection<OrderSimpleDTO>> getOrders(
-            @PathVariable Long id
-    ){
+    public ResponseEntity<Page<OrderDTO>> getOrders(@PathVariable Long id, Pageable pageable){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        List<OrderSimpleDTO> orders = userService.findDTOById(id).orders();
+        Page<OrderDTO> orders = orderService.getAllOrdersByUserId(id, pageable);
         if (orders.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(orders);
     }
