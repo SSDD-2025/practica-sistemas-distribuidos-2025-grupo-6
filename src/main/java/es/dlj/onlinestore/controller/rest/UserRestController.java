@@ -291,7 +291,7 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/orders")
+    @GetMapping("/{id}/orders/")
     public ResponseEntity<Collection<OrderSimpleDTO>> getOrders(
             @PathVariable Long id
     ){
@@ -317,7 +317,7 @@ public class UserRestController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    @PostMapping("/{id}/order/")
+    @PostMapping("/{id}/orders/")
     public ResponseEntity<OrderSimpleDTO> createOrder(
             @PathVariable Long id,
             @RequestBody String paymentMethod,

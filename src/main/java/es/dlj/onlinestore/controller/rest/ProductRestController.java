@@ -163,7 +163,7 @@ public class ProductRestController {
         return ResponseEntity.created(location).body(userDTO.cartProducts()); // Created
     }
 
-    @GetMapping("/{id}/images")
+    @GetMapping("/{id}/images/")
     public ResponseEntity<Collection<ImageDTO>> getImagesProduct(@RequestParam Long id) {
         try {
             Collection<ImageDTO> images = productService.findDTOById(id).images();
@@ -173,7 +173,7 @@ public class ProductRestController {
         }
     }
 
-    @GetMapping("/{id}/image/{imageId}")
+    @GetMapping("/{id}/images/{imageId}")
     public ResponseEntity<Object> getImage(@PathVariable Long id, @PathVariable Long imageId) {
         try {
             return imageService.loadImage(imageId);
@@ -182,15 +182,15 @@ public class ProductRestController {
         }
     }
 
-    @GetMapping("/{id}/firstimage")
-    public ResponseEntity<Object> getProductFirstImage(@PathVariable Long id){
-        try{
-            return imageService.loadImage(productService.findDTOById(id).images().getFirst().id());
-        }
-        catch(NoSuchElementException e){
-            return imageService.loadDefaultImage();
-        }
-    }
+    // @GetMapping("/{id}/firstimage")
+    // public ResponseEntity<Object> getProductFirstImage(@PathVariable Long id){
+    //     try{
+    //         return imageService.loadImage(productService.findDTOById(id).images().getFirst().id());
+    //     }
+    //     catch(NoSuchElementException e){
+    //         return imageService.loadDefaultImage();
+    //     }
+    // }
 
     //TODO: hay que hacer que guarde las nuevas imagenes en el producto.
     @PostMapping("/{id}/images/")
@@ -208,6 +208,7 @@ public class ProductRestController {
     } 
 
     //TODO: explicar finalidad
+    //TODO: mal construida
     @PutMapping("/images/{idImage}")
     public ResponseEntity<ImageDTO> updateImage(
             @PathVariable Long idImage,
@@ -218,6 +219,7 @@ public class ProductRestController {
     }
 
     //TODO: añadir seguridad para verificar que el usuario es dueño de la imagen
+    // TODO: mala construcción
     @DeleteMapping("/images/{idImage}")
     public ResponseEntity<Void> deleteImage(@PathVariable Long idImage) {
         try {
@@ -240,6 +242,8 @@ public class ProductRestController {
         return ResponseEntity.ok(tags);        
     }
 
+
+    // TODO: Esto debemos permitirlo??
     @PostMapping("/tags")
     public ResponseEntity<ProductTagDTO> createTag(@PathVariable Long id, @Valid @RequestBody ProductTagDTO newTagDTO) {
         ProductTagDTO savedTagDTO = productService.saveTagDTO(newTagDTO);
