@@ -31,6 +31,8 @@ import es.dlj.onlinestore.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 
+
+//TODO: init 2 usuarios registrados y meter la contraseña cifrada por BCrypt del admin en el properties.
 @Service
 public class UserService {
     

@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.springframework.data.domain.Page; 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -163,8 +165,8 @@ public class ProductRestController {
         return ResponseEntity.created(location).body(userDTO.cartProducts()); // Created
     }
 
-    @GetMapping("/{id}/images")
-    public ResponseEntity<Collection<ImageDTO>> getImagesProduct(@RequestParam Long id) {
+    @GetMapping("/{id}/images/")
+    public ResponseEntity<Collection<ImageDTO>> getImagesProduct(@PathVariable Long id) {
         try {
             Collection<ImageDTO> images = productService.findDTOById(id).images();
             return ResponseEntity.ok(images);
@@ -173,11 +175,13 @@ public class ProductRestController {
         }
     }
 
-    @GetMapping("/{id}/image/{imageId}")
+    @GetMapping("/{id}/images/{imageId}")
     public ResponseEntity<Object> getImage(@PathVariable Long id, @PathVariable Long imageId) {
         try {
-            return imageService.loadImage(imageId);
-        } catch (NoSuchElementException e) {
+            ImageDTO imageDTO = imageService.findById(imageId);
+            Resource imageAPI = imageService.loadAPIImage(imageDTO.id());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, imageDTO.contentType()).body(imageAPI);
+        }catch (NoSuchElementException e) {
             return imageService.loadDefaultImage();
         }
     }
@@ -185,41 +189,51 @@ public class ProductRestController {
     @GetMapping("/{id}/firstimage")
     public ResponseEntity<Object> getProductFirstImage(@PathVariable Long id){
         try{
-            return imageService.loadImage(productService.findDTOById(id).images().getFirst().id());
-        }
-        catch(NoSuchElementException e){
+            ProductDTO productDTO = productService.findDTOById(id);
+            Resource imageAPI = imageService.loadAPIImage(productDTO.images().getFirst().id());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/" + productDTO.images().getFirst().contentType()).body(imageAPI);
+        } catch(NoSuchElementException e){
             return imageService.loadDefaultImage();
         }
     }
 
     //TODO: hay que hacer que guarde las nuevas imagenes en el producto.
     @PostMapping("/{id}/images/")
-    public ResponseEntity<List<ImageDTO>> addImage (@RequestBody Long id, @RequestParam List<MultipartFile> imagesVal) throws IOException {
+    public ResponseEntity<Object> addImage (@RequestBody Long id, @RequestParam MultipartFile image) throws IOException {
         if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         try {
-            for (MultipartFile image : imagesVal) {
-                imageService.saveFileImage(image);
-            }
-            URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/products/{id}").buildAndExpand(id).toUri();
-            return ResponseEntity.created(location).body(null);
+            productService.addImage(id, image);
+            URI location = fromCurrentRequest().build().toUri();
+            return ResponseEntity.created(location).build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     } 
+ 
 
-    //TODO: explicar finalidad
-    @PutMapping("/images/{idImage}")
-    public ResponseEntity<ImageDTO> updateImage(
+    //TODO: mal construida
+    @PutMapping("{id}/images/{idImage}")
+    public ResponseEntity<Object> updateImage(
+            @PathVariable Long id,
             @PathVariable Long idImage,
             @Valid @RequestBody MultipartFile updatedImage
     ) throws IOException {
-        ImageDTO updatedI = imageService.updateImage(idImage, updatedImage);
-        return ResponseEntity.ok(updatedI);
+        if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        try {
+            imageService.updateImage(idImage, updatedImage);
+            URI location = fromCurrentRequest().build().toUri();
+            return ResponseEntity.created(location).build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    //TODO: añadir seguridad para verificar que el usuario es dueño de la imagen
-    @DeleteMapping("/images/{idImage}")
-    public ResponseEntity<Void> deleteImage(@PathVariable Long idImage) {
+    @DeleteMapping("{id}/images/{idImage}")
+    public ResponseEntity<Void> deleteImage(
+            @PathVariable Long idImage,
+            @PathVariable Long id
+    ) {
+        if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         try {
             imageService.delete(imageService.findById(idImage));
             return ResponseEntity.noContent().build();
@@ -234,12 +248,14 @@ public class ProductRestController {
         return ResponseEntity.ok(tags);
     }
     
-    @GetMapping("/{productId}/tags")
+    @GetMapping("/{id}/tags")
     public ResponseEntity<Collection<ProductTagSimpleDTO>> getProductTag(@PathVariable Long id) {
         Collection<ProductTagSimpleDTO> tags = productService.findDTOById(id).tags();
         return ResponseEntity.ok(tags);        
     }
 
+
+    // TODO: Esto debemos permitirlo??
     @PostMapping("/tags")
     public ResponseEntity<ProductTagDTO> createTag(@PathVariable Long id, @Valid @RequestBody ProductTagDTO newTagDTO) {
         ProductTagDTO savedTagDTO = productService.saveTagDTO(newTagDTO);

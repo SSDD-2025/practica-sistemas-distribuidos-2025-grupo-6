@@ -6,7 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -100,6 +104,11 @@ public class UserRestController {
             }
             return ResponseEntity.badRequest().body(errors);
         }
+
+        // Check if the password and repeated password match
+        List<String> error = userService.checkNewUserError(user);
+        if (error != null) return ResponseEntity.badRequest().body(error);
+
         UserDTO userDTO = userService.saveDTO(user);
         if (image!= null && !image.isEmpty()){
             try {
@@ -184,12 +193,17 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}/image")
-    public ResponseEntity<ImageDTO> getProfileImage(
+    public ResponseEntity<Object> getProfileImage(
         @PathVariable Long id
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        UserDTO userDTO = userService.findDTOById(id);
-        return ResponseEntity.ok(userDTO.profilePhoto());
+        try{
+            UserDTO userDTO = userService.getLoggedUserDTO();
+            Resource imageAPI = imageService.loadAPIImage(userDTO.profilePhoto().id());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, userDTO.profilePhoto().contentType()).body(imageAPI);
+        } catch(NoSuchElementException e){
+            return imageService.loadDefaultImage();
+        }
     }
 
     @PostMapping("/{id}/image")
@@ -198,10 +212,10 @@ public class UserRestController {
             @PathVariable Long id
         ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        UserDTO userDTO = userService.findDTOById(id);
         try {
-            userDTO = imageService.saveImageInUser(imageFile);
-            return ResponseEntity.ok(userDTO.profilePhoto());
+            imageService.saveImageInUser(imageFile);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+            return ResponseEntity.created(location).build();
 
         } catch (IOException e) {
             
@@ -211,17 +225,15 @@ public class UserRestController {
     }
 
     @PutMapping("/{id}/image")
-    public ResponseEntity<ImageDTO> updateProfileImage (
+    public ResponseEntity<Object> updateProfileImage (
             @RequestBody MultipartFile imageFile,
             @PathVariable Long id
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        UserDTO userDTO = userService.findDTOById(id);
-        ImageDTO oldPhotoDTO = userDTO.profilePhoto();
         try {
-            userDTO = imageService.saveImageInUser(imageFile);
-            if (oldPhotoDTO != null) imageService.delete(oldPhotoDTO);
-            return ResponseEntity.ok(userDTO.profilePhoto());
+            imageService.saveImageInUser(imageFile);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+            return ResponseEntity.created(location).build();
         } catch (IOException e) {
             
             e.printStackTrace();
@@ -280,7 +292,7 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/orders")
+    @GetMapping("/{id}/orders/")
     public ResponseEntity<Page<OrderDTO>> getOrders(@PathVariable Long id, Pageable pageable){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         Page<OrderDTO> orders = orderService.getAllOrdersByUserId(id, pageable);
@@ -304,7 +316,7 @@ public class UserRestController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    @PostMapping("/{id}/order/")
+    @PostMapping("/{id}/orders/")
     public ResponseEntity<OrderSimpleDTO> createOrder(
             @PathVariable Long id,
             @RequestBody String paymentMethod,
@@ -337,20 +349,5 @@ public class UserRestController {
             }
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<UserDTO> loginUser (
-        @RequestBody String username, 
-        @RequestBody String password
-    ){
-        //TODO: userService.
-        return null;
-    }
-
-    @GetMapping("/logout")
-    public ResponseEntity<Object> logout(){
-        //TODO: userService.
-        return null;
     }
 }

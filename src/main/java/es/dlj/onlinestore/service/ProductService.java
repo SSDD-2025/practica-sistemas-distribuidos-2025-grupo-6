@@ -22,6 +22,7 @@ import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.ProductTagDTO;
 import es.dlj.onlinestore.enumeration.ProductType;
+import es.dlj.onlinestore.mapper.ImageMapper;
 import es.dlj.onlinestore.mapper.ProductMapper;
 import es.dlj.onlinestore.mapper.ProductTagMapper;
 import es.dlj.onlinestore.repository.OrderRepository;
@@ -65,6 +66,9 @@ public class ProductService {
 
     @Autowired
     private ProductTagMapper productTagMapper;
+
+    @Autowired
+    private ImageMapper imageMapper;
     
     @PostConstruct
     @Transactional
@@ -448,5 +452,12 @@ public class ProductService {
     public Page<ProductDTO> getAllProductsByUserId(Long id, Pageable pageable) {
         Page<Product> products = productRepository.findAllBySellerId(id, pageable);
         return products.map(productMapper::toDTO);
+    }
+
+    public void addImage(Long id, MultipartFile image) throws IOException {
+        Image savedImage = imageMapper.toDomain(imageService.saveFileImage(image));
+        Product product = productRepository.findById(id).orElseThrow();
+        product.addImage(savedImage);
+        productRepository.save(product);
     }  
 }

@@ -74,7 +74,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.DELETE, "/api/products/*/images/").hasRole("USER")
                     .requestMatchers(HttpMethod.POST, "/api/products/tags/").hasRole("USER")
 					.requestMatchers(HttpMethod.GET, "/api/users/").hasRole("ADMIN")
-					.requestMatchers(HttpMethod.POST, "/api/users/").hasRole("USER")
+                    // .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.PUT, "/api/users/*").hasRole("USER")
                     .requestMatchers(HttpMethod.DELETE, "/api/users/*").hasRole("USER")
                     .requestMatchers(HttpMethod.GET, "/api/users/*/sellproducts").hasRole("USER")
@@ -120,6 +120,20 @@ public class SecurityConfig {
         http.authenticationProvider(authenticationProvider());
         http
         .authorizeHttpRequests(authorize -> authorize
+            //Public pages
+            .requestMatchers(
+                    "/", "/css/**", "/js/**",
+                    "/privacy",
+                    "/image/**",
+                    "/product/*", 
+                    "/register",
+                    "/login", "/login-error",
+                    "/error/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs",
+                    "/swagger-ui/**",
+                    "/webjars/**"
+                ).permitAll()
             //Private Pages
             .requestMatchers(
                 "/profile", "/profile/**", "/profile/deleteaccount",
@@ -128,17 +142,7 @@ public class SecurityConfig {
                 ).authenticated()
             .requestMatchers(
                 "/product/new"
-                ).hasAnyRole("ADMIN")
-            //Public pages
-            .requestMatchers(
-                "/", "/css/**", "/js/**",
-                "/privacy",
-                "/image/**",
-                "/product/*", 
-                "/register",
-                "/login", "/login-error",
-                "/error/**"
-                ).permitAll()
+                ).hasAnyRole("ADMIN")            
         )
         .formLogin(formLogin -> formLogin
             .loginPage("/login")
