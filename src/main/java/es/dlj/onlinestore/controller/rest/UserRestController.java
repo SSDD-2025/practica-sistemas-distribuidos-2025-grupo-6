@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -21,12 +23,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -42,7 +41,6 @@ import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
-import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.validation.Valid;
@@ -190,12 +188,17 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}/image")
-    public ResponseEntity<ImageDTO> getProfileImage(
+    public ResponseEntity<Object> getProfileImage(
         @PathVariable Long id
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        UserDTO userDTO = userService.findDTOById(id);
-        return ResponseEntity.ok(userDTO.profilePhoto());
+        try{
+            UserDTO userDTO = userService.getLoggedUserDTO();
+            Resource imageAPI = imageService.loadAPIImage(userDTO.profilePhoto().id());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, userDTO.profilePhoto().contentType()).body(imageAPI);
+        } catch(NoSuchElementException e){
+            return imageService.loadDefaultImage();
+        }
     }
 
     @PostMapping("/{id}/image")
@@ -204,10 +207,10 @@ public class UserRestController {
             @PathVariable Long id
         ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        UserDTO userDTO = userService.findDTOById(id);
         try {
-            userDTO = imageService.saveImageInUser(imageFile);
-            return ResponseEntity.ok(userDTO.profilePhoto());
+            imageService.saveImageInUser(imageFile);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+            return ResponseEntity.created(location).build();
 
         } catch (IOException e) {
             
@@ -217,17 +220,15 @@ public class UserRestController {
     }
 
     @PutMapping("/{id}/image")
-    public ResponseEntity<ImageDTO> updateProfileImage (
+    public ResponseEntity<Object> updateProfileImage (
             @RequestBody MultipartFile imageFile,
             @PathVariable Long id
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        UserDTO userDTO = userService.findDTOById(id);
-        ImageDTO oldPhotoDTO = userDTO.profilePhoto();
         try {
-            userDTO = imageService.saveImageInUser(imageFile);
-            if (oldPhotoDTO != null) imageService.delete(oldPhotoDTO);
-            return ResponseEntity.ok(userDTO.profilePhoto());
+            imageService.saveImageInUser(imageFile);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+            return ResponseEntity.created(location).build();
         } catch (IOException e) {
             
             e.printStackTrace();

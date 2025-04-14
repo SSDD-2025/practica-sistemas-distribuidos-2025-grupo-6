@@ -138,4 +138,13 @@ public class ImageService {
         image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
         return imageMapper.toDTO(imageRepository.save(image));
     }
+
+    public Resource loadAPIImage(long id) {
+        Image image = imageRepository.findById(id).orElseThrow();
+        try {
+            return new InputStreamResource(image.getimageFile().getBinaryStream());
+        } catch (SQLException e) {
+            throw new NoSuchElementException();
+        }
+    }
 }
