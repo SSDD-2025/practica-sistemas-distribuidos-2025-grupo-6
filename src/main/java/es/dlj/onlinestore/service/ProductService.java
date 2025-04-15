@@ -316,6 +316,20 @@ public class ProductService {
         return productMapper.toDTOs(productRepository.searchProducts(name, minPrice, maxPrice, tags, productTypes));
     }
 
+    public Page<ProductSimpleDTO> findAllDTOsBy(String name, Integer minPrice, Integer maxPrice, List<String> tags, List<String> productTypeStrings, Pageable pageable) {
+        // Transform productTypeStrings to ProductType
+        List<ProductType> productTypes = null;
+        if (productTypeStrings != null) {
+            productTypes = new ArrayList<>();
+            for (String type : productTypeStrings) {
+                productTypes.add(ProductType.valueOf(type));
+            }
+        }
+        return productRepository
+            .searchProducts(name, minPrice, maxPrice, tags, productTypes, pageable)
+            .map(productMapper::toSimpleDTO);
+    }
+
     public Collection<ProductSimpleDTO> getBestSellers() {
         return productMapper.toDTOs(productRepository.findTop10ByOrderByTotalSellsDesc());
     }

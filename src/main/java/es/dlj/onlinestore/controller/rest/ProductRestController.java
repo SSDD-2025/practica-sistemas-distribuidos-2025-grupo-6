@@ -68,13 +68,14 @@ public class ProductRestController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Collection<ProductSimpleDTO>> getAllProducts(
+    public ResponseEntity<Page<ProductSimpleDTO>> getAllProducts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) List<String> productTypes,
             @RequestParam(required = false) Integer minPrice,
             @RequestParam(required = false) Integer maxPrice,
-            @RequestParam(required = false) List<String> tags) {
-        Collection<ProductSimpleDTO> products = productService.findAllDTOsBy(name, minPrice, maxPrice, tags, productTypes);
+            @RequestParam(required = false) List<String> tags,
+            @RequestParam(required = false) Pageable pageable) {
+        Page<ProductSimpleDTO> products = productService.findAllDTOsBy(name, minPrice, maxPrice, tags, productTypes, pageable);
         return ResponseEntity.ok(products);
     }
 
