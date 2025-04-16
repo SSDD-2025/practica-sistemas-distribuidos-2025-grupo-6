@@ -18,6 +18,7 @@ import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.ProductTag;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
+import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.ProductTagDTO;
@@ -31,6 +32,7 @@ import es.dlj.onlinestore.repository.ProductTagRepository;
 import es.dlj.onlinestore.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import es.dlj.onlinestore.repository.ReviewRepository;
 
 @Service
@@ -147,6 +149,7 @@ public class ProductService {
 
         // Preload products, tags and images
         User user = userService.findById(1L);
+        User user2 = userService.findById(2L);
 
         for (int i = 0; i < productList.size(); i++) {
 
@@ -163,9 +166,10 @@ public class ProductService {
                 }
             } catch (IOException e) {}
 
-            if (i < 10) productList.get(i).setSeller(user);
+            if (i < 8) productList.get(i).setSeller(user);
+            else productList.get(i).setSeller(user2);
             productRepository.save(productList.get(i));
-        }
+        }        
     }
 
     public ProductDTO findDTOById(Long id) {
@@ -177,14 +181,14 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(Long id, ProductDTO newProductDTO, List<MultipartFile> imagesVal, String tagsVal) {
+    public ProductDTO updateProduct(Long id, ProductDTO updatedProductDTO, List<MultipartFile> imagesVal, String tagsVal) {
         Product product = findById(id);
-        product.setName(newProductDTO.name());
-        product.setPrice(newProductDTO.price());
-        product.setDescription(newProductDTO.description());
-        product.setProductType(newProductDTO.productType());
-        product.setStock(newProductDTO.stock());
-        product.setSale(newProductDTO.sale());
+        product.setName(updatedProductDTO.name());
+        product.setPrice(updatedProductDTO.price());
+        product.setDescription(updatedProductDTO.description());
+        product.setProductType(updatedProductDTO.productType());
+        product.setStock(updatedProductDTO.stock());
+        product.setSale(updatedProductDTO.sale());
 
         if (imagesVal != null && imagesVal.size() >= 1) {
             try {
@@ -218,7 +222,7 @@ public class ProductService {
             }
         }
 
-        save(savedProduct);
+        return productMapper.toDTO(save(savedProduct));
     }
 
     @Transactional
@@ -365,11 +369,12 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO saveProduct(ProductDTO productDTO, List<MultipartFile> imagesVal, String tagsVal) {
-        Product product = productMapper.toDomain(productDTO);
+    public ProductDTO saveProduct(ProductDTO newProductDTO, List<MultipartFile> imagesVal, String tagsVal) {
+        Product product = productMapper.toDomain(newProductDTO);
         User user = userService.getLoggedUser();
         product.setSeller(user);
         product.setTags(productTagMapper.toDomains(transformStringToTags(tagsVal))); 
+        if (product.getReviews() == null) product.setReviews(new ArrayList<Review>());
 
         Product savedProduct = save(product);
     
@@ -394,15 +399,17 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteProduct(Long id) {
+    public ProductDTO deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
-        if (product == null) return;
-        deepDeleteImages(product);
-        deepDeleteReviews(product);
-        deepDeleteTags(product);
-        deepDeleteSeller(product);
-        deepDeleteOrders(product);
-        productRepository.delete(product);
+        if (product != null){
+            deepDeleteImages(product);
+            deepDeleteReviews(product);
+            deepDeleteTags(product);
+            deepDeleteSeller(product);
+            deepDeleteOrders(product);
+            productRepository.delete(product);
+        }
+        return productMapper.toDTO(product);
     }
 
     @Transactional
@@ -461,10 +468,18 @@ public class ProductService {
         return products.map(productMapper::toDTO);
     }
 
-    public void addImage(Long id, MultipartFile image) throws IOException {
+    public ImageDTO addImage(Long id, MultipartFile image) throws IOException {
         Image savedImage = imageMapper.toDomain(imageService.saveFileImage(image));
         Product product = productRepository.findById(id).orElseThrow();
         product.addImage(savedImage);
         productRepository.save(product);
+        return imageMapper.toDTO(savedImage);
+    }
+
+    public ImageDTO deleteImage(ImageDTO imageDTO, Long id) {
+        Product product = findById(id);
+        product.removeImage(imageDTO.id());
+        productRepository.save(product);
+        return imageService.delete(imageDTO);
     }  
 }

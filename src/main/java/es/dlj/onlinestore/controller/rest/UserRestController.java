@@ -75,12 +75,12 @@ public class UserRestController {
     @GetMapping("/")
     public ResponseEntity<Collection<UserSimpleDTO>> getUsers(){
         UserDTO userDTO = userService.getLoggedUserDTO();
-        if (!userDTO.roles().contains("ADMIN")) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        if (!userDTO.roles().contains("ADMIN")) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         Collection<UserSimpleDTO> users = userService.getAllUsers();
         if (!users.isEmpty()) {
             return ResponseEntity.ok(users);
         } else {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.noContent().build();
         }
     }
 

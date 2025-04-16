@@ -19,6 +19,7 @@ public record ReviewDTO(
     @Range(min = 0, max = 5, message = "Rating must be between 0 and 5")
     int rating,
     
-    UserSimpleDTO user,
+    UserSimpleDTO owner,
+    
     ProductSimpleDTO product
 ) {}

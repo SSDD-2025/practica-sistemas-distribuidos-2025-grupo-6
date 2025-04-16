@@ -115,9 +115,10 @@ public class ImageService {
         }
     }
 
-    public void delete(ImageDTO image) {
+    public ImageDTO delete(ImageDTO image) {
         Image imageToDelete = imageRepository.findById(image.id()).orElseThrow(() -> new NoSuchElementException("Image not found"));
         delete(imageToDelete);
+        return imageMapper.toDTO(imageToDelete);
     }
 
     @Transactional

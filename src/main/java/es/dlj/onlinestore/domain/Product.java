@@ -150,4 +150,13 @@ public class Product {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public void removeImage(Long imageId) {
+        for (Image image: this.images){
+            if (image.getId() == imageId) {
+                this.images.remove(image);
+                break;
+            }
+        }
+    }
 }

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -50,6 +51,30 @@ public class ProductRestController {
     @Autowired
     private ImageService imageService;
 
+    private static final Map<String, String> EXTENSIONS = Map.of(
+        ".jpg", "image/jpeg", 
+        ".png", "image/png", 
+        ".gif", "image/gif"
+    );
+
+    public static class ProductRequest {
+        private String tagsVal;
+
+        private ProductDTO product;
+    
+        public ProductRequest (){};
+
+        public void setTagsVal (String tags){ this.tagsVal = tags;}
+
+        public void setProduct (ProductDTO product) {this.product = product;}
+
+        public String getTags(){return this.tagsVal;}
+
+        public ProductDTO getProduct() {return this.product;}
+
+    }
+    
+
     private boolean isActionAllowed(Long id, String entityAffected){
         UserDTO userDTO = userService.getLoggedUserDTO();
         if (userDTO.roles().contains("ADMIN")) return true;
@@ -92,10 +117,9 @@ public class ProductRestController {
 
     @PostMapping("/")
     public ResponseEntity<ProductDTO> createProduct(
-            @RequestParam List<MultipartFile> imagesVal,
-            @RequestParam String tagsVal,
-            @Valid @RequestBody ProductDTO newProductDTO) {
-        ProductDTO savedProductDTO = productService.saveProduct(newProductDTO, imagesVal, tagsVal);
+            @RequestBody ProductRequest productRequest
+    ) {
+        ProductDTO savedProductDTO = productService.saveProduct(productRequest.getProduct(), null, productRequest.getTags());
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedProductDTO.id()).toUri();
         return ResponseEntity.created(location).body(savedProductDTO);
     }
@@ -103,22 +127,20 @@ public class ProductRestController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
-            @RequestParam List<MultipartFile> imagesVal,
-            @RequestParam String tagsVal,
-            @Valid @RequestBody ProductDTO updatedProductDTO) {
+            @RequestBody ProductRequest productRequest) {
         if (isActionAllowed(id, "product")) { 
-            productService.updateProduct(id, updatedProductDTO, imagesVal, tagsVal);
-            return ResponseEntity.ok(updatedProductDTO);
+            ProductDTO updatedProduct = productService.updateProduct(id, productRequest.getProduct(), null, productRequest.getTags());
+            return ResponseEntity.ok(updatedProduct);
         } else {
             return ResponseEntity.status(403).build(); 
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long id) {
         if (isActionAllowed(id, "product")) {
-            productService.deleteProduct(id);
-            return ResponseEntity.noContent().build();
+            ProductDTO productDTO = productService.deleteProduct(id);
+            return ResponseEntity.ok(productDTO);
         }
         return ResponseEntity.status(403).build();
     }
@@ -150,17 +172,22 @@ public class ProductRestController {
     @PostMapping("/{id}/reviews/")
     public ResponseEntity<ReviewDTO> addReview(
             @PathVariable Long id, 
-            @Valid @RequestBody ReviewDTO reviewDTO) {
+            @Valid @RequestBody ReviewDTO reviewDTO
+        ) {
         ReviewDTO savedReviewDTO = reviewService.save(id, reviewDTO);
         URI location = fromCurrentRequest().path("/{reviewId}").buildAndExpand(savedReviewDTO.id()).toUri();
         return ResponseEntity.created(location).body(savedReviewDTO);
     }
 
     @DeleteMapping("/{productId}/reviews/{reviewId}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long productId, @PathVariable Long reviewId) {
-        if (!isActionAllowed(reviewId, "review"))
-        reviewService.delete(reviewId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long productId, @PathVariable Long reviewId) {
+        if (isActionAllowed(reviewId, "review")){
+        ReviewDTO review = reviewService.delete(reviewId);
+        return ResponseEntity.ok(review);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
     @PostMapping("/{id}/cart")
@@ -174,8 +201,8 @@ public class ProductRestController {
     @GetMapping("/{id}/images/")
     public ResponseEntity<Collection<ImageDTO>> getImagesProduct(@PathVariable Long id) {
         try {
-            Collection<ImageDTO> images = productService.findDTOById(id).images();
-            return ResponseEntity.ok(images);
+            ProductDTO productDTO = productService.findDTOById(id);
+            return ResponseEntity.ok(productDTO.images());
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -186,7 +213,7 @@ public class ProductRestController {
         try {
             ImageDTO imageDTO = imageService.findById(imageId);
             Resource imageAPI = imageService.loadAPIImage(imageDTO.id());
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, imageDTO.contentType()).body(imageAPI);
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, EXTENSIONS.get(imageDTO.contentType())).body(imageAPI);
         }catch (NoSuchElementException e) {
             return imageService.loadDefaultImage();
         }
@@ -205,11 +232,11 @@ public class ProductRestController {
 
     //TODO: hay que hacer que guarde las nuevas imagenes en el producto.
     @PostMapping("/{id}/images/")
-    public ResponseEntity<Object> addImage (@RequestBody Long id, @RequestParam MultipartFile image) throws IOException {
-        if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+    public ResponseEntity<Object> addImage (@PathVariable Long id, @RequestBody MultipartFile image) throws IOException {
+        if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         try {
-            productService.addImage(id, image);
-            URI location = fromCurrentRequest().build().toUri();
+            ImageDTO imageDTO = productService.addImage(id, image);
+            URI location = fromCurrentRequest().path("/{id}").buildAndExpand(imageDTO.id()).toUri();
             return ResponseEntity.created(location).build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -219,30 +246,29 @@ public class ProductRestController {
 
     //TODO: mal construida
     @PutMapping("{id}/images/{idImage}")
-    public ResponseEntity<Object> updateImage(
+    public ResponseEntity<ImageDTO> updateImage(
             @PathVariable Long id,
             @PathVariable Long idImage,
             @Valid @RequestBody MultipartFile updatedImage
     ) throws IOException {
-        if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         try {
-            imageService.updateImage(idImage, updatedImage);
-            URI location = fromCurrentRequest().build().toUri();
-            return ResponseEntity.created(location).build();
+            ImageDTO imageDTO = imageService.updateImage(idImage, updatedImage);
+            return ResponseEntity.ok(imageDTO);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("{id}/images/{idImage}")
-    public ResponseEntity<Void> deleteImage(
+    public ResponseEntity<ImageDTO> deleteImage(
             @PathVariable Long idImage,
             @PathVariable Long id
     ) {
-        if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         try {
-            imageService.delete(imageService.findById(idImage));
-            return ResponseEntity.noContent().build();
+            ImageDTO imageDTO = productService.deleteImage(imageService.findById(idImage), id);
+            return ResponseEntity.ok(imageDTO);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
