@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -178,16 +180,28 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}/sellproducts")
-    public ResponseEntity<Page<ProductDTO>> getSellingProducts(@PathVariable Long id, Pageable pageable){
+    public ResponseEntity<Page<ProductDTO>> getSellingProducts(
+            @PathVariable Long id, 
+            @RequestBody(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        Page<ProductDTO> products = productService.getAllProductsByUserId(id, pageable);
+        int pageNum = page != null ? page : 0;
+        int pageSize = size != null ? size : 4;
+        Page<ProductDTO> products = productService.getAllProductsByUserId(id, PageRequest.of(pageNum, pageSize));
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}/reviews")
-    public ResponseEntity<Page<ReviewDTO>> getReviews(@PathVariable Long id, Pageable pageable) {
+    public ResponseEntity<Page<ReviewDTO>> getReviews(
+            @PathVariable Long id, 
+            @RequestBody(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ) {
         if (isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        Page<ReviewDTO> reviewsPage = reviewService.findAllReviewsByUserIdPag(id,pageable);
+        int pageNum = page != null ? page : 0;
+        int pageSize = size != null ? size : 4;
+        Page<ReviewDTO> reviewsPage = reviewService.findAllReviewsByUserIdPag(id, PageRequest.of(pageNum, pageSize));
         if (reviewsPage.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(reviewsPage);
     }
@@ -293,9 +307,15 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}/orders/")
-    public ResponseEntity<Page<OrderDTO>> getOrders(@PathVariable Long id, Pageable pageable){
+    public ResponseEntity<Page<OrderDTO>> getOrders(
+            @PathVariable Long id, 
+            @RequestBody(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        Page<OrderDTO> orders = orderService.getAllOrdersByUserId(id, pageable);
+        int pageNum = page != null ? page : 0;
+        int pageSize = size != null ? size : 4;
+        Page<OrderDTO> orders = orderService.getAllOrdersByUserId(id, PageRequest.of(pageNum, pageSize));
         if (orders.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(orders);
     }

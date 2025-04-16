@@ -1,0 +1,15 @@
+<div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
+    <h5 class="text-dark"><i class="bi bi-receipt me-2"></i>Order ID: {{id}}</h5>
+    <p><strong>Date:</strong> {{creationDateFormattedSimpler}}</p>
+    <ul>
+        {{#products}}
+        <li>{{name}} : ${{price}}</li>
+        {{/products}}
+
+        {{#nonContinuedProducts}}
+        <li>{{.}} : $ --- </li>
+        {{/nonContinuedProducts}}
+    </ul>
+    <p><strong>Total Price:</strong> ${{totalPriceString}}</p>
+    <a class="btn btn-outline-primary btn-sm" href="/profile/order/{{id}}">View Details</a>
+</div>

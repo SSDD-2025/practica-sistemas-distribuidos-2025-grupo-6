@@ -122,7 +122,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(authorize -> authorize
             //Public pages
             .requestMatchers(
-                    "/", "/css/**", "/js/**",
+                    "/", "/css/**", "/js/**", "/templates/**",
                     "/privacy",
                     "/image/**",
                     "/product/*", 

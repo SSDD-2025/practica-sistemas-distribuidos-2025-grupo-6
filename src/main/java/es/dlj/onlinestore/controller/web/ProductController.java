@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
@@ -125,7 +126,7 @@ class ProductController {
             @RequestParam(required=false) List<String> tags,
             @RequestParam(required=false) List<String> productType
     ) {
-        model.addAttribute("productList", productService.findAllDTOsBy(name, minPrice, maxPrice, tags, productType));
+        model.addAttribute("productList", productService.findAllDTOsBy(name, minPrice, maxPrice, tags, productType, PageRequest.of(0,8)));
         model.addAttribute("productTypes", productService.getAllProductTypesAndCount());
         model.addAttribute("tags", productService.getAllTags());
         return "search_template";

@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -74,8 +75,12 @@ public class ProductRestController {
             @RequestParam(required = false) Integer minPrice,
             @RequestParam(required = false) Integer maxPrice,
             @RequestParam(required = false) List<String> tags,
-            @RequestParam(required = false) Pageable pageable) {
-        Page<ProductSimpleDTO> products = productService.findAllDTOsBy(name, minPrice, maxPrice, tags, productTypes, pageable);
+            @RequestBody(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ) {
+        int pageNum = page != null ? page : 0;
+        int pageSize = size != null ? size : 8;
+        Page<ProductSimpleDTO> products = productService.findAllDTOsBy(name, minPrice, maxPrice, tags, productTypes, PageRequest.of(pageNum, pageSize));
         return ResponseEntity.ok(products);
     }
 

@@ -38,16 +38,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         + "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) "
         + "AND (:minPrice IS NULL OR p.price >= :minPrice) "
         + "AND (:maxPrice IS NULL OR p.price <= :maxPrice) "
-        + "AND (:tags IS NULL OR NOT EXISTS (SELECT t FROM ProductTag t WHERE t NOT MEMBER OF p.tags AND t.name IN :tags))"
-        + "AND (:productTypes IS NULL OR p.productType IN :productTypes) ")
-    List<Product> searchProducts(String name, Integer minPrice, Integer maxPrice, List<String> tags, List<ProductType> productTypes);
-
-    @Query("SELECT p FROM Product p WHERE "
-        + "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) "
-        + "AND (:minPrice IS NULL OR p.price >= :minPrice) "
-        + "AND (:maxPrice IS NULL OR p.price <= :maxPrice) "
-        + "AND (:tags IS NULL OR NOT EXISTS (SELECT t FROM ProductTag t WHERE t NOT MEMBER OF p.tags AND t.name IN :tags)) "
-        + "AND (:productTypes IS NULL OR p.productType IN :productTypes)")
+        // + "AND (:tags IS NULL OR NOT EXISTS (SELECT t FROM ProductTag t WHERE t NOT MEMBER OF p.tags AND t.name IN :tags))"
+        // + "AND (:productTypes IS NULL OR p.productType IN :productTypes) "
+    )
     Page<Product> searchProducts(String name, Integer minPrice, Integer maxPrice, List<String> tags, List<ProductType> productTypes, Pageable pageable);
 
     Page<Product> findAllBySellerId(Long id, Pageable pageable);
