@@ -41,11 +41,10 @@ import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
 import es.dlj.onlinestore.service.ImageService;
 import es.dlj.onlinestore.service.OrderService;
+import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
 import jakarta.validation.Valid;
-
-
 
 @RestController
 @RequestMapping("/api/users")
@@ -62,6 +61,9 @@ public class UserRestController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private ProductService productService;
 
     private boolean isActionAllowed(Long id){
         UserDTO userDTO = userService.getLoggedUserDTO();
@@ -176,12 +178,10 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}/sellproducts")
-    public ResponseEntity<List<ProductSimpleDTO>> getSellingProducts(
-        @PathVariable Long id
-    ){
+    public ResponseEntity<Page<ProductDTO>> getSellingProducts(@PathVariable Long id, Pageable pageable){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        UserDTO userDTO = userService.findDTOById(id);
-        return ResponseEntity.ok(userDTO.productsForSell());
+        Page<ProductDTO> products = productService.getAllProductsByUserId(id, pageable);
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}/reviews")
@@ -293,11 +293,9 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}/orders/")
-    public ResponseEntity<Collection<OrderSimpleDTO>> getOrders(
-            @PathVariable Long id
-    ){
+    public ResponseEntity<Page<OrderDTO>> getOrders(@PathVariable Long id, Pageable pageable){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        List<OrderSimpleDTO> orders = userService.findDTOById(id).orders();
+        Page<OrderDTO> orders = orderService.getAllOrdersByUserId(id, pageable);
         if (orders.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(orders);
     }

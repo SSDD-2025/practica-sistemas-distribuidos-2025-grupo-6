@@ -49,14 +49,16 @@ active
     </div>
 
     <!-- Reviews -->
-    <div class="mt-5">
+     <div class="mt-5" id="reviewSection">
         <h3 class="text-primary">My Reviews</h3>
         <div class="overflow-auto">
-            <div class="d-flex flex-nowrap p-3" id="reviewsContainer">
+            <div id="review_container" class="d-flex flex-nowrap p-3">
                 {{#reviewPage.content}}
-                <div class="card shadow-sm me-3" style="width: 300px; min-width: 300px;">
+                <div id="review_template" class="card shadow-sm me-3" style="width: 300px; min-width: 300px;">
                     <div class="card-body">
-                        <h6 class="text-primary mb-1"><a href="/product/{{product.id}}">{{product.name}}</a></h6>
+                        <h6 class="text-primary mb-1">
+                            <a href="/product/{{product.id}}">{{product.name}}</a>
+                        </h6>
                         <h5 class="text-dark">{{title}}</h5>
                         <p class="text-muted small text-truncate" style="max-width: 260px;">{{description}}</p>
                         <small class="text-muted">
@@ -73,16 +75,27 @@ active
             {{/reviewPage.content}}
         </div>  
 
-        <div class="text-center mt-3">
-            <button id="loadMoreReviews" class="btn btn-primary" 
-                {{^reviewPage.hasNext}}style="display: none;"{{/reviewPage.hasNext}}> Show More Reviews
-                <span id="reviewsSpinner" style="display: none;">
-                    <i class="bi bi-arrow-repeat bi-spin ms-2"></i>
-                </span>
-            </button>
-            <div id="noMoreReviews" class="alert alert-info mt-2" style="display: none;">
-                No more reviews to show
-            </div>
+        <div class="d-flex justify-content-between mt-3">
+            
+            {{#hasPreviousReview}}
+            <form id="prevReviewsForm" action="/profile" method="get" onsubmit="event.preventDefault(); reloadReviewsWithForm('prevReviewsForm', 'reviewSection','{{user.id}}')">
+                <input type="hidden" name="reviewPage" value="{{previousPageReview}}">
+                <input type="hidden" name="reviewSize" value="{{reviewPage.size}}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Show Previous Reviews
+                </button>
+            </form>
+            {{/hasPreviousReview}}
+
+            {{#hasNextReview}}
+            <form id="nextReviewsForm" action="/profile" method="get" onsubmit="event.preventDefault(); reloadReviewsWithForm('nextReviewsForm', 'reviewSection')">
+                <input type="hidden" name="reviewPage" value="{{nextPageReview}}">
+                <input type="hidden" name="reviewSize" value="{{reviewPage.size}}">
+                <button type="submit" class="btn btn-primary">
+                    Show More Reviews <i class="bi bi-arrow-right-circle ms-2"></i>
+                </button>
+            </form>
+            {{/hasNextReview}}
         </div>
     </div>
 
@@ -90,25 +103,24 @@ active
     <div class="mt-5">
         <h3 class="text-primary">My Orders</h3>
         <div class="overflow-auto" style="white-space: nowrap;">
-            <div id="ordersContainer" class="d-flex flex-nowrap">
-                {{#orderPage.content}}
-                <div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
-                    <h5 class="text-dark"><i class="bi bi-receipt me-2"></i>Order ID: {{id}}</h5>
-                    <p><strong>Date:</strong> {{creationDateFormattedSimpler}}</p>
-                    <ul>
-                        {{#products}}
-                        <li>{{name}} : ${{price}}</li>
-                        {{/products}}
-
-                        {{#nonContinuedProducts}}
-                        <li>{{.}} : $ --- </li>
-                        {{/nonContinuedProducts}}
-                    </ul>
-                    <p><strong>Total Price:</strong> ${{totalPriceString}}</p>
-                    <a class="btn btn-outline-primary btn-sm" href="/profile/order/{{id}}">View Details</a>
-                </div>
-                {{/orderPage.content}}
+            {{#orderPage.content}}
+             <div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
+                 <h5 class="text-dark"><i class="bi bi-receipt me-2"></i>Order ID: {{id}}</h5>
+                 <p><strong>Date:</strong> {{creationDateFormattedSimpler}}</p>
+                 <ul>
+                     {{#products}}
+                     <li>{{name}} : ${{price}}</li>
+                     {{/products}}
+ 
+                     {{#nonContinuedProducts}}
+                     <li>{{.}} : $ --- </li>
+                     {{/nonContinuedProducts}}
+                 </ul>
+                 <p><strong>Total Price:</strong> ${{totalPriceString}}</p>
+                 <a class="btn btn-outline-primary btn-sm" href="/profile/order/{{id}}">View Details</a>
             </div>
+            {{/orderPage.content}}
+
             {{^orderPage.content}}
             <div class="alert alert-info col-2" role="alert">
                 <i class="bi bi-info-circle me-2"></i> No orders placed yet.
@@ -116,54 +128,80 @@ active
             {{/orderPage.content}}
         </div>
 
-        <div class="text-center mt-3">
-            <button id="loadMoreOrders" class="btn btn-primary" 
-                {{^orderPage.hasNext}}style="display: none;"{{/orderPage.hasNext}}> Show More Orders
-                <span id="ordersSpinner" style="display: none;">
-                    <i class="bi bi-arrow-repeat bi-spin ms-2"></i>
-                </span>
-            </button>
-            <div id="noMoreOrders" class="alert alert-info mt-2" style="display: none;">
-                No more orders to show
-            </div>
-        </div>
+        <div class="d-flex justify-content-between mt-3">
+             {{#hasPreviousOrder}}
+             <form action="/profile" method="get">
+                 <input type="hidden" name="orderPage" value="{{previousPageOrder}}">
+                 <input type="hidden" name="orderSize" value="{{orderPage.size}}">
+                 <button type="submit" class="btn btn-primary">
+                     <i class="bi bi-arrow-left-circle me-2"></i>Show Previous Orders
+                 </button>
+             </form>
+             {{/hasPreviousOrder}}
+         
+             {{#hasNextOrder}}
+             <form action="/profile" method="get">
+                 <input type="hidden" name="orderPage" value="{{nextPageOrder}}">
+                 <input type="hidden" name="orderSize" value="{{orderPage.size}}">
+                 <button type="submit" class="btn btn-primary"> Show More Orders 
+                     <i class="bi bi-arrow-right-circle ms-2"></i>
+                 </button>
+             </form>
+             {{/hasNextOrder}}
+         </div> 
+     </div>
+ 
+    <!-- Products for Sale -->
+<div class="mt-5">
+    <h3 class="text-primary">My Products for Sale</h3>
+    <div class="d-flex justify-content-end mb-3">
+        <a href="/product/new" class="btn btn-primary">
+            <i class="bi bi-box-seam me-2"></i> Sell New Product
+        </a>
     </div>
 
-    <!-- Products for Sale -->
-    <div class="mt-5">
-        <h3 class="text-primary">My Products for Sale</h3>
-        <div class="d-flex justify-content-end mb-3">
-            <a href="/product/new" class="btn btn-primary"><i class="bi bi-box-seam me-2"></i> Sell New Product</a>
-        </div>
-        <div class="overflow-auto p-4">
-            <div class="row" id="productsContainer">
-                {{#productPage.content}}
-                <div class="col-3 p-3">
-                    {{> product_preview_template}}
-                </div>
-                {{/productPage.content}}
+    <div class="container">
+        <div class="row g-3" id="productList">
+            {{#productPage.content}}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                {{> product_preview_template}}
             </div>
+            {{/productPage.content}}
+
             {{^productPage.content}}
-            <div class="alert alert-info col-2" role="alert">
-                <i class="bi bi-info-circle me-2"></i> No products placed yet.
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle me-2"></i> No products placed yet.
+                </div>
             </div>
             {{/productPage.content}}
         </div>
 
-        <div class="text-center mt-3">
-            <button id="loadMoreProducts" class="btn btn-primary" 
-                {{^productPage.hasNext}}style="display: none;"{{/productPage.hasNext}}> Show More Products
-                <span id="productsSpinner" style="display: none;">
-                    <i class="bi bi-arrow-repeat bi-spin ms-2"></i>
-                </span>
-            </button>
-            <div id="noMoreProducts" class="alert alert-info mt-2" style="display: none;">
-                No more products to show
-            </div>
+        <div class="d-flex justify-content-between mt-4">
+            {{#hasPreviousProduct}}
+            <form action="/profile" method="get">
+                <input type="hidden" name="productPage" value="{{previousPageProduct}}">
+                <input type="hidden" name="productSize" value="{{productPage.size}}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Show Previous Products
+                </button>
+            </form>
+            {{/hasPreviousProduct}}
+
+            {{#hasNextProduct}}
+            <form action="/profile" method="get">
+                <input type="hidden" name="productPage" value="{{nextPageProduct}}">
+                <input type="hidden" name="productSize" value="{{productPage.size}}">
+                <button type="submit" class="btn btn-primary">
+                    Show More Products <i class="bi bi-arrow-right-circle ms-2"></i>
+                </button>
+            </form>
+            {{/hasNextProduct}}
         </div>
     </div>
 </div>
 {{/user}}
+
 
 <!-- Message if there is no user -->
 {{^user}}
@@ -172,185 +210,8 @@ active
 </div>
 {{/user}}
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    // Configuración para cada sección
-    const sections = [
-        { 
-            name: 'reviews',
-            container: $('#reviewsContainer'),
-            button: $('#loadMoreReviews'),
-            spinner: $('#reviewsSpinner'),
-            noMore: $('#noMoreReviews')
-        },
-        { 
-            name: 'orders',
-            container: $('#ordersContainer'),
-            button: $('#loadMoreOrders'),
-            spinner: $('#ordersSpinner'),
-            noMore: $('#noMoreOrders')
-        },
-        { 
-            name: 'products',
-            container: $('#productsContainer'),
-            button: $('#loadMoreProducts'),
-            spinner: $('#productsSpinner'),
-            noMore: $('#noMoreProducts')
-        }
-    ];
-    
-    // Inicializar páginas
-    const pages = {
-        reviews: 0,
-        orders: 0,
-        products: 0
-    };
-    
-    // Configurar eventos para cada botón
-    sections.forEach(section => {
-        section.button.click(function() {
-            loadMore(section, ++pages[section.name]);
-        });
-    });
-    
-    function loadMore(section, page) {
-        console.log(`Loading more ${section.name}, page ${page}`);
-        section.spinner.show();
-        section.button.prop('disabled', true);
-        
-        $.ajax({
-            url: '/profile/loadmore',
-            type: 'GET',
-            data: {
-                type: section.name,
-                page: page
-            },
-            success: function(response) {
-                console.log('Server response:', response);
-                section.spinner.hide();
-                section.button.prop('disabled', false);
-                
-                if (response.error) {
-                    alert('Error: ' + response.error);
-                    return;
-                }
 
-                if (response.content && response.content.length > 0) {
-                    appendItems(section, response.content);
-                    
-                    if (!response.hasMore) {
-                        section.button.hide();
-                        section.noMore.show();
-                    }
-                } else {
-                    section.button.hide();
-                    section.noMore.show();
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-                section.spinner.hide();
-                section.button.prop('disabled', false);
-                
-                if (xhr.status === 401) {
-                    alert('Error: You must be logged in to load more results.');
-                } else if (xhr.status === 400) {
-                    alert('Error: Invalid request. Please try again.');
-                } else {
-                    alert('Error loading more results: ' + error);
-                }
-            }
-        });
-    }
-    
-    function appendItems(section, items) {
-        items.forEach(item => {
-            let html = '';
-            
-            switch(section.name) {
-                case 'orders':
-                    html = generateOrderHtml(item);
-                    section.container.append(html);
-                    break;
-                    
-                case 'reviews':
-                    html = generateReviewHtml(item);
-                    section.container.append(html);
-                    break;
-                    
-                case 'products':
-                    html = generateProductHtml(item);
-                    section.container.append(html);
-                    break; 
-            }
-        });
-    }
-    
-    function generateOrderHtml(order) {
-        let productsHtml = '';
-        if (order.products) {
-            productsHtml = order.products.map(p => `<li>${p.name} : $${p.price}</li>`).join('');
-        }
-        
-        let nonContinuedHtml = '';
-        if (order.nonContinuedProducts) {
-            nonContinuedHtml = order.nonContinuedProducts.map(p => `<li>${p} : $ --- </li>`).join('');
-        }
-        
-        return `
-            <div class="list-group-item shadow-sm p-3 border rounded d-inline-block me-3" style="width: 300px;">
-                <h5 class="text-dark"><i class="bi bi-receipt me-2"></i>Order ID: ${order.id}</h5>
-                <p><strong>Date:</strong> ${order.creationDateFormattedSimpler}</p>
-                <ul>${productsHtml}${nonContinuedHtml}</ul>
-                <p><strong>Total Price:</strong> $${order.totalPriceString}</p>
-                <a class="btn btn-outline-primary btn-sm" href="/profile/order/${order.id}">View Details</a>
-            </div>
-        `;
-    }
-    
-    function generateReviewHtml(review) {
-        return `
-            <div class="card shadow-sm me-3" style="width: 300px; min-width: 300px;">
-                <div class="card-body">
-                    <h6 class="text-primary mb-1"><a href="/product/${review.product.id}">${review.product.name}</a></h6>
-                    <h5 class="text-dark">${review.title}</h5>
-                    <p class="text-muted small text-truncate" style="max-width: 260px;">${review.description}</p>
-                    <small class="text-muted">
-                        <i class="bi bi-heart-fill text-danger me-2"></i>${review.rating}/5
-                    </small>
-                </div>
-            </div>
-        `;
-    }
-    
-    function generateProductHtml(product) {
-    const priceWithSale = product.price - (product.price * product.sale / 100);
-    const imageUrl = product.images && product.images.length > 0 ? `/image/${product.images[0].name}` : '/images/default-product-image.jpg';
-    const tags = product.tags && product.tags.length > 0 ? product.getAllTagsInString() : 'No tags available';
-    const productType = product.productType ? product.productType.name : 'Unknown';
-    const rating = product.reviews.length > 0 ? product.getRating() : 'No ratings yet';
-    
-    return `
-        <div class="card shadow-lg border-0 rounded-3 p-3 h-100">
-            <div class="card-body text-center">
-                <img src="${imageUrl}" alt="Product Image" class="card-img-top" style="height: 200px; object-fit: cover;">
-                <h5 class="card-title fw-bold mb-1">${product.name}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">${productType}</h6>
-                <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
-                    <span class="fw-bold fs-5">$${priceWithSale.toFixed(2)}</span>
-                    ${product.sale > 0 ? `<span class="text-muted text-decoration-line-through">$${product.price.toFixed(2)}</span>` : ''}
-                </div>
-                <p class="text-success small mb-2">Stock: ${product.stock}</p>
-                <p class="text-muted small mb-2">Rating: ${rating} / 5</p>
-                <p class="small mb-2">Tags: ${tags}</p>
-                <a href="/product/${product.id}" class="btn btn-primary w-100">View Product</a>
-            </div>
-        </div>
-    `;
-}
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
 
 {{/ content}}
 {{/ layouts/layout}}

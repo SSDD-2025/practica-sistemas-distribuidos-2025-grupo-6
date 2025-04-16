@@ -12,6 +12,7 @@ import es.dlj.onlinestore.dto.ProductSimpleDTO;
 public interface ProductMapper {
 
     ProductDTO toDTO(Product product);
+    ProductSimpleDTO toSimpleDTO(Product product);
     Product toDomain(ProductDTO productDTO);
     Product toDomain(ProductSimpleDTO productSimpleDTO);
     Collection <ProductSimpleDTO> toDTOs(Collection<Product> products);

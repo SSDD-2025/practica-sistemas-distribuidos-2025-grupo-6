@@ -149,6 +149,7 @@ public class ProductService {
 
         // Preload products, tags and images
         User user = userService.findById(1L);
+        User user2 = userService.findById(2L);
 
         for (int i = 0; i < productList.size(); i++) {
 
@@ -165,9 +166,10 @@ public class ProductService {
                 }
             } catch (IOException e) {}
 
-            if (i < 10) productList.get(i).setSeller(user);
+            if (i < 8) productList.get(i).setSeller(user);
+            else productList.get(i).setSeller(user2);
             productRepository.save(productList.get(i));
-        }
+        }        
     }
 
     public ProductDTO findDTOById(Long id) {
@@ -316,6 +318,20 @@ public class ProductService {
             }
         }
         return productMapper.toDTOs(productRepository.searchProducts(name, minPrice, maxPrice, tags, productTypes));
+    }
+
+    public Page<ProductSimpleDTO> findAllDTOsBy(String name, Integer minPrice, Integer maxPrice, List<String> tags, List<String> productTypeStrings, Pageable pageable) {
+        // Transform productTypeStrings to ProductType
+        List<ProductType> productTypes = null;
+        if (productTypeStrings != null) {
+            productTypes = new ArrayList<>();
+            for (String type : productTypeStrings) {
+                productTypes.add(ProductType.valueOf(type));
+            }
+        }
+        return productRepository
+            .searchProducts(name, minPrice, maxPrice, tags, productTypes, pageable)
+            .map(productMapper::toSimpleDTO);
     }
 
     public Collection<ProductSimpleDTO> getBestSellers() {

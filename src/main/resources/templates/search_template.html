@@ -29,11 +29,19 @@ active
                 {{> product_preview_template}}
             </div>
             {{/productPage.content}}
+
             {{^productPage.content}}
             <p>No results found.</p>
             {{/productPage.content}}
         </div>
 
+		<button id="loadMore">Load More...</button>
+		<h2 id="spinner">
+			Loading...
+		</h2>
+
+
+<!-- 
         {{#hasMultiplePages}}
 		<nav class="mt-4">
 			<ul class="pagination">
@@ -59,8 +67,15 @@ active
 			</ul>
 		</nav>
 		{{/hasMultiplePages}}
+
+		 -->
     </div>
 </div>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script> -->
+<script src="https://unpkg.com/mustache@latest/mustache.min.js" defer></script>
+<!-- Custom JS -->
+<script src="/js/pageableSearch.js" defer></script>
 
 {{/ content}}
 
