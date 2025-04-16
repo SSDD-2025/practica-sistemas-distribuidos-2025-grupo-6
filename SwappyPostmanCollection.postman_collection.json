@@ -1,70 +1,14 @@
 {
 	"info": {
-		"_postman_id": "03794388-2c2c-47ed-85de-10ed55d62850",
+		"_postman_id": "25618029-cac9-4773-805b-bdb4bc4587e0",
 		"name": "SwappyPostmanCollection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "43169209"
+		"_exporter_id": "43276356"
 	},
 	"item": [
 		{
 			"name": "UserRequests",
 			"item": [
-				{
-					"name": "CreateUser",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Carlos\",\n    \"surname\": \"Garcia\",\n    \"username\": \"cgarcia\",\n    \"email\": \"carlos.garcia@example.com\",\n    \"password\": \"password123\",\n    \"repeatedPassword\": \"password123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{ENDPOINT}}/api/users/",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"users",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UpdateUser",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Fernando\",\n    \"surname\": \"Sanchez\",\n    \"email\": \"fernando.sanchez@example.com\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "GetUser",
 					"request": {
@@ -126,51 +70,20 @@
 					"response": []
 				},
 				{
-					"name": "PostUserOrder",
+					"name": "GetUserImage",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"paymentMethod\": \"CREDIT_CARD\",\n    \"address\": \"calle Tulipan, 1\",\n    \"phoneNumber\": \"123456789\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/orders/",
+							"raw": "{{ENDPOINT}}/api/users/1/image",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"users",
-								"2",
-								"orders",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DeleteUserOrder",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/orders/1",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"2",
-								"orders",
-								"1"
+								"1",
+								"image"
 							]
 						}
 					},
@@ -198,165 +111,19 @@
 					"response": []
 				},
 				{
-					"name": "PostUserCartProduct",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/cart/products/1",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"2",
-								"cart",
-								"products",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DeleteUserCartProduct",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/cart/products/1",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"2",
-								"cart",
-								"products",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DeleteUserCart",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/cart/",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"2",
-								"cart",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GetUserImage",
+					"name": "GetAllUsers",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/users/1/image",
+							"raw": "{{ENDPOINT}}/api/users/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"users",
-								"1",
-								"image"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PutUserImage",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "imageFile",
-									"type": "file",
-									"src": "/Users/david/Documents/Personal/Fondos_de_Pantalla/photo-1663970206579-c157cba7edda.jpeg"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{ENDPOINT}}/api/users/1/image",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"1",
-								"image"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DeleteUserImage",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{ENDPOINT}}/api/users/1/image",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"1",
-								"image"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PostUserImage",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "imageFile",
-									"type": "file",
-									"src": "/Users/david/Documents/Personal/Fondos_de_Pantalla/photo-1663970206579-c157cba7edda.jpeg"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{ENDPOINT}}/api/users/1/image",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"1",
-								"image"
+								""
 							]
 						}
 					},
@@ -413,10 +180,19 @@
 					"response": []
 				},
 				{
-					"name": "GetAllUsers",
+					"name": "CreateUser",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Carlos\",\n    \"surname\": \"Garcia\",\n    \"username\": \"cgarcia\",\n    \"email\": \"carlos.garcia@example.com\",\n    \"password\": \"password123\",\n    \"repeatedPassword\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{ENDPOINT}}/api/users/",
 							"host": [
@@ -426,6 +202,230 @@
 								"api",
 								"users",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostUserImage",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "imageFile",
+									"type": "file",
+									"src": "/Users/david/Documents/Personal/Fondos_de_Pantalla/photo-1663970206579-c157cba7edda.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/api/users/1/image",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostUserOrder",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"paymentMethod\": \"CREDIT_CARD\",\n    \"address\": \"calle Tulipan, 1\",\n    \"phoneNumber\": \"123456789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/api/users/2/orders/",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2",
+								"orders",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostUserCartProduct",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{ENDPOINT}}/api/users/2/cart/products/1",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2",
+								"cart",
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUser",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Fernando\",\n    \"surname\": \"Sanchez\",\n    \"email\": \"fernando.sanchez@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/api/users/2",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutUserImage",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "imageFile",
+									"type": "file",
+									"src": "/Users/david/Documents/Personal/Fondos_de_Pantalla/photo-1663970206579-c157cba7edda.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/api/users/1/image",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserOrder",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ENDPOINT}}/api/users/2/orders/1",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2",
+								"orders",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserCartProduct",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ENDPOINT}}/api/users/2/cart/products/1",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2",
+								"cart",
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserCart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ENDPOINT}}/api/users/2/cart/",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2",
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserImage",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ENDPOINT}}/api/users/1/image",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1",
+								"image"
 							]
 						}
 					},
@@ -456,58 +456,6 @@
 			"name": "ProductRequest",
 			"item": [
 				{
-					"name": "PostProductImage",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "imageFile",
-									"type": "file",
-									"src": "/Users/david/Documents/Personal/Fondos_de_Pantalla/photo-1663970206579-c157cba7edda.jpeg"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1/images/",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"products",
-								"1",
-								"images",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DeleteProductImage",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1/images/1",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"products",
-								"1",
-								"images",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "GetTags",
 					"request": {
 						"method": "GET",
@@ -521,6 +469,25 @@
 								"api",
 								"products",
 								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllProducts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ENDPOINT}}/api/products/",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"products",
+								""
 							]
 						}
 					},
@@ -552,14 +519,16 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1/images/",
+							"raw": "https://localhost:8443/api/products/21/images/",
+							"protocol": "https",
 							"host": [
-								"{{ENDPOINT}}"
+								"localhost"
 							],
+							"port": "8443",
 							"path": [
 								"api",
 								"products",
-								"1",
+								"21",
 								"images",
 								""
 							]
@@ -589,36 +558,6 @@
 					"response": []
 				},
 				{
-					"name": "GetProductReviews",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1/reviews?page=0&size=10",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"products",
-								"1",
-								"reviews"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "GetProductOneReview",
 					"request": {
 						"method": "GET",
@@ -640,51 +579,30 @@
 					"response": []
 				},
 				{
-					"name": "PostProductReview",
+					"name": "GetProductReviews",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"title\": \"New review title\",\n    \"description\": \"Review Description\",\n    \"rating\": 4\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+						"url": {
+							"raw": "{{ENDPOINT}}/api/products/21/reviews?page=0&size=10",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"21",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
 								}
-							}
-						},
-						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1/reviews/",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"products",
-								"1",
-								"reviews",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DeleteProductReview",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1/reviews/1",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"products",
-								"1",
-								"reviews",
-								"1"
 							]
 						}
 					},
@@ -710,19 +628,82 @@
 					"response": []
 				},
 				{
-					"name": "GetProduct Copy",
+					"name": "GetImage",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1",
+							"raw": "{{ENDPOINT}}/api/products/2/images/3",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"1"
+								"2",
+								"images",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostProductImage",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "c:\\Users\\granl\\Downloads\\imagen.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/api/products/21/images/",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"21",
+								"images",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostProductReview",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"New review title\",\n    \"description\": \"Review Description\",\n    \"rating\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/api/products/21/reviews/",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"21",
+								"reviews",
+								""
 							]
 						}
 					},
@@ -735,7 +716,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"imagesVal\": null,\n    \"tagsVal\": \"laptop, test\",\n    \"name\": \"New Laptop for sell\",\n    \"description\": \"This is a new laptop for sale\",\n    \"price\": 500.0,\n    \"stock\": 20,\n    \"sale\": 15.5,\n    \"productType\": \"NEW\"\n}",
+							"raw": "{\n  \"product\": {\n    \"id\": null,\n    \"creationDate\": null,\n    \"name\": \"Smartphone X Pro\",\n    \"description\": \"El último smartphone con tecnología avanzada y cámara profesional.\",\n    \"price\": 999.99,\n    \"stock\": 150,\n    \"sale\": 0.10,\n    \"images\": [],\n    \"reviews\": [],\n    \"seller\": null,\n    \"tags\": [],\n    \"productType\": \"NEW\",\n    \"totalSells\": 500\n  },\n  \"tagsVal\": \"electronics, gadget, smartphone\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -783,7 +764,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"imagesVal\": null,\n    \"tagsVal\": \"laptop, test\",\n    \"name\": \"New Laptop for sell\",\n    \"description\": \"This is a new laptop for sale\",\n    \"price\": 500.0,\n    \"stock\": 20,\n    \"sale\": 15.5,\n    \"productType\": \"NEW\"\n}",
+							"raw": "{\n  \"product\": {\n    \"id\": 22,\n    \"creationDate\": null,\n    \"name\": \"Smartphone X Pro\",\n    \"description\": \"El último smartphone con tecnología avanzada y cámara profesional.\",\n    \"price\": 10.99,\n    \"stock\": 100,\n    \"sale\": 0.10,\n    \"images\": null,\n    \"reviews\": null,\n    \"seller\": null,\n    \"tags\": [],\n    \"productType\": \"NEW\",\n    \"totalSells\": 500\n  },\n  \"tagsVal\": \"electronics, technology, smartphone\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -791,14 +772,56 @@
 							}
 						},
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1",
+							"raw": "{{ENDPOINT}}/api/products/22",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"1"
+								"22"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteProductImage",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ENDPOINT}}/api/products/21/images/41",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"21",
+								"images",
+								"41"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteProductReview",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{ENDPOINT}}/api/products/21/reviews/22",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"21",
+								"reviews",
+								"22"
 							]
 						}
 					},
@@ -819,33 +842,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1",
+							"raw": "{{ENDPOINT}}/api/products/21",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GetAllProducts",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{ENDPOINT}}/api/products/",
-							"host": [
-								"{{ENDPOINT}}"
-							],
-							"path": [
-								"api",
-								"products",
-								""
+								"21"
 							]
 						}
 					},
