@@ -1,5 +1,6 @@
 package es.dlj.onlinestore.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +111,7 @@ public class ReviewService {
         User user = userService.getLoggedUser();
         Product product = productService.findById(productId);
         Review review = reviewMapper.toDomain(reviewDTO);
+        review.setCreationDate(LocalDateTime.now());
         review.setId(null);
         review.setProduct(product);
         review.setOwner(user);

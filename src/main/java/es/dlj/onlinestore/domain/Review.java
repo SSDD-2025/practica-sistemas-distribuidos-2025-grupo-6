@@ -30,12 +30,15 @@ public class Review {
     @ManyToOne
     private Product product;
 
-    public Review() {}
+    public Review() {
+        this.creationDate = LocalDateTime.now();
+    }
 
     public Review(String title, String description, int rating) {
         this.title = title;
         this.description = description;
         this.rating = rating;
+        this.creationDate = LocalDateTime.now();
     }
 
     public Long getId() { return id; }
