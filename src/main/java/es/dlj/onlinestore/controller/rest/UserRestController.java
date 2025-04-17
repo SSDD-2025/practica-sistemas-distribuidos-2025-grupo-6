@@ -71,6 +71,33 @@ public class UserRestController {
         return userDTO.roles().contains("ADMIN") || userDTO.id() == id;   
     }
 
+    private static final Map<String, String> EXTENSIONS = Map.of(
+        ".jpg", "image/jpeg", 
+        ".png", "image/png", 
+        ".gif", "image/gif"
+    );
+
+    public static class OrderRequest{
+        private String paymentMethod;
+        private String address;
+        private String phoneNumber;
+
+        public OrderRequest(){}
+
+        public void setPaymentMethod(String paymentMethod){ this.paymentMethod = paymentMethod;}
+
+        public void setAddress(String address){this.address = address;}
+
+        public void setPhoneNumber(String phoneNumber){this.phoneNumber = phoneNumber;}
+
+        public String getPaymentMethod(){return this.paymentMethod;}
+
+        public String getAddress(){return this.address;}
+
+        public String getPhoneNumber(){return this.phoneNumber;}
+
+    }
+
     @GetMapping("/")
     public ResponseEntity<Collection<UserSimpleDTO>> getUsers(){
         UserDTO userDTO = userService.getLoggedUserDTO();
@@ -95,8 +122,7 @@ public class UserRestController {
     @PostMapping("/")
     public ResponseEntity<Object> registerUser(
             @Validated @RequestBody UserFormDTO user,
-            BindingResult bindingResult,
-            @RequestBody (required = false) MultipartFile image
+            BindingResult bindingResult
     ){
         if (bindingResult.hasErrors()){
              Map<String, String> errors = new HashMap<>();
@@ -111,13 +137,6 @@ public class UserRestController {
         if (error != null) return ResponseEntity.badRequest().body(error);
 
         UserDTO userDTO = userService.saveDTO(user);
-        if (image!= null && !image.isEmpty()){
-            try {
-                userDTO = imageService.saveImageInUser(image);
-            } catch (IOException e) {
-                return ResponseEntity.internalServerError().body("Error while saving the profile image.");
-            }
-        }
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userDTO.id()).toUri();
 
         return ResponseEntity.created(location).body(userDTO);
@@ -127,8 +146,7 @@ public class UserRestController {
     public ResponseEntity<Object> updateUser(
             @Valid @RequestBody UserDTO newUserDTO,
             BindingResult bindingResult,
-            @PathVariable Long id,
-            @RequestBody(required=false) MultipartFile profilePhotoFile
+            @PathVariable Long id
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
@@ -145,18 +163,6 @@ public class UserRestController {
        //TODO: boolean isUsernameChanged = !userDTO.username().equals(newUserDTO.username());
 
         userDTO = userService.update(userDTO.id(), newUserDTO);
-        
-        if (profilePhotoFile != null) {
-            try {
-                if (!profilePhotoFile.isEmpty()) {
-                    ImageDTO oldPhotoDTO = userDTO.profilePhoto();
-                    imageService.saveImageInUser(profilePhotoFile);
-                    if (oldPhotoDTO != null) imageService.delete(oldPhotoDTO);
-                }
-            } catch (IOException e) {
-                return ResponseEntity.internalServerError().body("Error while working with image: " + e.getMessage());
-            }
-        }
         return ResponseEntity.ok(userDTO);
     }
 
@@ -194,10 +200,10 @@ public class UserRestController {
     @GetMapping("/{id}/reviews")
     public ResponseEntity<Page<ReviewDTO>> getReviews(
             @PathVariable Long id, 
-            @RequestBody(required = false) Integer size,
+            @RequestParam(required = false) Integer size,
             @RequestParam(required = false) Integer page
     ) {
-        if (isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         int pageNum = page != null ? page : 0;
         int pageSize = size != null ? size : 4;
         Page<ReviewDTO> reviewsPage = reviewService.findAllReviewsByUserIdPag(id, PageRequest.of(pageNum, pageSize));
@@ -213,7 +219,7 @@ public class UserRestController {
         try{
             UserDTO userDTO = userService.getLoggedUserDTO();
             Resource imageAPI = imageService.loadAPIImage(userDTO.profilePhoto().id());
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, userDTO.profilePhoto().contentType()).body(imageAPI);
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, EXTENSIONS.get(userDTO.profilePhoto().contentType())).body(imageAPI);
         } catch(NoSuchElementException e){
             return imageService.loadDefaultImage();
         }
@@ -262,7 +268,10 @@ public class UserRestController {
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         UserDTO userDTO = userService.findDTOById(id);
         ImageDTO oldPhotoDTO = userDTO.profilePhoto();
-        if (oldPhotoDTO != null) imageService.delete(oldPhotoDTO);
+        if (oldPhotoDTO != null) {
+            userService.deleteProfileImage(userDTO);
+            imageService.delete(oldPhotoDTO);
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -308,7 +317,7 @@ public class UserRestController {
     @GetMapping("/{id}/orders/")
     public ResponseEntity<Page<OrderDTO>> getOrders(
             @PathVariable Long id, 
-            @RequestBody(required = false) Integer size,
+            @RequestParam(required = false) Integer size,
             @RequestParam(required = false) Integer page
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -338,14 +347,12 @@ public class UserRestController {
     @PostMapping("/{id}/orders/")
     public ResponseEntity<OrderSimpleDTO> createOrder(
             @PathVariable Long id,
-            @RequestBody String paymentMethod,
-            @RequestBody String address,
-            @RequestBody String phoneNumber
+            @RequestBody OrderRequest orderRequest
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        OrderSimpleDTO order = orderService.proceedCheckout(paymentMethod, address, phoneNumber);
+        OrderSimpleDTO order = orderService.proceedCheckout(orderRequest.getPaymentMethod(), orderRequest.getAddress(), orderRequest.getPhoneNumber());
         if (order == null) return ResponseEntity.noContent().build();
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("{orderId}").buildAndExpand(id, order.id()).toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("{orderId}").buildAndExpand(order.id()).toUri();
         return ResponseEntity.created(location).body(order);
     }
 
