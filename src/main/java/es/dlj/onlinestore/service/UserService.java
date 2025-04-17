@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +16,6 @@ import es.dlj.onlinestore.domain.Order;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.Review;
 import es.dlj.onlinestore.domain.User;
-import es.dlj.onlinestore.dto.OrderDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
 import es.dlj.onlinestore.dto.UserSimpleDTO;
@@ -253,5 +250,12 @@ public class UserService {
             users.add(userMapper.toDTO(u));
         }
         return users;
+    }
+
+    @Transactional
+    public void deleteProfileImage(UserDTO userDTO) {
+        User user = userRepository.findById(userDTO.id()).orElseThrow();
+        user.setProfilePhoto(null);
+        userRepository.save(user);
     }
 }

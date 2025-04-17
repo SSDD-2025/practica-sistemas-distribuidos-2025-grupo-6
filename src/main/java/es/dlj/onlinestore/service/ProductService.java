@@ -32,7 +32,6 @@ import es.dlj.onlinestore.repository.ProductTagRepository;
 import es.dlj.onlinestore.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import es.dlj.onlinestore.repository.ReviewRepository;
 
 @Service

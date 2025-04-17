@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -26,12 +25,10 @@ import es.dlj.onlinestore.domain.Image;
 import es.dlj.onlinestore.domain.Product;
 import es.dlj.onlinestore.domain.User;
 import es.dlj.onlinestore.dto.ImageDTO;
-import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.mapper.ImageMapper;
 import es.dlj.onlinestore.mapper.UserMapper;
 import es.dlj.onlinestore.repository.ImageRepository;
-import jakarta.validation.Valid;
 
 @Service
 public class ImageService {
