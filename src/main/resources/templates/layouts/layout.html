@@ -68,6 +68,7 @@
                         <li><a class="dropdown-item" href="/profile/deleteaccount"><i class="bi bi-trash me-2"></i> Delete Account</a></li>                        
                         <li>
                             <form action="/logout" method="post" class="dropdown-item">
+                                <input type="hidden" name="_csrf" value="{{token}}"/>
                                 <button type="submit" value="Sign Out" class="btn btn-danger w-100">
                                     <i class="bi bi-box-arrow-left me-2"></i> Log Out
                                 </button>

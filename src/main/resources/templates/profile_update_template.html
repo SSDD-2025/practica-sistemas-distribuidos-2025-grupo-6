@@ -12,6 +12,7 @@
                 </div>
                 <h2 class="text-center mb-4">Edit Profile Information</h2>
                 <form action="/profile/update" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="_csrf" value="{{token}}"/>
                     <div class="row g-4">
                         <div class="col-md-6">
                             <label for="profilePhotoFile" class="form-label">Profile Image</label>

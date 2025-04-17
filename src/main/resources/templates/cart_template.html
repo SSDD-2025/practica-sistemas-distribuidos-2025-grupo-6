@@ -10,6 +10,7 @@ active
     
     <div id="cart-list" class="row">
         <form id="removeForm-all" method="post" action="/cart/remove/all" class="col-5 mb-4 position-absolute top-0 end-0">
+            <input type="hidden" name="_csrf" value="{{token}}"/>
             <button type="submit" class="btn btn-danger" {{^user.cartProducts}} disabled {{/ user.cartProducts}}>
                 <i class="bi bi-trash me-2"></i>Remove All Products
             </button>
@@ -33,6 +34,7 @@ active
                     </div>
                     <div>
                         <form id="removeForm-{{id}}" method="post" action="/cart/remove/{{id}}">
+                            <input type="hidden" name="_csrf" value="{{token}}"/>
                             <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i>Remove</button>
                         </form>
                     </div>
@@ -61,6 +63,7 @@ active
                 <div class="card-body">
                     <h5 class="card-title">Total: ${{user.cartTotalPrice}}</h5>
                     <form method="get" action="/cart/checkout">
+                        <input type="hidden" name="_csrf" value="{{token}}"/>
                         <button type="submit" class="btn btn-primary btn-block" {{^user.cartProducts}}disabled="disabled"{{/user.cartProducts}}>
                             Proceed to Checkout</button>
                     </form>

@@ -9,6 +9,7 @@ active
 	<div class="card shadow-lg p-4 rounded-4">
 		<h2 class="mb-4 text-center">Checkout</h2>
 		<form method="post" action="/cart/confirm-order">
+			<input type="hidden" name="_csrf" value="{{token}}"/>
 
 			<div class="mb-3">
 				<label for="paymentMethod" class="form-label fw-bold">Payment Method</label>

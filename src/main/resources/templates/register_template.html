@@ -4,6 +4,7 @@
 	<div class="card p-4 shadow-sm" style="width: 350px;">
 		<h3 class="text-center mb-4">Register</h3>
 		<form action="/register" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="_csrf" value="{{token}}"/>
 			<div class="mb-3">
 				<label for="profileImage" class="form-label">Profile Image (Optional)</label>
 				<input type="file" class="form-control" id="image" name="image" accept=".jpg, .jpeg, .png">

@@ -6,6 +6,7 @@
     <div class="card p-4 shadow-lg rounded-3 mt-4" style="max-width: 400px;">
         <h3 class="text-center mb-4 text-primary">Edit Product</h3>
         <form action="/product/{{id}}/update" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="{{token}}"/>
 
             <!-- Images Section -->
             <fieldset class="mb-3">
