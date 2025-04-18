@@ -169,9 +169,33 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO deleteDTOById(Long id) {
-        return userMapper.toDTO(deleteById(id));
+public UserDTO deleteDTOById(Long id) {
+    User user = findById(id);
+    
+    user.getCartProducts().clear();
+    
+    for (Product product : new ArrayList<>(user.getProductsForSell())) {
+        product.setSeller(null);
+        user.getProductsForSell().remove(product);
     }
+    
+    for (Review review : new ArrayList<>(user.getReviews())) {
+        review.setOwner(null);
+        user.getReviews().remove(review);
+    }
+    
+    for (Order order : new ArrayList<>(user.getOrders())) {
+        order.setUser(null);
+        user.getOrders().remove(order);
+    }
+    
+    if (user.getProfilePhoto() != null) {
+        user.setProfilePhoto(null);
+    }
+    
+    userRepository.delete(user);
+    return userMapper.toDTO(user);
+}
 
     @Transactional
     private User deleteById(Long id) {

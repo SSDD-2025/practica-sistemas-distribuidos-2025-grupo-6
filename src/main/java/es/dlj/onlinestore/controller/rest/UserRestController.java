@@ -176,8 +176,7 @@ public class UserRestController {
         }
 
         try{
-            UserDTO userDTO = userService.findDTOById(id);
-            userService.deleteDTOById(userDTO.id());
+            UserDTO userDTO = userService.deleteDTOById(id);
             return ResponseEntity.ok("User" + userDTO.username() + "deleted successfuly.");
         } catch (Error e) {
             return ResponseEntity.badRequest().body("Login first in order to delete the account.");
@@ -250,11 +249,10 @@ public class UserRestController {
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         try {
-            imageService.saveImageInUser(imageFile);
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
-            return ResponseEntity.created(location).build();
+            UserDTO userDTO = imageService.saveImageInUser(imageFile);
+            Resource imageAPI = imageService.loadAPIImage(userDTO.profilePhoto().id());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, EXTENSIONS.get(userDTO.profilePhoto().contentType())).body(imageAPI);
         } catch (IOException e) {
-            
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }

@@ -137,7 +137,7 @@ public class ImageService {
         return imageMapper.toDTO(imageRepository.save(image));
     }
 
-    public Resource loadAPIImage(long id) {
+    public Resource loadAPIImage(long id) throws NoSuchElementException {
         Image image = imageRepository.findById(id).orElseThrow();
         try {
             return new InputStreamResource(image.getimageFile().getBinaryStream());
