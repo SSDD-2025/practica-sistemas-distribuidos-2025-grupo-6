@@ -74,22 +74,22 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.DELETE, "/api/products/*/images/").hasRole("USER")
                     .requestMatchers(HttpMethod.POST, "/api/products/tags/").hasRole("USER")
 					.requestMatchers(HttpMethod.GET, "/api/users/").hasRole("ADMIN")
-                    // .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.PUT, "/api/users/*").hasRole("USER")
                     .requestMatchers(HttpMethod.DELETE, "/api/users/*").hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, "/api/users/*/sellproducts").hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, "/api/users/*/products/").hasRole("USER")
                     .requestMatchers(HttpMethod.GET, "/api/users/*/reviews").hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, "/api/users/*/image").hasRole("USER")
-                    .requestMatchers(HttpMethod.POST, "/api/users/*/image").hasRole("USER")
-                    .requestMatchers(HttpMethod.PUT, "/api/users/*/image").hasRole("USER")
-                    .requestMatchers(HttpMethod.DELETE, "/api/users/*/image").hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, "/api/users/*/cart").hasRole("USER")
-                    .requestMatchers(HttpMethod.DELETE, "/api/users/*/cart").hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, "/api/users/*/image/").hasRole("USER")
+                    .requestMatchers(HttpMethod.POST, "/api/users/*/image/").hasRole("USER")
+                    .requestMatchers(HttpMethod.PUT, "/api/users/*/image/").hasRole("USER")
+                    .requestMatchers(HttpMethod.DELETE, "/api/users/*/image/").hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, "/api/users/*/cart/").hasRole("USER")
+                    .requestMatchers(HttpMethod.DELETE, "/api/users/*/cart/").hasRole("USER")
                     .requestMatchers(HttpMethod.POST, "/api/users/*/cart/products/*").hasRole("USER")
                     .requestMatchers(HttpMethod.DELETE, "/api/users/*/cart/products/*").hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, "/api/users/*/orders").hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, "/api/users/*/orders/").hasRole("USER")
                     .requestMatchers(HttpMethod.GET, "/api/users/*/orders/*").hasRole("USER")
-                    .requestMatchers(HttpMethod.POST, "/api/users/*/orders").hasRole("USER")
+                    .requestMatchers(HttpMethod.POST, "/api/users/*/orders/").hasRole("USER")
                     .requestMatchers(HttpMethod.DELETE, "/api/users/*/orders/*").hasRole("USER")
                     .requestMatchers(HttpMethod.GET, "/api/users/logout").hasRole("USER")
 					// PUBLIC ENDPOINTS
@@ -105,8 +105,8 @@ public class SecurityConfig {
         // Disable Basic Authentication
         http.httpBasic(httpBasic -> httpBasic.disable());
 
-        // Stateless session
-        http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // Allow sessions
+        http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
 		// Add JWT Token filter
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
@@ -133,7 +133,8 @@ public class SecurityConfig {
                     "/v3/api-docs*/**",
                     "/swagger-ui.html",
                     "/swagger-ui/**",
-                    "/webjars/**"
+                    "/webjars/**",
+                    "/api/**"
                 ).permitAll()
             //Private Pages
             .requestMatchers(

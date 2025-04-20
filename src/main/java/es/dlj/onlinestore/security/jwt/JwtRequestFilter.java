@@ -36,16 +36,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 		try {
 			var claims = jwtTokenProvider.validateToken(request, true);
-			var userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
+			if (claims != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+				var userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
 
-			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
-				
-			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+
+				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
 		} catch (Exception ex) {
-			//Avoid logging when no token is found
-			if(!ex.getMessage().equals("No access token cookie found in request")) {
+			if (!ex.getMessage().equals("No access token cookie found in request")) {
 				log.error("Exception processing JWT Token: ", ex);
 			}			
 		}

@@ -4,8 +4,6 @@ let currentPage = 1;
 let maxPage = 2;
 let lastFormData = null;
 
-// window.addEventListener("DOMContentLoaded", loadResults);
-
 document.getElementById("filterForm").addEventListener("submit", function (e) {
   e.preventDefault();
   currentPage = 0;
@@ -21,8 +19,10 @@ document.getElementById("filterForm").addEventListener("submit", function (e) {
 document.getElementById("loadMore").addEventListener("click", loadResults);
 
 function loadResults() {
+
+  document.getElementById(this.loadMoreId).style.display = "none";
+
 	if (currentPage >= maxPage) {
-		document.getElementById("loadMore").style.display = "none";
 		return
 	}
   document.getElementById("spinner").style.display = "block";
@@ -37,9 +37,7 @@ function loadResults() {
     fetch("/templates/product_preview_template.html").then((res) => res.text()),
     fetch(`/api/products/?${requestData.toString()}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      credentials: "include"
     }).then((res) => res.json()),
   ])
     .then(([template, data]) => {
@@ -60,8 +58,10 @@ function loadResults() {
 			if (currentPage < maxPage) {
       	document.getElementById("loadMore").style.display = "block";
 			}
-    })
-    .finally(() => {
+    }).catch ((error) => {
+      console.error("Error loading data:", error);
+      document.getElementById(this.loadMoreId).style.display = "block";
+    }).finally(() => {
       document.getElementById("spinner").style.display = "none";
     });
 }

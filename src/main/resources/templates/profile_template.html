@@ -55,83 +55,37 @@ active
             <div id="reviewList" class="d-flex flex-nowrap p-3">
                 
             </div>
-            <!-- {{^reviewPage.content}}
+            {{^reviewPage.content}}
             <div class="alert alert-info col-2" role="alert">
                 <i class="bi bi-info-circle me-2"></i> No reviews placed yet.
             </div>
-            {{/reviewPage.content}} -->
+            {{/reviewPage.content}}
         </div>  
 
-        <button id="loadMoreReviews" class="btn btn-primary" style="display: block;"
-                onclick="reviewsPagination.loadResults('api/users/{{user.id}}/reviews')">
+        <button id="loadMoreReviews" class="btn btn-outline-primary mt-4" style="display: block;"
+                onclick="reviewsPagination.loadResults('api/users/{{user.id}}/reviews/')">
             Show More Reviews <i class="bi bi-arrow-right-circle ms-2"></i>
         </button>
-        <h2 id="spinnerReviews" style="display: none;">Loading...</h2>
-
-        <!-- <div class="d-flex justify-content-between mt-3">
-            
-            {{#hasPreviousReview}}
-            <form id="prevReviewsForm" action="/profile" method="get" onsubmit="event.preventDefault(); reloadReviewsWithForm('prevReviewsForm', 'reviewSection','{{user.id}}')">
-                <input type="hidden" name="reviewPage" value="{{previousPageReview}}">
-                <input type="hidden" name="reviewSize" value="{{reviewPage.size}}">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-arrow-left-circle me-2"></i> Show Previous Reviews
-                </button>
-            </form>
-            {{/hasPreviousReview}}
-
-            {{#hasNextReview}}
-            <form id="nextReviewsForm" action="/profile" method="get" onsubmit="event.preventDefault(); reloadReviewsWithForm('nextReviewsForm', 'reviewSection')">
-                <input type="hidden" name="reviewPage" value="{{nextPageReview}}">
-                <input type="hidden" name="reviewSize" value="{{reviewPage.size}}">
-                <button type="submit" class="btn btn-primary">
-                    Show More Reviews <i class="bi bi-arrow-right-circle ms-2"></i>
-                </button>
-            </form>
-            {{/hasNextReview}}
-        </div> -->
+        <div id="spinnerReviews" style="display: none;" class="spinner-border text-primary mt-4" role="status"></div>
     </div>
 
     <!-- Orders -->
     <div class="mt-5">
         <h3 class="text-primary">My Orders</h3>
         <div id="orderList" class="overflow-auto" style="white-space: nowrap;">
-             
-
-            <!-- {{^orderPage.content}}
+            
+        </div>
+        {{^orderPage.content}}
             <div class="alert alert-info col-2" role="alert">
                 <i class="bi bi-info-circle me-2"></i> No orders placed yet.
             </div>
-            {{/orderPage.content}} -->
-        </div>
+        {{/orderPage.content}}
 
-        <button id="loadMoreOrders" class="btn btn-primary" style="display: block;"
+        <button id="loadMoreOrders" class="btn btn-outline-primary mt-4" style="display: block;"
                 onclick="ordersPagination.loadResults('api/users/{{user.id}}/orders/')">
             Show More Orders <i class="bi bi-arrow-right-circle ms-2"></i>
         </button>
-        <h2 id="spinnerOrders" style="display: none;">Loading...</h2>
-
-        <!-- <div class="d-flex justify-content-between mt-3">
-             {{#hasPreviousOrder}}
-             <form action="/profile" method="get">
-                 <input type="hidden" name="orderPage" value="{{previousPageOrder}}">
-                 <input type="hidden" name="orderSize" value="{{orderPage.size}}">
-                 <button type="submit" class="btn btn-primary">
-                     <i class="bi bi-arrow-left-circle me-2"></i>Show Previous Orders
-                 </button>
-             </form>
-             {{/hasPreviousOrder}}
-         
-             {{#hasNextOrder}}
-             <form action="/profile" method="get">
-                 <input type="hidden" name="orderPage" value="{{nextPageOrder}}">
-                 <input type="hidden" name="orderSize" value="{{orderPage.size}}">
-                 <button type="submit" class="btn btn-primary"> Show More Orders 
-                     <i class="bi bi-arrow-right-circle ms-2"></i>
-                 </button>
-             </form>
-             {{/hasNextOrder}}
-         </div>  -->
+        <div id="spinnerOrders" style="display: none;" class="spinner-border text-primary mt-4" role="status"></div>
      </div>
  
     <!-- Products for Sale -->
@@ -146,43 +100,20 @@ active
     <div class="container">
         <div class="row g-3" id="productList">
             
-
-            <!-- {{^productPage.content}}
+        </div>
+        {{^productPage.content}}
             <div class="col-12">
                 <div class="alert alert-info" role="alert">
                     <i class="bi bi-info-circle me-2"></i> No products placed yet.
                 </div>
             </div>
-            {{/productPage.content}} -->
-        </div>
+        {{/productPage.content}}
 
-        <button id="loadMoreProducts" class="btn btn-primary" style="display: block;"
-                onclick="productsPagination.loadResults('api/users/{{user.id}}/sellproducts')">
+        <button id="loadMoreProducts" class="btn btn-outline-primary mt-4" style="display: block;"
+                onclick="productsPagination.loadResults('api/users/{{user.id}}/products/')">
             Show More Products <i class="bi bi-arrow-right-circle ms-2"></i>
         </button>
-        <h2 id="spinnerProducts" style="display: none;">Loading...</h2>
-
-        <!-- <div class="d-flex justify-content-between mt-4">
-            {{#hasPreviousProduct}}
-            <form action="/profile" method="get">
-                <input type="hidden" name="productPage" value="{{previousPageProduct}}">
-                <input type="hidden" name="productSize" value="{{productPage.size}}">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-arrow-left-circle me-2"></i> Show Previous Products
-                </button>
-            </form>
-            {{/hasPreviousProduct}}
-
-            {{#hasNextProduct}}
-            <form action="/profile" method="get">
-                <input type="hidden" name="productPage" value="{{nextPageProduct}}">
-                <input type="hidden" name="productSize" value="{{productPage.size}}">
-                <button type="submit" class="btn btn-primary">
-                    Show More Products <i class="bi bi-arrow-right-circle ms-2"></i>
-                </button>
-            </form>
-            {{/hasNextProduct}}
-        </div> -->
+        <div id="spinnerProducts" style="display: none;" class="spinner-border text-primary mt-4" role="status"></div>
     </div>
 </div>
 {{/user}}

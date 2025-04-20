@@ -35,40 +35,11 @@ active
             {{/productPage.content}}
         </div>
 
-		<button id="loadMore">Load More...</button>
-		<h2 id="spinner" style="display: none;">
-			Loading...
-		</h2>
+		<button id="loadMore" class="btn btn-outline-primary mt-4" style="display: block;">
+            Show More Products <i class="bi bi-arrow-right-circle ms-2"></i>
+        </button>
+        <div id="spinner" style="display: none;" class="spinner-border text-primary mt-4" role="status"></div>
 
-
-<!-- 
-        {{#hasMultiplePages}}
-		<nav class="mt-4">
-			<ul class="pagination">
-				<li class="page-item {{#productPage.first}}disabled{{/productPage.first}}">
-					<a class="page-link" 
-					href="/product/search?page={{prevPage}}"> Previous
-					</a>
-				</li>
-
-				{{#pages}}
-				<li class="page-item {{#current}}active{{/current}}">
-					<a class="page-link" 
-					href="/product/search?page={{number}}">{{display}}
-					</a>
-				</li>
-				{{/pages}}
-
-				<li class="page-item {{#productPage.last}}disabled{{/productPage.last}}">
-					<a class="page-link" 
-					href="/product/search?page={{nextPage}}"> Next
-					</a>
-				</li>
-			</ul>
-		</nav>
-		{{/hasMultiplePages}}
-
-		 -->
     </div>
 </div>
 

@@ -69,6 +69,7 @@ public class UserRestController {
 
     private boolean isActionAllowed(Long id){
         UserDTO userDTO = userService.getLoggedUserDTO();
+        if (userDTO == null) return false;
         return userDTO.roles().contains("ADMIN") || userDTO.id() == id;   
     }
 

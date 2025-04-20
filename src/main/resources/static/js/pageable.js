@@ -20,29 +20,22 @@ class Pagination {
     this.extraHeader = extraHeader;
     this.extraFooter = extraFooter;
   }
-  // "loadMore"
-  // "/templates/review_preview_template.html"
+
   loadResults(requestRoute) {
+    document.getElementById(this.loadMoreId).style.display = "none";
+
     if (this.currentPage >= this.totalPages) {
-      document.getElementById(this.loadMoreId).style.display = "none";
       return;
     }
 
     document.getElementById(this.spinnerId).style.display = "block";
-
-    const requestData = new URLSearchParams();
-    requestData.append("page", this.currentPage++);
-    requestData.append("size", this.pageSize);
+    
 
     Promise.all([
       fetch(this.templateURI).then((res) => res.text()),
       fetch(requestRoute + `?page=${this.currentPage++}&size=${this.pageSize}`, {
         method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          // "Authorization": `Bearer ${token}`
-        }
+        credentials: "include"
       }).then((res) => res.json()),
     ])
       .then(([template, data]) => {
@@ -60,7 +53,7 @@ class Pagination {
           document.getElementById(this.loadMoreId).style.display = "block";
         }
       }).catch ((error) => {
-        console.error("Error loading data");
+        console.error("Error loading data:", error);
         document.getElementById(this.loadMoreId).style.display = "block";
       })
       .finally(() => {
@@ -76,7 +69,6 @@ let productsPagination = new Pagination(1, 0, "/templates/product_preview_templa
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("loadMoreReviews").onclick();
-  console.log("loadMoreReviews clicked");
   document.getElementById("loadMoreOrders").onclick();
   document.getElementById("loadMoreProducts").onclick();
 });
