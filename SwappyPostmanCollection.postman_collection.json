@@ -76,7 +76,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/image",
+							"raw": "{{ENDPOINT}}/api/users/2/image/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
@@ -84,7 +84,8 @@
 								"api",
 								"users",
 								"2",
-								"image"
+								"image",
+								""
 							]
 						}
 					},
@@ -136,7 +137,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/sellproducts",
+							"raw": "{{ENDPOINT}}/api/users/2/products/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
@@ -144,7 +145,8 @@
 								"api",
 								"users",
 								"2",
-								"sellproducts"
+								"products",
+								""
 							]
 						}
 					},
@@ -156,7 +158,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/reviews?page=0&size=10",
+							"raw": "{{ENDPOINT}}/api/users/2/reviews/?page=0&size=10",
 							"host": [
 								"{{ENDPOINT}}"
 							],
@@ -164,7 +166,8 @@
 								"api",
 								"users",
 								"2",
-								"reviews"
+								"reviews",
+								""
 							],
 							"query": [
 								{
@@ -224,7 +227,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/image",
+							"raw": "{{ENDPOINT}}/api/users/2/image/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
@@ -232,7 +235,8 @@
 								"api",
 								"users",
 								"2",
-								"image"
+								"image",
+								""
 							]
 						}
 					},
@@ -334,7 +338,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/image",
+							"raw": "{{ENDPOINT}}/api/users/2/image/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
@@ -342,7 +346,8 @@
 								"api",
 								"users",
 								"2",
-								"image"
+								"image",
+								""
 							]
 						}
 					},
@@ -462,14 +467,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/tags",
+							"raw": "{{ENDPOINT}}/api/products/tags/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"tags"
+								"tags",
+								""
 							]
 						}
 					},
@@ -500,7 +506,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1/tags",
+							"raw": "{{ENDPOINT}}/api/products/1/tags/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
@@ -508,7 +514,8 @@
 								"api",
 								"products",
 								"1",
-								"tags"
+								"tags",
+								""
 							]
 						}
 					},
@@ -634,16 +641,16 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/2/images/3",
+							"raw": "{{ENDPOINT}}/api/products/21/images/41",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"2",
+								"21",
 								"images",
-								"3"
+								"41"
 							]
 						}
 					},
@@ -665,14 +672,14 @@
 							]
 						},
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/22/images/",
+							"raw": "{{ENDPOINT}}/api/products/21/images/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"22",
+								"21",
 								"images",
 								""
 							]
@@ -695,14 +702,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/20/reviews/",
+							"raw": "{{ENDPOINT}}/api/products/21/reviews/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"20",
+								"21",
 								"reviews",
 								""
 							]
@@ -744,7 +751,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/1/cart",
+							"raw": "{{ENDPOINT}}/api/products/1/cart/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
@@ -752,7 +759,8 @@
 								"api",
 								"products",
 								"1",
-								"cart"
+								"cart",
+								""
 							]
 						}
 					},
@@ -843,14 +851,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{ENDPOINT}}/api/products/22",
+							"raw": "{{ENDPOINT}}/api/products/21",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"api",
 								"products",
-								"22"
+								"21"
 							]
 						}
 					},
