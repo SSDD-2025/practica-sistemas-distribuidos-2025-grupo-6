@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
+import es.dlj.onlinestore.dto.ProductFormDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
 import es.dlj.onlinestore.dto.ProductTagDTO;
 import es.dlj.onlinestore.dto.ProductTagSimpleDTO;
@@ -57,24 +58,6 @@ public class ProductRestController {
         ".gif", "image/gif"
     );
 
-    public static class ProductRequest {
-        private String tagsVal;
-
-        private ProductDTO product;
-    
-        public ProductRequest (){};
-
-        public void setTagsVal (String tags){ this.tagsVal = tags;}
-
-        public void setProduct (ProductDTO product) {this.product = product;}
-
-        public String getTags(){return this.tagsVal;}
-
-        public ProductDTO getProduct() {return this.product;}
-
-    }
-    
-
     private boolean isActionAllowed(Long id, String entityAffected){
         UserDTO userDTO = userService.getLoggedUserDTO();
         if (userDTO.roles().contains("ADMIN")) return true;
@@ -92,6 +75,7 @@ public class ProductRestController {
                 return false;
         }
     }
+    
 
     @GetMapping("/")
     public ResponseEntity<Page<ProductSimpleDTO>> getAllProducts(
@@ -117,9 +101,9 @@ public class ProductRestController {
 
     @PostMapping("/")
     public ResponseEntity<ProductDTO> createProduct(
-            @RequestBody ProductRequest productRequest
+            @RequestBody ProductFormDTO productFormDTO
     ) {
-        ProductDTO savedProductDTO = productService.saveProduct(productRequest.getProduct(), null, productRequest.getTags());
+        ProductDTO savedProductDTO = productService.saveProduct(productFormDTO.product(), null, productFormDTO.tagsVal());
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedProductDTO.id()).toUri();
         return ResponseEntity.created(location).body(savedProductDTO);
     }
@@ -127,9 +111,9 @@ public class ProductRestController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductRequest productRequest) {
+            @RequestBody ProductFormDTO productFormDTO) {
         if (isActionAllowed(id, "product")) { 
-            ProductDTO updatedProduct = productService.updateProduct(id, productRequest.getProduct(), null, productRequest.getTags());
+            ProductDTO updatedProduct = productService.updateProduct(id, productFormDTO.product(), null, productFormDTO.tagsVal());
             return ResponseEntity.ok(updatedProduct);
         } else {
             return ResponseEntity.status(403).build(); 
@@ -152,7 +136,7 @@ public class ProductRestController {
         return ResponseEntity.ok(reviews);
     } */
 
-    @GetMapping("/{id}/reviews")
+    @GetMapping("/{id}/reviews/")
     public ResponseEntity<Page<ReviewDTO>> getReviews(@PathVariable Long id, Pageable pageable) {
                         
         Page<ReviewDTO> reviewsPage = reviewService.findAllByProductIdPag(id, pageable);
@@ -190,7 +174,7 @@ public class ProductRestController {
         }
     }
 
-    @PostMapping("/{id}/cart")
+    @PostMapping("/{id}/cart/")
     public ResponseEntity<Set<ProductSimpleDTO>> addProductToCart(@PathVariable Long id) {
         UserDTO userDTO = userService.getLoggedUserDTO();
         userDTO = userService.addProductToCart(id);
@@ -230,7 +214,6 @@ public class ProductRestController {
         }
     }
 
-    //TODO: hay que hacer que guarde las nuevas imagenes en el producto.
     @PostMapping("/{id}/images/")
     public ResponseEntity<Object> addImage (@PathVariable Long id, @RequestBody MultipartFile image) throws IOException {
         if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -243,8 +226,6 @@ public class ProductRestController {
         }
     } 
  
-
-    //TODO: mal construida
     @PutMapping("{id}/images/{idImage}")
     public ResponseEntity<ImageDTO> updateImage(
             @PathVariable Long id,
@@ -274,25 +255,16 @@ public class ProductRestController {
         }
     }
 
-    @GetMapping("/tags")
+    @GetMapping("/tags/")
     public ResponseEntity<Collection<ProductTagDTO>> getAllTags() {
         Collection<ProductTagDTO> tags = productService.getAllTagsDTO();
         return ResponseEntity.ok(tags);
     }
     
-    @GetMapping("/{id}/tags")
+    @GetMapping("/{id}/tags/")
     public ResponseEntity<Collection<ProductTagSimpleDTO>> getProductTag(@PathVariable Long id) {
         Collection<ProductTagSimpleDTO> tags = productService.findDTOById(id).tags();
         return ResponseEntity.ok(tags);        
     }
-
-
-    // TODO: Esto debemos permitirlo??
-    @PostMapping("/tags")
-    public ResponseEntity<ProductTagDTO> createTag(@PathVariable Long id, @Valid @RequestBody ProductTagDTO newTagDTO) {
-        ProductTagDTO savedTagDTO = productService.saveTagDTO(newTagDTO);
-        return ResponseEntity.status(201).body(savedTagDTO);
-    }
         
-
 }

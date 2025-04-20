@@ -33,6 +33,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import es.dlj.onlinestore.dto.ImageDTO;
 import es.dlj.onlinestore.dto.OrderDTO;
+import es.dlj.onlinestore.dto.OrderFormtDTO;
 import es.dlj.onlinestore.dto.OrderSimpleDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
@@ -48,7 +49,7 @@ import es.dlj.onlinestore.service.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/users/")
 public class UserRestController {
 
     @Autowired
@@ -76,27 +77,6 @@ public class UserRestController {
         ".png", "image/png", 
         ".gif", "image/gif"
     );
-
-    public static class OrderRequest{
-        private String paymentMethod;
-        private String address;
-        private String phoneNumber;
-
-        public OrderRequest(){}
-
-        public void setPaymentMethod(String paymentMethod){ this.paymentMethod = paymentMethod;}
-
-        public void setAddress(String address){this.address = address;}
-
-        public void setPhoneNumber(String phoneNumber){this.phoneNumber = phoneNumber;}
-
-        public String getPaymentMethod(){return this.paymentMethod;}
-
-        public String getAddress(){return this.address;}
-
-        public String getPhoneNumber(){return this.phoneNumber;}
-
-    }
 
     @GetMapping("/")
     public ResponseEntity<Collection<UserSimpleDTO>> getUsers(){
@@ -160,8 +140,6 @@ public class UserRestController {
 
         UserDTO userDTO = userService.findDTOById(id);
 
-       //TODO: boolean isUsernameChanged = !userDTO.username().equals(newUserDTO.username());
-
         userDTO = userService.update(userDTO.id(), newUserDTO);
         return ResponseEntity.ok(userDTO);
     }
@@ -183,7 +161,7 @@ public class UserRestController {
         }
     }
 
-    @GetMapping("/{id}/sellproducts")
+    @GetMapping("/{id}/products/")
     public ResponseEntity<Page<ProductDTO>> getSellingProducts(
             @PathVariable Long id, 
             @RequestBody(required = false) Integer size,
@@ -196,7 +174,7 @@ public class UserRestController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/{id}/reviews")
+    @GetMapping("/{id}/reviews/")
     public ResponseEntity<Page<ReviewDTO>> getReviews(
             @PathVariable Long id, 
             @RequestParam(required = false) Integer size,
@@ -210,7 +188,7 @@ public class UserRestController {
         return ResponseEntity.ok(reviewsPage);
     }
 
-    @GetMapping("/{id}/image")
+    @GetMapping("/{id}/image/")
     public ResponseEntity<Object> getProfileImage(
         @PathVariable Long id
     ){
@@ -224,7 +202,7 @@ public class UserRestController {
         }
     }
 
-    @PostMapping("/{id}/image")
+    @PostMapping("/{id}/image/")
     public ResponseEntity<ImageDTO> addProfileImage(
             @RequestBody MultipartFile imageFile,
             @PathVariable Long id
@@ -242,7 +220,7 @@ public class UserRestController {
         }
     }
 
-    @PutMapping("/{id}/image")
+    @PutMapping("/{id}/image/")
     public ResponseEntity<Object> updateProfileImage (
             @RequestBody MultipartFile imageFile,
             @PathVariable Long id
@@ -259,7 +237,7 @@ public class UserRestController {
         
     }
 
-    @DeleteMapping("/{id}/image")
+    @DeleteMapping("/{id}/image/")
     public ResponseEntity<?> deleteProfileImage(
         @PathVariable Long id
     ){
@@ -345,10 +323,10 @@ public class UserRestController {
     @PostMapping("/{id}/orders/")
     public ResponseEntity<OrderSimpleDTO> createOrder(
             @PathVariable Long id,
-            @RequestBody OrderRequest orderRequest
+            @RequestBody OrderFormtDTO orderFormDTO
     ){
         if (!isActionAllowed(id)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        OrderSimpleDTO order = orderService.proceedCheckout(orderRequest.getPaymentMethod(), orderRequest.getAddress(), orderRequest.getPhoneNumber());
+        OrderSimpleDTO order = orderService.proceedCheckout(orderFormDTO.paymentMethod(), orderFormDTO.address(), orderFormDTO.phoneNumber());
         if (order == null) return ResponseEntity.noContent().build();
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("{orderId}").buildAndExpand(order.id()).toUri();
         return ResponseEntity.created(location).body(order);
