@@ -286,3 +286,28 @@ I have focused on the user profile section, developing a screen where all user d
 - [Review.java](src/main/java/es/dlj/onlinestore/model/Review.java)
 
 - [User.java](src/main/java/es/dlj/onlinestore/model/User.java)
+
+---
+---
+
+# 2️⃣ Second Release
+
+# Team Contributions 
+
+## David Pimentel
+
+### Summary of Contributions
+
+I have contributed to building the corresponding DTOs for certain entities, as well as transforming some services and controllers to use these DTOs. Also I was in charge of refactoring all the code to fix general incoherences. Additionally, I have built the base of the Postman collection for the REST API, which includes the endpoints for products and users. Finally, I took charge of implementing pagination on all screens that require it.
+
+### Main commits in the repository
+
+- [Order Service, Home Controller and Cart Controller into DTOs](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/4fbeb1c6c5fbeca7044362d87c70b05fd0e0df70)
+
+- [User, ProductTag and Review DTOs, integration rest of DTOs](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/d0c4f6eb6673564f4c3b34c2f93184e24592a66b)
+
+- [Refactoring code and deleting old functions](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/d2b66337d121514dc66dfbd97d2f0231ff83347d)
+
+- [Postman Completed Collection](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/21f55a2432ebecb6bd2170de88a12cc927b50aa5)
+
+- [Pageable completed and working](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/7e72206c95bd98260628357198dbcbd015237166)
