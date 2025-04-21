@@ -37,6 +37,7 @@ import es.dlj.onlinestore.dto.OrderFormtDTO;
 import es.dlj.onlinestore.dto.OrderSimpleDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
+import es.dlj.onlinestore.dto.ProductTagDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;
@@ -46,6 +47,11 @@ import es.dlj.onlinestore.service.OrderService;
 import es.dlj.onlinestore.service.ProductService;
 import es.dlj.onlinestore.service.ReviewService;
 import es.dlj.onlinestore.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
@@ -79,6 +85,31 @@ public class UserRestController {
         ".gif", "image/gif"
     );
 
+    @Operation (summary = "Getting all users.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Tags found.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=UserDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "204",
+            description = "There are no users registered.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Only administrators see all the registered users.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error occurred loading the users.",
+            content = @Content
+        )
+    })
     @GetMapping("/")
     public ResponseEntity<Collection<UserSimpleDTO>> getUsers(){
         UserDTO userDTO = userService.getLoggedUserDTO();
@@ -91,6 +122,31 @@ public class UserRestController {
         }
     }
 
+    @Operation (summary = "Getting the profile by id.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "User found.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=UserDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found with the provided id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem loading the profile.",
+            content = @Content
+        )
+    })
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
         if (isActionAllowed(id)) {
@@ -100,6 +156,26 @@ public class UserRestController {
         }
     }
 
+    @Operation (summary = "Registering users")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "201",
+            description = "User created.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=UserDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Check the user's information.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem registering the user.",
+            content = @Content
+        )
+    })
     @PostMapping("/")
     public ResponseEntity<Object> registerUser(
             @Validated @RequestBody UserFormDTO user,
@@ -123,6 +199,41 @@ public class UserRestController {
         return ResponseEntity.created(location).body(userDTO);
     }
 
+    @Operation (summary = "Updating user")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "User updated.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=UserDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Check the updated information.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only update yourself unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem updating the user.",
+            content = @Content
+        )
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateUser(
             @Valid @RequestBody UserDTO newUserDTO,
@@ -145,6 +256,41 @@ public class UserRestController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @Operation (summary = "Deleting user")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "User deleted.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=UserDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Check the user id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only delete yourself unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem deleting the user.",
+            content = @Content
+        )
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(
             @PathVariable Long id
@@ -162,6 +308,46 @@ public class UserRestController {
         }
     }
 
+    @Operation (summary = "Getting products sold by user.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Products found.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=ProductDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "204",
+            description = "User is not selling product.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only update yourself unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem loading the user's products.",
+            content = @Content
+        )
+    })
     @GetMapping("/{id}/products/")
     public ResponseEntity<Page<ProductDTO>> getSellingProducts(
             @PathVariable Long id, 
@@ -172,9 +358,50 @@ public class UserRestController {
         int pageNum = page != null ? page : 0;
         int pageSize = size != null ? size : 4;
         Page<ProductDTO> products = productService.getAllProductsByUserId(id, PageRequest.of(pageNum, pageSize));
+        if (products.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(products);
     }
 
+    @Operation (summary = "Getting reviews posted by user.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Reviews found.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=ReviewDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "204",
+            description = "User hasn't posted reviews.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only see your own reviews unless you are administrator. You can always check the products reviews to see other people's reviews.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem loading the user's reviews.",
+            content = @Content
+        )
+    })
     @GetMapping("/{id}/reviews/")
     public ResponseEntity<Page<ReviewDTO>> getReviews(
             @PathVariable Long id, 
@@ -189,6 +416,41 @@ public class UserRestController {
         return ResponseEntity.ok(reviewsPage);
     }
 
+    @Operation (summary = "Getting profile's image.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Image found.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=ImageDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only see your own profile image unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem loading the profile image.",
+            content = @Content
+        )
+    })
     @GetMapping("/{id}/image/")
     public ResponseEntity<Object> getProfileImage(
         @PathVariable Long id
@@ -203,6 +465,41 @@ public class UserRestController {
         }
     }
 
+    @Operation (summary = "Uploading profile image.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Image uploaded.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=ImageDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only upload your own profile image unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem uploading the image.",
+            content = @Content
+        )
+    })
     @PostMapping("/{id}/image/")
     public ResponseEntity<ImageDTO> addProfileImage(
             @RequestBody MultipartFile imageFile,
@@ -221,6 +518,41 @@ public class UserRestController {
         }
     }
 
+    @Operation (summary = "Updating profile image.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Image updated.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=ImageDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only update your own profile image unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem editing the image.",
+            content = @Content
+        )
+    })
     @PutMapping("/{id}/image/")
     public ResponseEntity<Object> updateProfileImage (
             @RequestBody MultipartFile imageFile,
@@ -238,6 +570,41 @@ public class UserRestController {
         
     }
 
+    @Operation (summary = "Deleting profile image.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Image deleted.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=ImageDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only delete your own profile image unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem deleting the image.",
+            content = @Content
+        )
+    })
     @DeleteMapping("/{id}/image/")
     public ResponseEntity<?> deleteProfileImage(
         @PathVariable Long id
@@ -252,6 +619,41 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation (summary = "Get user's shopping cart.")
+        @ApiResponses(value={
+            @ApiResponse(
+                responseCode = "200",
+                description = "Cart found.",
+                content = {@Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation=ProductSimpleDTO.class))}
+            ),
+            @ApiResponse(
+                responseCode = "400",
+                description = "Invalid user id.",
+                content = @Content
+            ),
+            @ApiResponse(
+                responseCode = "401",
+                description = "Need to log in first.",
+                content = @Content
+            ),
+            @ApiResponse(
+                responseCode = "403",
+                description = "You can only check your own shopping cart unless you are administrator.",
+                content = @Content
+            ),
+            @ApiResponse(
+                responseCode = "404",
+                description = "User not found.",
+                content = @Content
+            ),
+            @ApiResponse(
+                responseCode = "500",
+                description = "There was a problem getting the shopping cart.",
+                content = @Content
+            )
+    })
     @GetMapping("/{id}/cart/")
     public ResponseEntity<Collection<ProductSimpleDTO>> getCart(
             @PathVariable Long id
@@ -261,6 +663,41 @@ public class UserRestController {
         return ResponseEntity.ok(userDTO.cartProducts());
     }
 
+    @Operation (summary = "Clear user's cart.")
+        @ApiResponses(value={
+            @ApiResponse(
+                responseCode = "200",
+                description = "Cart clear.",
+                content = {@Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation=Object.class))}
+            ),
+            @ApiResponse(
+                responseCode = "400",
+                description = "Invalid user id.",
+                content = @Content
+            ),
+            @ApiResponse(
+                responseCode = "401",
+                description = "Need to log in first.",
+                content = @Content
+            ),
+            @ApiResponse(
+                responseCode = "403",
+                description = "You can only check your own shopping cart unless you are administrator.",
+                content = @Content
+            ),
+            @ApiResponse(
+                responseCode = "404",
+                description = "User not found.",
+                content = @Content
+            ),
+            @ApiResponse(
+                responseCode = "500",
+                description = "There was a problem getting the shopping cart.",
+                content = @Content
+            )
+    })
     @DeleteMapping("/{id}/cart/")
     public ResponseEntity<Object> clearCart(
             @PathVariable Long id
@@ -270,6 +707,41 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation (summary = "Adding a product to shopping cart.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Product added to shopping cart.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=Object.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user or product id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only edit your own shopping cart unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found, or product doesn't exist.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem adding the product to the shopping cart.",
+            content = @Content
+        )
+    })
     @PostMapping("/{id}/cart/products/{productId}")
     public ResponseEntity<Object> addProductToCart(
             @PathVariable Long id,
@@ -281,6 +753,41 @@ public class UserRestController {
         return ResponseEntity.created(location).build();
     }
 
+    @Operation (summary = "Removing the product from shopping cart.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Product removed from cart.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=Object.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user or product id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only edit your own shopping cart unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found, or product doesn't exist.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem getting the shopping cart.",
+            content = @Content
+        )
+    })
     @DeleteMapping("/{id}/cart/products/{productId}")
     public ResponseEntity<Object> removeProductToCart(
             @PathVariable Long id,
@@ -291,6 +798,41 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation (summary = "Get users orders.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Orders found.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=OrderDTO.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only see your own orders unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem loading the orders.",
+            content = @Content
+        )
+    })
     @GetMapping("/{id}/orders/")
     public ResponseEntity<Page<OrderDTO>> getOrders(
             @PathVariable Long id, 
@@ -305,6 +847,41 @@ public class UserRestController {
         return ResponseEntity.ok(orders);
     }
 
+    @Operation (summary = "Get on order by id.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Order found.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=Object.class))}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user or order id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only see you own orders unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found, or order doesn't exist.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem getting the order.",
+            content = @Content
+        )
+    })
     @GetMapping("/{id}/orders/{orderId}")
     public ResponseEntity<OrderDTO> getOrder(
             @PathVariable Long id,
@@ -321,6 +898,46 @@ public class UserRestController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
+    @Operation (summary = "Removing the product from shopping cart.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "201",
+            description = "Order completed.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=Object.class))}
+        ),
+        @ApiResponse(
+            responseCode = "204",
+            description = "There's no need to buy air, it's free as long as you are in Earth. You cart is empty.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only edit your own shopping cart unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found, or product doesn't exist.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem completing the order.",
+            content = @Content
+        )
+    })
     @PostMapping("/{id}/orders/")
     public ResponseEntity<OrderSimpleDTO> createOrder(
             @PathVariable Long id,
@@ -333,6 +950,46 @@ public class UserRestController {
         return ResponseEntity.created(location).body(order);
     }
 
+    @Operation (summary = "Delete an order.")
+    @ApiResponses(value={
+        @ApiResponse(
+            responseCode = "200",
+            description = "Order deleted.",
+            content = {@Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation=Object.class))}
+        ),
+        @ApiResponse(
+            responseCode = "204",
+            description = "Order empty.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid user or order id.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Need to log in first.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "You can only delete your own orders unless you are administrator.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found, or order doesn't exist.",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "There was a problem deleting the order.",
+            content = @Content
+        )
+    })
     @DeleteMapping("/{id}/orders/{orderId}")
     public ResponseEntity<OrderDTO> deleteOrder(
             @PathVariable Long id,
