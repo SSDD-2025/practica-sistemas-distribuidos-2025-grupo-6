@@ -359,4 +359,4 @@ During this phase of the project, most of my efforts have been placed in the new
 
 - [UserService.java](/src/main/java/es/dlj/onlinestore/service/UserService.java)
 
-- [SecurityConfig.java](/src/main/java/es/dlj/onlinestore/security/SecurityConfig.java)
+- [SecurityConfig](/src/main/java/es/dlj/onlinestore/security/SecurityConfig.java)
