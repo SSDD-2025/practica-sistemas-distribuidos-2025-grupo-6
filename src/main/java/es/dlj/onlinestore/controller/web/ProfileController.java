@@ -158,7 +158,7 @@ public class ProfileController {
         return "redirect:/profile";
     }
 
-    @PostMapping("/deleteaccount") 
+    @GetMapping("/deleteaccount") 
     public String deleteAccount(Model model, HttpServletRequest request) { 
         UserDTO userDTO = userService.getLoggedUserDTO();
         userService.deleteDTOById(userDTO.id());
