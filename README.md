@@ -292,6 +292,12 @@ I have focused on the user profile section, developing a screen where all user d
 
 # 2️⃣ Second Release
 
+# Class diagram
+
+The class diagram has been updated, adding the rest controllers and changes made while implementing the DTOs. The image represents the new connections between the new controlers and the already existing services. Furthemore, the diagram shows two new services which are `RepositoryUserDetailsService` and `UserLoginService`, these new services are related to the security of the application and authentication of the API.
+
+![Updated class diagram](/img/ClassDiagramV2.png)
+
 # Team Contributions 
 
 ## David Pimentel
@@ -311,3 +317,33 @@ I have contributed to building the corresponding DTOs for certain entities, as w
 - [Postman Completed Collection](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/21f55a2432ebecb6bd2170de88a12cc927b50aa5)
 
 - [Pageable completed and working](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/7e72206c95bd98260628357198dbcbd015237166)
+
+## Jaime Ochoa de Alda
+
+### Summary of Contributions
+
+During this phase of the project, most of my efforts have been placed in the new REST controllers as well as the API security files. Besides, I have also helped implementing the DTOs into services and web controllers, updating the POSTMAN collection has also been one my contributions to the project. Due to the fact that I have been working mostly in the API, I have additionally improved the project by fixing some conflicts in the services and integrated OPEN API to create the API documentation.
+
+### Main commits in the repository
+
+-[User rest controller creation](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/21e4d2eccd7bf93c93380141cf2747522af427cc)
+
+-[adding JSONWebTokens and openAPI dependencies](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/344ea90d13888ccd69889b775b35dc63d0097995)
+
+-[adjusting security configuration to new rest controllers](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/7f71a667d32631532f8b61d5d718a88a7a3afba0)
+
+-[Fixing product rest controllers endpoints](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/08625edb44a3c80da233de15d9dd64fa13f3ab14)
+
+-[changes in postman collection, adecuated for productRestController](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/61b01c6cf7129deee742159f1612d0bc97a5f969)
+
+### Main files modified
+
+-[AuthRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/AuthRestController.java)
+
+-[UserRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/UserRestController.java)
+
+-[ProductRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/ProductRestController.java)
+
+-[UserService.java](/src/main/java/es/dlj/onlinestore/service/UserService.java)
+
+-[SecurityConfig](/src/main/java/es/dlj/onlinestore/security/SecurityConfig.java)
