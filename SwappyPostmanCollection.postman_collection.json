@@ -423,7 +423,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{ENDPOINT}}/api/users/2/image",
+							"raw": "{{ENDPOINT}}/api/users/2/image/",
 							"host": [
 								"{{ENDPOINT}}"
 							],
@@ -431,7 +431,8 @@
 								"api",
 								"users",
 								"2",
-								"image"
+								"image",
+								""
 							]
 						}
 					},
