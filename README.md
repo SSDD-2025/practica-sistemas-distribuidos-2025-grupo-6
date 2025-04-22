@@ -318,6 +318,19 @@ I have contributed to building the corresponding DTOs for certain entities, as w
 
 - [Pageable completed and working](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/7e72206c95bd98260628357198dbcbd015237166)
 
+### Main files modified
+
+- [pageable.js](src/main/resources/static/js/pageable.js)
+
+- [pageableSearch.js](src/main/resources/static/js/pageableSearch.js)
+
+- [HomeController.java](src/main/java/es/dlj/onlinestore/controller/HomeController.java)
+
+- [CartController.java](src/main/java/es/dlj/onlinestore/controller/CartController.java)
+
+- [OrderService.java](src/main/java/es/dlj/onlinestore/service/OrderService.java)
+
+
 ## Jaime Ochoa de Alda
 
 ### Summary of Contributions
@@ -346,4 +359,4 @@ During this phase of the project, most of my efforts have been placed in the new
 
 - [UserService.java](/src/main/java/es/dlj/onlinestore/service/UserService.java)
 
-- [SecurityConfig](/src/main/java/es/dlj/onlinestore/security/SecurityConfig.java)
+- [SecurityConfig.java](/src/main/java/es/dlj/onlinestore/security/SecurityConfig.java)

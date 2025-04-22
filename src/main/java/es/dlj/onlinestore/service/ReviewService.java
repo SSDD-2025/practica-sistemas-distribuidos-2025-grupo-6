@@ -72,12 +72,6 @@ public class ReviewService {
         }
     }
 
-    // public ReviewDTO createReview(ReviewDTO reviewDTO) {
-    //     Review review = reviewMapper.toDomain(reviewDTO);
-    //     reviewRepository.save(review); 
-    //     return reviewMapper.toDTO(review);
-    // }
-
     @Transactional
     public ReviewDTO delete (Long id) {
         Review review = reviewRepository.findById(id).orElseThrow();
