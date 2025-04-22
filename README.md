@@ -347,3 +347,35 @@ During this phase of the project, most of my efforts have been placed in the new
 - [UserService.java](/src/main/java/es/dlj/onlinestore/service/UserService.java)
 
 - [SecurityConfig](/src/main/java/es/dlj/onlinestore/security/SecurityConfig.java)
+
+## Lídia Budiós Martin 
+
+### Summary of Contributions
+
+In this phase of the project, I have contributed to the implementation of the CSRF mechanism, as well as the creation of several DTOs and their integration into the corresponding services and controllers. I have also collaborated in the development of some of the functions associated with the REST controllers.
+Additionally, I have played a significant role in the implementation of pagination, especially in the REST controllers, ensuring efficient data management in the API responses.
+
+### Main commits in the repository
+
+- [CSRF added](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/b1b4a292c51aa726efdf62c2b8c0d8381b618e1b)
+
+- [The pagination in the user's reviews, orders and products has been modified so that it is done through a JavaScript code that makes an AJAX call to the server and loads the following elements](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/46a97b7c98d3c6f77ef48d9190b4e7f4d687b298)
+
+- [Added pagination in REST controllers and more REST functions added](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/4a7056a4c4d3cbef05c9fe3346391c508ea7e7f8)
+
+- [Added REST functions for users and their products in UserRestController](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/dffeb25886fabd40c11cd8b86ec4cbecd8c88930)
+
+- [User service, review service and profile controller in DTOs correctly](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/e11253305b64b1b773f2e5005255604495af041d)
+
+### Main files modified
+
+- [UserController.java](/src/main/java/es/dlj/onlinestore/controller/web/UserController.java)
+
+- [UserRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/UserRestController.java)
+
+- [ProductRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/ProductRestController.java)
+
+- [UserService.java](/src/main/java/es/dlj/onlinestore/service/UserService.java)
+
+- [ProductController.java](/src/main/java/es/dlj/onlinestore/controller/web/ProductController.java)
+
