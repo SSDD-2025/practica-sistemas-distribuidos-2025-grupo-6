@@ -326,24 +326,24 @@ During this phase of the project, most of my efforts have been placed in the new
 
 ### Main commits in the repository
 
--[User rest controller creation](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/21e4d2eccd7bf93c93380141cf2747522af427cc)
+- [User rest controller creation](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/21e4d2eccd7bf93c93380141cf2747522af427cc)
 
 -[adding JSONWebTokens and openAPI dependencies](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/344ea90d13888ccd69889b775b35dc63d0097995)
 
--[adjusting security configuration to new rest controllers](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/7f71a667d32631532f8b61d5d718a88a7a3afba0)
+- [adjusting security configuration to new rest controllers](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/7f71a667d32631532f8b61d5d718a88a7a3afba0)
 
--[Fixing product rest controllers endpoints](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/08625edb44a3c80da233de15d9dd64fa13f3ab14)
+- [Fixing product rest controllers endpoints](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/08625edb44a3c80da233de15d9dd64fa13f3ab14)
 
--[changes in postman collection, adecuated for productRestController](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/61b01c6cf7129deee742159f1612d0bc97a5f969)
+- [changes in postman collection, adecuated for productRestController](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/61b01c6cf7129deee742159f1612d0bc97a5f969)
 
 ### Main files modified
 
--[AuthRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/AuthRestController.java)
+- [AuthRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/AuthRestController.java)
 
--[UserRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/UserRestController.java)
+- [UserRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/UserRestController.java)
 
--[ProductRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/ProductRestController.java)
+- [ProductRestController.java](/src/main/java/es/dlj/onlinestore/controller/rest/ProductRestController.java)
 
--[UserService.java](/src/main/java/es/dlj/onlinestore/service/UserService.java)
+- [UserService.java](/src/main/java/es/dlj/onlinestore/service/UserService.java)
 
--[SecurityConfig](/src/main/java/es/dlj/onlinestore/security/SecurityConfig.java)
+- [SecurityConfig](/src/main/java/es/dlj/onlinestore/security/SecurityConfig.java)
