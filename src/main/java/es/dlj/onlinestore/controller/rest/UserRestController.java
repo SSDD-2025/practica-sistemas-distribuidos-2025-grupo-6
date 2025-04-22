@@ -37,7 +37,6 @@ import es.dlj.onlinestore.dto.OrderFormtDTO;
 import es.dlj.onlinestore.dto.OrderSimpleDTO;
 import es.dlj.onlinestore.dto.ProductDTO;
 import es.dlj.onlinestore.dto.ProductSimpleDTO;
-import es.dlj.onlinestore.dto.ProductTagDTO;
 import es.dlj.onlinestore.dto.ReviewDTO;
 import es.dlj.onlinestore.dto.UserDTO;
 import es.dlj.onlinestore.dto.UserFormDTO;

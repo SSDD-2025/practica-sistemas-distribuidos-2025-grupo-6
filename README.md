@@ -328,7 +328,7 @@ During this phase of the project, most of my efforts have been placed in the new
 
 - [User rest controller creation](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/21e4d2eccd7bf93c93380141cf2747522af427cc)
 
--[adding JSONWebTokens and openAPI dependencies](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/344ea90d13888ccd69889b775b35dc63d0097995)
+- [adding JSONWebTokens and openAPI dependencies](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/344ea90d13888ccd69889b775b35dc63d0097995)
 
 - [adjusting security configuration to new rest controllers](https://github.com/SSDD-2025/practica-sistemas-distribuidos-2025-grupo-6/commit/7f71a667d32631532f8b61d5d718a88a7a3afba0)
 
