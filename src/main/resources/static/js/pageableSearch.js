@@ -16,11 +16,9 @@ document.getElementById("filterForm").addEventListener("submit", function (e) {
   loadResults();
 });
 
-document.getElementById("loadMore").addEventListener("click", loadResults);
-
 function loadResults() {
 
-  document.getElementById(this.loadMoreId).style.display = "none";
+  document.getElementById("loadMore").style.display = "none";
 
 	if (currentPage >= maxPage) {
 		return
