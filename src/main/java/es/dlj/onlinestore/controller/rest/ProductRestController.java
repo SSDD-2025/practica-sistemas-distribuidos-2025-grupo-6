@@ -640,7 +640,7 @@ public class ProductRestController {
         )
     })
     @PutMapping("{id}/images/{idImage}")
-    public ResponseEntity<ImageDTO> updateImage(
+    public ResponseEntity<Object> updateImage(
             @PathVariable Long id,
             @PathVariable Long idImage,
             @Valid @RequestBody MultipartFile updatedImage
@@ -648,7 +648,8 @@ public class ProductRestController {
         if (!isActionAllowed(id, "product")) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         try {
             ImageDTO imageDTO = imageService.updateImage(idImage, updatedImage);
-            return ResponseEntity.ok(imageDTO);
+            Resource imageAPI = imageService.loadAPIImage(imageDTO.id());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, EXTENSIONS.get(imageDTO.contentType())).body(imageAPI);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
