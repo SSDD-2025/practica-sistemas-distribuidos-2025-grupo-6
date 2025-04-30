@@ -208,7 +208,7 @@ class ProductController {
         return "redirect:/product/" + savedProductDTO.id();
     }
 
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteProduct(Model model, @PathVariable Long id) {
         if (productService.isProductOwner(id)){
             productService.deleteProduct(id);
