@@ -1,0 +1,1 @@
+docker push daaaviid03/swappy:1.0.0
