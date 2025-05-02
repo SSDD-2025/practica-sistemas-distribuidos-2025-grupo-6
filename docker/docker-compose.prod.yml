@@ -1,11 +1,12 @@
 services: 
   web:
-    build: .
-    image: granlobo2004/swappy:1.0.0
+    build: 
+      context: ..
+      dockerfile: docker/Dockerfile
     ports:
       - 8443:8443
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://sidi06-2/onlinestore
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db/onlinestore
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=Password
     depends_on:
@@ -19,7 +20,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "sidi06-2", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
       timeout: 5s
       start_period: 10s
