@@ -2,13 +2,13 @@
 FROM maven:latest AS builder
 # Define el directorio de trabajo donde ejecutar comandos
 WORKDIR /project
-# Copia el código del proyecto
-COPY pom.xml /project/
-#Descarga las dependencias
+# Copia el archivo pom.xml desde la raíz del proyecto al contenedor
+COPY ../pom.xml /project/
+# Descarga las dependencias
 RUN mvn dependency:go-offline
-#Copia los archivos del proyecto
-COPY /src /project/src
-# Compila proyecto y descarga librerías
+# Copia los archivos del proyecto desde la carpeta src de la raíz al contenedor
+COPY ../src /project/src
+# Compila el proyecto y descarga librerías
 RUN mvn -B package -DskipTests
 
 # Imagen base para el contenedor de la aplicación
