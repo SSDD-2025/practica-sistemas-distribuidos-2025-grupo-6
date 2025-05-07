@@ -3,7 +3,7 @@ services:
     build: 
       context: ..
       dockerfile: docker/Dockerfile
-    image: daaaviid03/swappy-web:1.0.0
+    image: granlobo2004/swappy:1.0.0
     ports:
       - 8443:8443
     environment:
@@ -14,7 +14,7 @@ services:
       db:
         condition: service_healthy
   db:
-    image: mysql:8.0.33
+    image: mysql:9.2
     environment:
       - MYSQL_ROOT_PASSWORD=Password
       - MYSQL_DATABASE=onlinestore

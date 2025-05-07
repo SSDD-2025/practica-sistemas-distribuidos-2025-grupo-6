@@ -49,9 +49,9 @@
         </dependency>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.2.0</version>
         </dependency>
 
 
@@ -128,7 +128,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>daaaviid03/swappy:${project.version}</name>
+                        <name>granlobo2004/swappy:${project.version}</name>
                     </image>
                 </configuration>
 			</plugin>

@@ -65,7 +65,9 @@ public class ReviewService {
         reviews.add(reviewRepository.save(new Review("A great smartwatch", "Apple Watch Series 7 is fast and the display is fantastic.", 5)));
         reviews.add(reviewRepository.save(new Review("Good for Android users", "The Samsung Galaxy Watch 4 is great, but battery life is short.", 4)));
 
-        for (int i = 0 ; i < products.size(); i++){
+        int size = Math.min(products.size(), reviews.size());  // Aseguramos que el índice no sea mayor al tamaño de la lista más pequeña
+
+        for (int i = 0; i < size; i++) {
             reviews.get(i).setOwner(user);
             reviews.get(i).setProduct(products.get(i));
             reviewRepository.save(reviews.get(i));
