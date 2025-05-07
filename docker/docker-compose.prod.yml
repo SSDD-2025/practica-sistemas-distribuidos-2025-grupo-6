@@ -5,25 +5,27 @@ services:
     ports:
       - 8443:8443
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db/onlinestore
+      - SPRING_DATASOURCE_URL=jdbc:mysql://192.168.110.213:3306/onlinestore?useSSL=false
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=Password
-    depends_on:
-      db:
-        condition: service_healthy
-  db:
-    image: mysql:8.0.33
-    environment:
-      - MYSQL_ROOT_PASSWORD=Password
-      - MYSQL_DATABASE=onlinestore
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 5s
-      timeout: 5s
-      start_period: 10s
-      retries: 5
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#   db:
+#     image: mysql:8.0.33
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=Password
+#       - MYSQL_DATABASE=onlinestore
+#     volumes:
+#       - db_data:/var/lib/mysql
+#     ports:
+#       - 3306:3306
+#     healthcheck:
+#       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
+#       interval: 5s
+#       timeout: 5s
+#       start_period: 10s
+#       retries: 5
 
-volumes:
-  db_data:
+# volumes:
+#   db_data:

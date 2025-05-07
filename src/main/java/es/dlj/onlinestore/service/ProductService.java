@@ -1,12 +1,14 @@
 package es.dlj.onlinestore.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page; 
@@ -150,6 +152,8 @@ public class ProductService {
         User user = userService.findById(1L);
         User user2 = userService.findById(2L);
 
+        
+
         for (int i = 0; i < productList.size(); i++) {
 
             for (ProductTag tag : productTagsList.get(i)) {
@@ -160,10 +164,12 @@ public class ProductService {
             productList.get(i).setTags(productTagsList.get(i));
             try {
                 for (String productImage : productImages.get(i)) {
+                    // InputStream stream = getClass().getResourceAsStream("/static/images/preloaded/" + productImage);
+                    // Image thisImage = imageService.saveImageFromInputStream(stream, productImage);
                     Image thisImage = imageService.saveFileImageFromPath("src/main/resources/static/images/preloaded/" + productImage);
                     productList.get(i).addImage(thisImage);
                 }
-            } catch (IOException e) {}
+            } catch (Exception e) {} //IOException
 
             if (i < 8) productList.get(i).setSeller(user);
             else productList.get(i).setSeller(user2);

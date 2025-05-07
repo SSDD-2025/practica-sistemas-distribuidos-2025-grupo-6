@@ -392,3 +392,52 @@ Additionally, I have played a significant role in the implementation of paginati
 - [UserService.java](/src/main/java/es/dlj/onlinestore/service/UserService.java)
 
 - [ProductController.java](/src/main/java/es/dlj/onlinestore/controller/web/ProductController.java)
+
+
+
+# 3️⃣ Third Release
+
+# Steps to run the project
+
+## Create App image (from project root)
+
+```bash
+docker/create-image.sh
+```
+
+## Publish image to Docker Hub
+
+```bash
+docker/publish-image.sh
+```
+
+## Publish compose file to Docker Hub
+
+```bash
+docker/publish-compose.sh
+```
+
+## Run the application locally (web + db)
+
+```bash
+docker compose -f docker/docker-compose.local.yml up -d
+```
+
+## Remove previous containers and images (VM-1 & VM-2)
+
+```bash
+docker rm -f $(docker ps -aq)
+ocker rmi -f $(docker images -aq)
+```
+
+## Load MySQL image in VM-2
+
+```bash
+docker run -d -p 3306:3306 --name mysql803   -e MYSQL_ROOT_PASSWORD=Password   -e MYSQL_DATABASE=onlinestore   -e MYSQL_USER=user   -e MYSQL_PASSWORD=Password   mysql:8.0.3
+```
+
+## Load the application image in VM-1 from compose file of docker hub
+
+```bash
+docker compose -f oci://docker.io/daaaviid03/swappy-compose:1.0.0 up -d
+```

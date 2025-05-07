@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -145,4 +146,16 @@ public class ImageService {
             throw new NoSuchElementException();
         }
     }
+
+    // public Image saveImageFromInputStream(InputStream stream, String productImage) {
+    //     try {
+    //         byte[] imageData = stream.readAllBytes();
+    //         Image image = new Image();
+    //         image.setContentType(Files.probeContentType(new File(productImage).toPath()));
+    //         image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
+    //         return imageRepository.save(image);
+    //     } catch (IOException e) {
+    //         throw new RuntimeException("Error reading image stream: " + productImage, e);
+    //     }
+    // }
 }
