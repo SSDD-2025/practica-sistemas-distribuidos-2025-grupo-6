@@ -399,6 +399,12 @@ Additionally, I have played a significant role in the implementation of paginati
 
 # Steps to run the project
 
+## To be SUDO in VM-1 & VM-2
+
+```bash
+sudo usermod -aG docker $USER
+```
+
 ## Create App image (from project root)
 
 ```bash
@@ -423,17 +429,18 @@ docker/publish-compose.sh
 docker compose -f docker/docker-compose.local.yml up -d
 ```
 
-## Remove previous containers and images (VM-1 & VM-2)
+## Remove previous containers, images and volumes (VM-1 & VM-2)
 
 ```bash
 docker rm -f $(docker ps -aq)
 docker rmi -f $(docker images -aq)
+docker volume prune -f
 ```
 
 ## Load MySQL image in VM-2
 
 ```bash
-docker run -d -p 3306:3306 --name mysql803   -e MYSQL_ROOT_PASSWORD=Password   -e MYSQL_DATABASE=onlinestore   -e MYSQL_USER=user   -e MYSQL_PASSWORD=Password   mysql:8.0.3
+docker run -d -p 3306:3306 --name mysql803   -e MYSQL_ROOT_PASSWORD=Password   -e MYSQL_DATABASE=onlinestore   -e MYSQL_USER=user   -e MYSQL_PASSWORD=Password   -v mysql803_data:/var/lib/mysql    mysql:8.0.3
 ```
 
 ## Load the application image in VM-1 from compose file of docker hub
