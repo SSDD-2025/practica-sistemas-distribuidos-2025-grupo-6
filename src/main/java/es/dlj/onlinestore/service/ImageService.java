@@ -70,6 +70,20 @@ public class ImageService {
     }
 
     @Transactional
+    public Image saveImageFromInputStream(InputStream stream, String productImage) {
+        try {
+            byte[] imageData = stream.readAllBytes();
+            String contentType = Files.probeContentType(new File(productImage).toPath());
+            Image image = new Image();
+            image.setContentType(contentType != null ? contentType : "image/png");
+            image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
+            return imageRepository.save(image);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading image stream: " + productImage, e);
+        }
+    }
+
+    @Transactional
     void saveImagesInProduct(Product product, List<MultipartFile> rawImages) throws IOException {
         product.clearImages();
         for (MultipartFile rawImage : rawImages){
@@ -146,16 +160,4 @@ public class ImageService {
             throw new NoSuchElementException();
         }
     }
-
-    // public Image saveImageFromInputStream(InputStream stream, String productImage) {
-    //     try {
-    //         byte[] imageData = stream.readAllBytes();
-    //         Image image = new Image();
-    //         image.setContentType(Files.probeContentType(new File(productImage).toPath()));
-    //         image.setImageFile(BlobProxy.generateProxy(new ByteArrayInputStream(imageData), imageData.length));
-    //         return imageRepository.save(image);
-    //     } catch (IOException e) {
-    //         throw new RuntimeException("Error reading image stream: " + productImage, e);
-    //     }
-    // }
 }

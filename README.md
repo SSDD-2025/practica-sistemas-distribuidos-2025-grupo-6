@@ -427,7 +427,7 @@ docker compose -f docker/docker-compose.local.yml up -d
 
 ```bash
 docker rm -f $(docker ps -aq)
-ocker rmi -f $(docker images -aq)
+docker rmi -f $(docker images -aq)
 ```
 
 ## Load MySQL image in VM-2

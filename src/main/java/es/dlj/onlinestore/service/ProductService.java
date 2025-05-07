@@ -164,9 +164,9 @@ public class ProductService {
             productList.get(i).setTags(productTagsList.get(i));
             try {
                 for (String productImage : productImages.get(i)) {
-                    // InputStream stream = getClass().getResourceAsStream("/static/images/preloaded/" + productImage);
-                    // Image thisImage = imageService.saveImageFromInputStream(stream, productImage);
-                    Image thisImage = imageService.saveFileImageFromPath("src/main/resources/static/images/preloaded/" + productImage);
+                    InputStream stream = getClass().getResourceAsStream("/static/images/preloaded/" + productImage);
+                    Image thisImage = imageService.saveImageFromInputStream(stream, productImage);
+                    // Image thisImage = imageService.saveFileImageFromPath("src/main/resources/static/images/preloaded/" + productImage);
                     productList.get(i).addImage(thisImage);
                 }
             } catch (Exception e) {} //IOException
