@@ -38,6 +38,8 @@ public class ReviewService {
     @PostConstruct
     @Transactional
     public void init() {
+
+        if (reviewRepository.count() > 0) return;
             
         User user = userService.findById(1L);
 

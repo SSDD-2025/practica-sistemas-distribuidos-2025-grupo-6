@@ -76,7 +76,7 @@ public class ProductService {
     @PostConstruct
     @Transactional
     public void init() {
-
+        if (productRepository.count()>0) return ;
         // Preload products
         List<Product> productList = List.of(
             productRepository.save(new Product("Laptop Dell XPS 15", 1500.99f, "High-end laptop", ProductType.NEW, 10, 20)),
