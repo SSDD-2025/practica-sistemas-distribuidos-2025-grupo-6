@@ -397,6 +397,24 @@ Additionally, I have played a significant role in the implementation of paginati
 
 # 3️⃣ Third Release
 
+## Docker image build
+To build the Dockerized image, Docker must be installed on the system and the necessary execution permissions must be granted. These permissions are granted with the following command: 
+- *sudo usermod -aG docker $USER*
+which adds the current user to the Docker group and allows them to build the image.
+
+To create the image, the first step was to create a Dockerfile containing all the necessary instructions. This file uses a technique called Multistage Dockerfile, which allows the use of different stages during the image build process. In this case, one stage compiles the project, and another generates the image used to run the application.
+In the first stage, the base image *maven:latest* (of Maven) is used to compile the project. Then, */project* is set as the working directory where container commands will be executed. The *pom.xml* file, which contains the project's dependencies, is copied from the project root to the container (*/project*), and the required dependencies and libraries are downloaded. Next, the project files from the */src* folder are copied into the container, and the project is compiled using Maven, producing a .jar file in the target folder.
+In the second stage—the image generation phase—a base image containing only the JRE (without Maven) is used for the application container, suitable for running the already compiled application (*eclipse-temurin:21-jre*). The working directory where the JAR file is located (generated in the previous stage) is defined, and the JAR file is copied into the runtime container. Then, the port to be used is specified—8443 in our case—and the CMD instruction is set. This defines the default command that will run when the container starts, in this case: *java -jar*, to execute the application.
+
+To build the image, the script *docker/create-image.sh* is executed, which contains the following command:
+- *docker build --platform linux/amd64 -t granlobo2004/swappy:1.0.0 -f docker/Dockerfile .*
+This command builds the image using docker build with specific options. First, it forces Docker to build the image for the amd64 architecture. Then, it tags the image with its name (granlobo2004/swappy) and version (1.0.0). After that, it specifies the path to the Dockerfile and finally defines the build context (the current directory), whose files will be available during the image build process.
+
+To publish the image, the script *docker/publish-image.sh* is executed, which contains the *docker push* command to publish the image to DockerHub.
+
+As an alternative to manually writing a Dockerfile, you can use Buildpacks, which automatically create a Spring Boot application image using the following command:
+- *mvn spring-boot:build-image*
+
 # Steps to run the project
 
 ## To be SUDO in VM-1 & VM-2
@@ -410,6 +428,7 @@ sudo usermod -aG docker $USER
 ```bash
 docker/create-image.sh
 ```
+alternativa de crear imagen sin usar docker => mvn spring-boot:build-image 
 
 ## Publish image to Docker Hub
 
