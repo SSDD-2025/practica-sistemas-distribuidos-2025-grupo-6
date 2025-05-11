@@ -425,9 +425,14 @@ In our application, we have added three Docker Compose configuration files: *doc
 - **docker-compose.local.yml**: This file is intended for local environments and contains the specific configurations needed to run the application and the database on the development machine. It is used when working on the local machine and when launching the application along with the database and other services in an isolated and controlled environment, within Docker containers. To do this, the following command is used: *docker-compose -f docker/docker-compose.local.yml up -d*
 In this file, the configuration for the web service builds the image directly from the Dockerfile located in docker/Dockerfile, and the database (db) uses the mysql:9.2 image. Additionally, environment variables are defined to connect the web application to the database.
 - **docker-compose.prod.yml**: This file is intended for production environments and, therefore, contains specific configurations for deploying the application in a real and stable environment, such as on servers or in cloud machines. It is used when deploying the application in a production environment with the command: *docker-compose -f docker/docker-compose.prod.yml up -d*
-n this case, the web service uses the image granlobo2004/swappy:1.0.0, which we have previously uploaded to Docker Hub. Environment variables necessary for connecting to the database are also set, and the platform linux/amd64 is defined for the container architecture. Additionally, the db service uses the mysql:9.2 image and establishes additional configurations like environment variables for the user and the database.
+In this case, the web service uses the image granlobo2004/swappy:1.0.0, which we have previously uploaded to Docker Hub. Environment variables necessary for connecting to the database are also set, and the platform linux/amd64 is defined for the container architecture. Additionally, the db service uses the mysql:9.2 image and establishes additional configurations like environment variables for the user and the database.
 
 The command specified for both files is responsible for launching the defined containers (the web application and the database) in the corresponding file, but in the background, allowing you to continue working in the same terminal without having to wait for the container to finish executing.
+
+If you want to remove any of the containers, you can run one of the following commands:
+- *docker rm -f $(docker ps -aq)*: removes all running or stopped containers
+- *docker rmi -f $(docker images -aq)*: deletes all Docker images
+- *docker volume prune -f*: cleans up unused volumes
 
 Additionally, to publish the Docker Compose file to Docker Hub, we have created a script called *docker/publish-compose.sh*, which uses the following commands: 
 docker login  
@@ -437,56 +442,38 @@ This first allows the user to authenticate to Docker Hub by requesting their cre
 Once the containers are running, the web application will be ready to use through the exposed port. In our case, it will be on port 8443, and it can be accessed on the local machine via the link:
 https://localhost:8443
 
+## Deploy the application on the virtual machine
+Once the containers are configured, the application must be deployed on two virtual machines provided by the university. In our case:
+- *sidi06-1*: will deploy the web application using the Docker image of the app. 
+- *sidi06-2*: will run the MySQL database using the official MySQL image. 
 
-# Steps to run the project
+To do this, SSH access is required, and the private key provided (sidi06.key) must be used to connect to the virtual machines. Additionally, both machines must have Docker and Docker Compose installed.
 
-## To be SUDO in VM-1 & VM-2
+To deploy the database on sidi06-2, first connect to the machine using the following command: 
+- ssh -i ssh-keys/sidi06.key vmuser@sidi06-2.sidi.etsii.urjc.es
 
-```bash
-sudo usermod -aG docker $USER
-```
+Once connected, the database is deployed using Docker with the following command:
+- docker run -d -p 3306:3306 --name mysql803 \
+  -e MYSQL_ROOT_PASSWORD=Password \
+  -e MYSQL_DATABASE=onlinestore \
+  -e MYSQL_USER=user \
+  -e MYSQL_PASSWORD=Password \
+  -v mysql803_data:/var/lib/mysql \
+  mysql:8.0.3
 
-## Create App image (from project root)
+This command starts the container running the MySQL database.
 
-```bash
-docker/create-image.sh
-```
-alternativa de crear imagen sin usar docker => mvn spring-boot:build-image 
+To deploy the web application, similarly, first access the sidi06-1 machine using:
+- ssh -i ssh-keys/sidi06.key vmuser@sidi06-1.sidi.etsii.urjc.es
 
-## Publish image to Docker Hub
+Then, launch the web application with the following command, which pulls and runs the remote Docker Compose file from Docker Hub as an OCI Artifact:
+- docker compose -f oci://docker.io/daaaviid03/swappy-compose:1.0.0 up -d
 
-```bash
-docker/publish-image.sh
-```
+This command will start only the web application container, which will connect to the database already running on sidi06-2.
 
-## Publish compose file to Docker Hub
+Once the application is deployed and the containers are running, it can be accessed from any machine within the university network through the following URL:https://193.147.60.46:8443. 
 
-```bash
-docker/publish-compose.sh
-```
-
-## Run the application locally (web + db)
-
-```bash
-docker compose -f docker/docker-compose.local.yml up -d
-```
-
-## Remove previous containers, images and volumes (VM-1 & VM-2)
-
-```bash
-docker rm -f $(docker ps -aq)
-docker rmi -f $(docker images -aq)
-docker volume prune -f
-```
-
-## Load MySQL image in VM-2
-
-```bash
-docker run -d -p 3306:3306 --name mysql803   -e MYSQL_ROOT_PASSWORD=Password   -e MYSQL_DATABASE=onlinestore   -e MYSQL_USER=user   -e MYSQL_PASSWORD=Password   -v mysql803_data:/var/lib/mysql    mysql:8.0.3
-```
-
-## Load the application image in VM-1 from compose file of docker hub
-
-```bash
-docker compose -f oci://docker.io/daaaviid03/swappy-compose:1.0.0 up -d
-```
+Lastly, three sample users have been included. Their credentials are:
+- admin / password
+- user / password
+- user2 / password
