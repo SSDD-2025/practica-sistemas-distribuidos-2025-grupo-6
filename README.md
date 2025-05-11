@@ -400,6 +400,7 @@ Additionally, I have played a significant role in the implementation of paginati
 ## Docker image build
 To build the Dockerized image, Docker must be installed on the system and the necessary execution permissions must be granted. These permissions are granted with the following command: 
 - *sudo usermod -aG docker $USER*
+
 which adds the current user to the Docker group and allows them to build the image.
 
 To create the image, the first step was to create a Dockerfile containing all the necessary instructions. This file uses a technique called Multistage Dockerfile, which allows the use of different stages during the image build process. In this case, one stage compiles the project, and another generates the image used to run the application.
@@ -408,12 +409,34 @@ In the second stage—the image generation phase—a base image containing only 
 
 To build the image, the script *docker/create-image.sh* is executed, which contains the following command:
 - *docker build --platform linux/amd64 -t granlobo2004/swappy:1.0.0 -f docker/Dockerfile .*
+
 This command builds the image using docker build with specific options. First, it forces Docker to build the image for the amd64 architecture. Then, it tags the image with its name (granlobo2004/swappy) and version (1.0.0). After that, it specifies the path to the Dockerfile and finally defines the build context (the current directory), whose files will be available during the image build process.
 
 To publish the image, the script *docker/publish-image.sh* is executed, which contains the *docker push* command to publish the image to DockerHub.
 
 As an alternative to manually writing a Dockerfile, you can use Buildpacks, which automatically create a Spring Boot application image using the following command:
 - *mvn spring-boot:build-image*
+
+## Running the Dockerized app
+In order to run the Dockerized application, it is necessary to have both Docker and Docker Compose installed on the system. Additionally, the Docker image of the application must be available on the local machine or published in a DockerHub repository. Lastly, a docker-compose.yml file must also be present, where all the services (containers) needed to run the application will be defined. 
+
+In our application, we have added three Docker Compose configuration files: *docker-compose.yml*, *docker-compose.local.yml*, and *docker-compose.prod.yml*.
+- **docker-compose.yml**: This file, in our case, is empty and serves as the base file. It doesn't contain specific configurations, so the configuration is managed in the docker-compose.local.yml and docker-compose.prod.yml files.
+- **docker-compose.local.yml**: This file is intended for local environments and contains the specific configurations needed to run the application and the database on the development machine. It is used when working on the local machine and when launching the application along with the database and other services in an isolated and controlled environment, within Docker containers. To do this, the following command is used: *docker-compose -f docker/docker-compose.local.yml up -d*
+In this file, the configuration for the web service builds the image directly from the Dockerfile located in docker/Dockerfile, and the database (db) uses the mysql:9.2 image. Additionally, environment variables are defined to connect the web application to the database.
+- **docker-compose.prod.yml**: This file is intended for production environments and, therefore, contains specific configurations for deploying the application in a real and stable environment, such as on servers or in cloud machines. It is used when deploying the application in a production environment with the command: *docker-compose -f docker/docker-compose.prod.yml up -d*
+n this case, the web service uses the image granlobo2004/swappy:1.0.0, which we have previously uploaded to Docker Hub. Environment variables necessary for connecting to the database are also set, and the platform linux/amd64 is defined for the container architecture. Additionally, the db service uses the mysql:9.2 image and establishes additional configurations like environment variables for the user and the database.
+
+The command specified for both files is responsible for launching the defined containers (the web application and the database) in the corresponding file, but in the background, allowing you to continue working in the same terminal without having to wait for the container to finish executing.
+
+Additionally, to publish the Docker Compose file to Docker Hub, we have created a script called *docker/publish-compose.sh*, which uses the following commands: 
+docker login  
+docker compose -f docker/docker-compose.prod.yml publish daaaviid03/swappy-compose:1.0.0 --with-env
+This first allows the user to authenticate to Docker Hub by requesting their credentials to access their account. Then, it uploads the Docker Compose file to Docker Hub using the docker compose publish command, so that anyone with access can use this file to deploy the application in their environment.
+
+Once the containers are running, the web application will be ready to use through the exposed port. In our case, it will be on port 8443, and it can be accessed on the local machine via the link:
+https://localhost:8443
+
 
 # Steps to run the project
 
