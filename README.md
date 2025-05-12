@@ -6,7 +6,7 @@ We have decided to develop a web application for buying and selling products. Th
 # Team Members
 | Name and Surname | Email | GitHub |
 |:-----------------|:-----:|-------:|
-| **Jaime Ochoa**    | j.ochoa.2022@alumnos.urjc.es | GranLobo2004 |
+| **Jaime Ochoa**    | j.ochoa.2022@alumnos.urjc.es | granlobo2004 |
 | **David Pimentel** | d.pimentel.2021@alumnos.urjc.es | daaaviid-03 |
 | **Lídia Budiós**   |  l.budios.2024@alumnos.urjc.es | lidiabm |
 
@@ -397,83 +397,95 @@ Additionally, I have played a significant role in the implementation of paginati
 
 # 3️⃣ Third Release
 
-## Docker image build
-To build the Dockerized image, Docker must be installed on the system and the necessary execution permissions must be granted. These permissions are granted with the following command: 
-- *sudo usermod -aG docker $USER*
+# Steps of deployment
+## 1. Create the Docker image
 
-which adds the current user to the Docker group and allows them to build the image.
+The first step is to create the Docker image of the application:
 
-To create the image, the first step was to create a Dockerfile containing all the necessary instructions. This file uses a technique called Multistage Dockerfile, which allows the use of different stages during the image build process. In this case, one stage compiles the project, and another generates the image used to run the application.
-In the first stage, the base image *maven:latest* (of Maven) is used to compile the project. Then, */project* is set as the working directory where container commands will be executed. The *pom.xml* file, which contains the project's dependencies, is copied from the project root to the container (*/project*), and the required dependencies and libraries are downloaded. Next, the project files from the */src* folder are copied into the container, and the project is compiled using Maven, producing a .jar file in the target folder.
-In the second stage—the image generation phase—a base image containing only the JRE (without Maven) is used for the application container, suitable for running the already compiled application (*eclipse-temurin:21-jre*). The working directory where the JAR file is located (generated in the previous stage) is defined, and the JAR file is copied into the runtime container. Then, the port to be used is specified—8443 in our case—and the CMD instruction is set. This defines the default command that will run when the container starts, in this case: *java -jar*, to execute the application.
+```bash
+chmod +x docker/create_image.sh
+docker/create_image.sh
+```
 
-To build the image, the script *docker/create-image.sh* is executed, which contains the following command:
-- *docker build --platform linux/amd64 -t granlobo2004/swappy:1.0.0 -f docker/Dockerfile .*
+## 2. Publish the image to Docker Hub
+The second step is to publish the image to Docker Hub:
 
-This command builds the image using docker build with specific options. First, it forces Docker to build the image for the amd64 architecture. Then, it tags the image with its name (granlobo2004/swappy) and version (1.0.0). After that, it specifies the path to the Dockerfile and finally defines the build context (the current directory), whose files will be available during the image build process.
+```bash
+chmod +x docker/publish_image.sh
+docker/publish_image.sh
+```
 
-To publish the image, the script *docker/publish-image.sh* is executed, which contains the *docker push* command to publish the image to DockerHub.
+## 3. Publish the compose file to Docker Hub
+The third step is to publish the compose file to Docker Hub:
 
-As an alternative to manually writing a Dockerfile, you can use Buildpacks, which automatically create a Spring Boot application image using the following command:
-- *mvn spring-boot:build-image*
+```bash
+chmod +x docker/publish_compose.sh
+docker/publish_compose.sh
+```
 
-## Running the Dockerized app
-In order to run the Dockerized application, it is necessary to have both Docker and Docker Compose installed on the system. Additionally, the Docker image of the application must be available on the local machine or published in a DockerHub repository. Lastly, a docker-compose.yml file must also be present, where all the services (containers) needed to run the application will be defined. 
+# Run the application locally (web + db)
 
-In our application, we have added three Docker Compose configuration files: *docker-compose.yml*, *docker-compose.local.yml*, and *docker-compose.prod.yml*.
-- **docker-compose.yml**: This file, in our case, is empty and serves as the base file. It doesn't contain specific configurations, so the configuration is managed in the docker-compose.local.yml and docker-compose.prod.yml files.
-- **docker-compose.local.yml**: This file is intended for local environments and contains the specific configurations needed to run the application and the database on the development machine. It is used when working on the local machine and when launching the application along with the database and other services in an isolated and controlled environment, within Docker containers. To do this, the following command is used: *docker-compose -f docker/docker-compose.local.yml up -d*
-In this file, the configuration for the web service builds the image directly from the Dockerfile located in docker/Dockerfile, and the database (db) uses the mysql:9.2 image. Additionally, environment variables are defined to connect the web application to the database.
-- **docker-compose.prod.yml**: This file is intended for production environments and, therefore, contains specific configurations for deploying the application in a real and stable environment, such as on servers or in cloud machines. It is used when deploying the application in a production environment with the command: *docker-compose -f docker/docker-compose.prod.yml up -d*
-In this case, the web service uses the image granlobo2004/swappy:1.0.0, which we have previously uploaded to Docker Hub. Environment variables necessary for connecting to the database are also set, and the platform linux/amd64 is defined for the container architecture. Additionally, the db service uses the mysql:9.2 image and establishes additional configurations like environment variables for the user and the database.
+## Prerequisites
+- **Docker**: Make sure you have Docker installed and running on your machine. You can download it from [Docker's official website](https://www.docker.com/get-started).
 
-The command specified for both files is responsible for launching the defined containers (the web application and the database) in the corresponding file, but in the background, allowing you to continue working in the same terminal without having to wait for the container to finish executing.
+## 1. Run the application locally
+To run the application locally, you can use the following command, that will create the containers (web + db) and run the application on your local machine [localhost:8443](https://localhost:8443):
 
-If you want to remove any of the containers, you can run one of the following commands:
-- *docker rm -f $(docker ps -aq)*: removes all running or stopped containers
-- *docker rmi -f $(docker images -aq)*: deletes all Docker images
-- *docker volume prune -f*: cleans up unused volumes
+```bash
+docker compose -f docker/docker-compose.local.yml up -d
+```
 
-Additionally, to publish the Docker Compose file to Docker Hub, we have created a script called *docker/publish-compose.sh*, which uses the following commands: 
-docker login  
-docker compose -f docker/docker-compose.prod.yml publish daaaviid03/swappy-compose:1.0.0 --with-env
-This first allows the user to authenticate to Docker Hub by requesting their credentials to access their account. Then, it uploads the Docker Compose file to Docker Hub using the docker compose publish command, so that anyone with access can use this file to deploy the application in their environment.
+If you whant to use de compose file from Docker Hub, you can use the following command:
 
-Once the containers are running, the web application will be ready to use through the exposed port. In our case, it will be on port 8443, and it can be accessed on the local machine via the link:
-https://localhost:8443
+```bash
+docker compose -f oci://docker.io/granlobo2004/swappy-compose:1.0.0 up -d
+```
 
-## Deploy the application on the virtual machine
-Once the containers are configured, the application must be deployed on two virtual machines provided by the university. In our case:
-- *sidi06-1*: will deploy the web application using the Docker image of the app. 
-- *sidi06-2*: will run the MySQL database using the official MySQL image. 
+# Run the application in VM-1 (web) and VM-2 (db)
+## Prerequisites
+- **Docker**: Make sure you have Docker installed and running on both machines. You can download it from [Docker's official website](https://www.docker.com/get-started).
 
-To do this, SSH access is required, and the private key provided (sidi06.key) must be used to connect to the virtual machines. Additionally, both machines must have Docker and Docker Compose installed.
+- **Docker root access**: Make sure you have root access to docker in both machines. Additionally you can set up your user to have root access by running the following command:
 
-To deploy the database on sidi06-2, first connect to the machine using the following command: 
-- ssh -i ssh-keys/sidi06.key vmuser@sidi06-2.sidi.etsii.urjc.es
+```bash
+sudo usermod -aG docker $USER
+```
 
-Once connected, the database is deployed using Docker with the following command:
-- docker run -d -p 3306:3306 --name mysql803 \
-  -e MYSQL_ROOT_PASSWORD=Password \
-  -e MYSQL_DATABASE=onlinestore \
-  -e MYSQL_USER=user \
-  -e MYSQL_PASSWORD=Password \
-  -v mysql803_data:/var/lib/mysql \
-  mysql:8.0.3
+- **Clear previous containers, images and volumes**: Before running the application, you can clear any previous containers, images and volumes that may be running on both machines. You can do this by running the following commands:
 
-This command starts the container running the MySQL database.
+```bash
+docker rm -f $(docker ps -aq)
+docker rmi -f $(docker images -aq)
+docker volume rm $(docker volume ls -q)
+```
 
-To deploy the web application, similarly, first access the sidi06-1 machine using:
-- ssh -i ssh-keys/sidi06.key vmuser@sidi06-1.sidi.etsii.urjc.es
+## 1. Load MySQL image in VM-2
 
-Then, launch the web application with the following command, which pulls and runs the remote Docker Compose file from Docker Hub as an OCI Artifact:
-- docker compose -f oci://docker.io/daaaviid03/swappy-compose:1.0.0 up -d
+- To connect to VM-2 through VM-1, you can use SSH, within the URJC network:
 
-This command will start only the web application container, which will connect to the database already running on sidi06-2.
+```bash
+ssh -t -i ssh-keys/sidi06.key vmuser@193.147.60.46 ssh sidi06-2
+```
 
-Once the application is deployed and the containers are running, it can be accessed from any machine within the university network through the following URL:https://193.147.60.46:8443. 
+To load the MySQL image in VM-2, you can use the following command:
 
-Lastly, three sample users have been included. Their credentials are:
-- admin / password
-- user / password
-- user2 / password
+```bash
+docker run -d -p 3306:3306 --name mysql   -e MYSQL_ROOT_PASSWORD=Password   -e MYSQL_DATABASE=onlinestore   -e MYSQL_USER=user   -e MYSQL_PASSWORD=Password   -v mysql_data:/var/lib/mysql    mysql:9.2
+```
+
+## 2. Load the application image in VM-1
+
+- To connect to VM-1, you can use SSH, within the URJC network:
+
+```bash
+ssh -i ssh-keys/sidi06.key vmuser@193.147.60.46
+```
+
+To load the application image in VM-1, you can use the following command:
+
+```bash
+docker run -d --name swappy --platform linux/amd64 -p 8443:8443 -e SPRING_DATASOURCE_URL=jdbc:mysql://192.168.110.213:3306/onlinestore -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=Password granlobo2004/swappy:1.0.0
+```
+
+## 3. Access the application
+Once the application is running, you can access it by opening your web browser and navigating to [https://193.147.60.46:8443](https://193.147.60.46:8443). You should see the application running.
