@@ -397,95 +397,107 @@ Additionally, I have played a significant role in the implementation of paginati
 
 # 3️⃣ Third Release
 
-# Steps of deployment
-## 1. Create the Docker image
+> # Steps of deployment
+> ## 1. Create the Docker image
+> 
+> The first step is to create the Docker image of the application:
+> 
+> ```bash
+> docker/create_image.sh
+> ```
+> 
+> Alternatively, you can use the following command to create the image with Spring Boot:
+> ```bash
+> mvn spring-boot:build-image
+> ```
+> 
+> ## 2. Publish the image to Docker Hub
+> The second step is to publish the image to Docker Hub:
+> 
+> ```bash
+> docker/publish_image.sh
+> ```
+> 
+> ## 3. Publish the compose file to Docker Hub
+> The third step is to publish the compose file to Docker Hub:
+> 
+> ```bash
+> docker/publish_compose.sh
+> ```
 
-The first step is to create the Docker image of the application:
+> # Run the application locally (web + db)
+> 
+> ## Prerequisites
+> - **Docker**: Make sure you have Docker installed and running on your machine. You can > download it from [Docker's official website](https://www.docker.com/get-started).
+> 
+> ## 1. Run the application locally
+> To run the application locally, you can use the following command, that will create the > containers (web + db) and run the application on your local machine [localhost:8443]> (https://localhost:8443):
+> 
+> ```bash
+> docker compose -f docker/docker-compose.local.yml up -d
+> ```
+> 
+> If you whant to use de compose file from Docker Hub, you can use the following command:
+> 
+> ```bash
+> docker compose -f oci://docker.io/granlobo2004/swappy-compose:1.0.0 up -d
+> ```
 
-```bash
-chmod +x docker/create_image.sh
-docker/create_image.sh
-```
+> # Run the application in VM-1 (web) and VM-2 (db)
+> ## Prerequisites
+> - **Docker**: Make sure you have Docker installed and running on both machines. You can > download it from [Docker's official website](https://www.docker.com/get-started).
+> 
+> - **Docker root access**: Make sure you have root access to docker in both machines. > Additionally you can set up your user to have root access by running the following > command:
+> 
+> ```bash
+> sudo usermod -aG docker $USER
+> ```
+> 
+> - **Clear previous containers, images and volumes**: Before running the application, you > can clear any previous containers, images and volumes that may be running on both > machines. You can do this by running the following commands:
+> 
+> ```bash
+> docker rm -f $(docker ps -aq)
+> docker rmi -f $(docker images -aq)
+> docker volume rm $(docker volume ls -q)
+> ```
+> 
+> ## 1. Load MySQL image in VM-2
+> 
+> - To connect to VM-2 through VM-1, you can use SSH, within the URJC network:
+> 
+> ```bash
+> ssh -t -i ssh-keys/sidi06.key vmuser@193.147.60.46 ssh sidi06-2
+> ```
+> 
+> To load the MySQL image in VM-2, you can use the following command:
+> 
+> ```bash
+> docker run -d -p 3306:3306 --name mysql   -e MYSQL_ROOT_PASSWORD=Password   -e > MYSQL_DATABASE=onlinestore   -e MYSQL_USER=user   -e MYSQL_PASSWORD=Password   -v > mysql_data:/var/lib/mysql    mysql:9.2
+> ```
+> 
+> ## 2. Load the application image in VM-1
+> 
+> - To connect to VM-1, you can use SSH, within the URJC network:
+> 
+> ```bash
+> ssh -i ssh-keys/sidi06.key vmuser@193.147.60.46
+> ```
+> 
+> To load the application image in VM-1, you can use the following command:
+> 
+> ```bash
+> docker run -d --name swappy --platform linux/amd64 -p 8443:8443 -e > SPRING_DATASOURCE_URL=jdbc:mysql://192.168.110.213:3306/onlinestore -e > SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=Password granlobo2004/> swappy:1.0.0
+> ```
+> 
+> ## 3. Access the application
+> Once the application is running, you can access it by opening your web browser and navigating to [https://193.147.60.46:8443](https://193.147.60.46:8443). You should see the application running.
+>
 
-## 2. Publish the image to Docker Hub
-The second step is to publish the image to Docker Hub:
 
-```bash
-chmod +x docker/publish_image.sh
-docker/publish_image.sh
-```
-
-## 3. Publish the compose file to Docker Hub
-The third step is to publish the compose file to Docker Hub:
-
-```bash
-chmod +x docker/publish_compose.sh
-docker/publish_compose.sh
-```
-
-# Run the application locally (web + db)
-
-## Prerequisites
-- **Docker**: Make sure you have Docker installed and running on your machine. You can download it from [Docker's official website](https://www.docker.com/get-started).
-
-## 1. Run the application locally
-To run the application locally, you can use the following command, that will create the containers (web + db) and run the application on your local machine [localhost:8443](https://localhost:8443):
-
-```bash
-docker compose -f docker/docker-compose.local.yml up -d
-```
-
-If you whant to use de compose file from Docker Hub, you can use the following command:
-
-```bash
-docker compose -f oci://docker.io/granlobo2004/swappy-compose:1.0.0 up -d
-```
-
-# Run the application in VM-1 (web) and VM-2 (db)
-## Prerequisites
-- **Docker**: Make sure you have Docker installed and running on both machines. You can download it from [Docker's official website](https://www.docker.com/get-started).
-
-- **Docker root access**: Make sure you have root access to docker in both machines. Additionally you can set up your user to have root access by running the following command:
-
-```bash
-sudo usermod -aG docker $USER
-```
-
-- **Clear previous containers, images and volumes**: Before running the application, you can clear any previous containers, images and volumes that may be running on both machines. You can do this by running the following commands:
-
-```bash
-docker rm -f $(docker ps -aq)
-docker rmi -f $(docker images -aq)
-docker volume rm $(docker volume ls -q)
-```
-
-## 1. Load MySQL image in VM-2
-
-- To connect to VM-2 through VM-1, you can use SSH, within the URJC network:
-
-```bash
-ssh -t -i ssh-keys/sidi06.key vmuser@193.147.60.46 ssh sidi06-2
-```
-
-To load the MySQL image in VM-2, you can use the following command:
-
-```bash
-docker run -d -p 3306:3306 --name mysql   -e MYSQL_ROOT_PASSWORD=Password   -e MYSQL_DATABASE=onlinestore   -e MYSQL_USER=user   -e MYSQL_PASSWORD=Password   -v mysql_data:/var/lib/mysql    mysql:9.2
-```
-
-## 2. Load the application image in VM-1
-
-- To connect to VM-1, you can use SSH, within the URJC network:
-
-```bash
-ssh -i ssh-keys/sidi06.key vmuser@193.147.60.46
-```
-
-To load the application image in VM-1, you can use the following command:
-
-```bash
-docker run -d --name swappy --platform linux/amd64 -p 8443:8443 -e SPRING_DATASOURCE_URL=jdbc:mysql://192.168.110.213:3306/onlinestore -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=Password granlobo2004/swappy:1.0.0
-```
-
-## 3. Access the application
-Once the application is running, you can access it by opening your web browser and navigating to [https://193.147.60.46:8443](https://193.147.60.46:8443). You should see the application running.
+> # User credentials
+> 
+> | Role  | Username | Password |
+> |-------|----------|----------|
+> | **ADMIN** | **admin**    | **password** |
+> | USER  | user     | password |
+> | USER  | user2    | password |
