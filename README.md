@@ -440,7 +440,7 @@ Additionally, I have played a significant role in the implementation of paginati
 > If you whant to use de compose file from Docker Hub, you can use the following command:
 > 
 > ```bash
-> docker compose -f oci://docker.io/granlobo2004/swappy-compose:1.0.0 up -d
+> docker compose -f oci://docker.io/daaaviid03/swappy-compose:1.0.0 up -d
 > ```
 
 > # Run the application in VM-1 (web) and VM-2 (db)
@@ -486,7 +486,7 @@ Additionally, I have played a significant role in the implementation of paginati
 > To load the application image in VM-1, you can use the following command:
 > 
 > ```bash
-> docker run -d --name swappy --platform linux/amd64 -p 8443:8443 -e SPRING_DATASOURCE_URL=jdbc:mysql://192.168.110.213:3306/onlinestore -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=Password granlobo2004/swappy:1.0.0
+> docker run -d --name swappy --platform linux/amd64 -p 8443:8443 -e SPRING_DATASOURCE_URL=jdbc:mysql://192.168.110.213:3306/onlinestore -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=Password daaaviid03/swappy:1.0.0
 > ```
 > 
 > ## 3. Access the application

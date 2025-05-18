@@ -128,7 +128,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>granlobo2004/swappy:${project.version}</name>
+                        <name>daaaviid03/swappy:${project.version}</name>
                     </image>
                 </configuration>
 			</plugin>

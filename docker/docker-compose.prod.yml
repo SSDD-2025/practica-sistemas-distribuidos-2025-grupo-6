@@ -1,6 +1,6 @@
 services: 
   web:
-    image: granlobo2004/swappy:1.0.0
+    image: daaaviid03/swappy:1.0.0
     platform: linux/amd64
     ports:
       - 8443:8443

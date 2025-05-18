@@ -1,1 +1,1 @@
-docker push granlobo2004/swappy:1.0.0
+docker push daaaviid03/swappy:1.0.0
