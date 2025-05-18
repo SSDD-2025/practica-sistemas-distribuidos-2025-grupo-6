@@ -472,7 +472,7 @@ Additionally, I have played a significant role in the implementation of paginati
 > To load the MySQL image in VM-2, you can use the following command:
 > 
 > ```bash
-> docker run -d -p 3306:3306 --name mysql   -e MYSQL_ROOT_PASSWORD=Password   -e > MYSQL_DATABASE=onlinestore   -e MYSQL_USER=user   -e MYSQL_PASSWORD=Password   -v > mysql_data:/var/lib/mysql    mysql:9.2
+> docker run -d -p 3306:3306 --name mysql   -e MYSQL_ROOT_PASSWORD=Password   -e MYSQL_DATABASE=onlinestore   -e MYSQL_USER=user   -e MYSQL_PASSWORD=Password   -v mysql_data:/var/lib/mysql    mysql:9.2
 > ```
 > 
 > ## 2. Load the application image in VM-1
@@ -486,7 +486,7 @@ Additionally, I have played a significant role in the implementation of paginati
 > To load the application image in VM-1, you can use the following command:
 > 
 > ```bash
-> docker run -d --name swappy --platform linux/amd64 -p 8443:8443 -e > SPRING_DATASOURCE_URL=jdbc:mysql://192.168.110.213:3306/onlinestore -e > SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=Password granlobo2004/> swappy:1.0.0
+> docker run -d --name swappy --platform linux/amd64 -p 8443:8443 -e SPRING_DATASOURCE_URL=jdbc:mysql://192.168.110.213:3306/onlinestore -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=Password granlobo2004/swappy:1.0.0
 > ```
 > 
 > ## 3. Access the application
