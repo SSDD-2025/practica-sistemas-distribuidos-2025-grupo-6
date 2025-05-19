@@ -425,6 +425,8 @@ Additionally, I have played a significant role in the implementation of paginati
 > docker/publish_compose.sh
 > ```
 
+---
+
 > # Run the application locally (web + db)
 > 
 > ## Prerequisites
@@ -442,6 +444,8 @@ Additionally, I have played a significant role in the implementation of paginati
 > ```bash
 > docker compose -f oci://docker.io/daaaviid03/swappy-compose:1.0.0 up -d
 > ```
+
+---
 
 > # Run the application in VM-1 (web) and VM-2 (db)
 > ## Prerequisites
@@ -493,6 +497,7 @@ Additionally, I have played a significant role in the implementation of paginati
 > Once the application is running, you can access it by opening your web browser and navigating to [https://193.147.60.46:8443](https://193.147.60.46:8443). You should see the application running.
 >
 
+---
 
 > # User credentials
 > 
