@@ -403,11 +403,13 @@ Additionally, I have played a significant role in the implementation of paginati
 > The first step is to create the Docker image of the application:
 > 
 > ```bash
+> chmod +x docker/create_image.sh
 > docker/create_image.sh
 > ```
 > 
 > Alternatively, you can use the following command to create the image with Spring Boot:
 > ```bash
+> mvn clean package
 > mvn spring-boot:build-image
 > ```
 > 
@@ -415,6 +417,7 @@ Additionally, I have played a significant role in the implementation of paginati
 > The second step is to publish the image to Docker Hub:
 > 
 > ```bash
+> chmod +x docker/publish_image.sh
 > docker/publish_image.sh
 > ```
 > 
@@ -422,6 +425,7 @@ Additionally, I have played a significant role in the implementation of paginati
 > The third step is to publish the compose file to Docker Hub:
 > 
 > ```bash
+> chmod +x docker/publish_compose.sh
 > docker/publish_compose.sh
 > ```
 
