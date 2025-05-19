@@ -36,3 +36,6 @@ build/
 ### DB Ignore ###
 pom.xml
 src/main/resources/application.properties
+
+## SSH ignore ##
+ssh-keys
